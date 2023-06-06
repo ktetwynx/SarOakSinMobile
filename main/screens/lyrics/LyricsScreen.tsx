@@ -15,6 +15,7 @@ import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import {ConnectedProps, connect} from 'react-redux';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -277,30 +278,34 @@ function LyricsScreen(props: Props) {
   );
 
   return (
-    <View
-      style={{
-        flexDirection: 'column',
-        flex: 1,
-        backgroundColor: theme.backgroundColor,
-      }}>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        data={lyricHomeData}
-        refreshControl={
-          <RefreshControl
-            refreshing={screenRefresh}
-            onRefresh={onRefreshScreen}
-            tintColor={theme.backgroundColor2}
-            // titleColor={theme.backgroundColor2}
-            // title="Pull to refresh"
-          />
-        }
-        style={{paddingTop: 10}}
-        renderItem={renderLyricsHomeItem}
-        keyExtractor={(item: any, index: number) => index.toString()}
-      />
-    </View>
+    <SafeAreaView
+      edges={['top']}
+      style={{flex: 1, backgroundColor: theme.backgroundColor}}>
+      <View
+        style={{
+          flexDirection: 'column',
+          flex: 1,
+          backgroundColor: theme.backgroundColor,
+        }}>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          data={lyricHomeData}
+          refreshControl={
+            <RefreshControl
+              refreshing={screenRefresh}
+              onRefresh={onRefreshScreen}
+              tintColor={theme.backgroundColor2}
+              // titleColor={theme.backgroundColor2}
+              // title="Pull to refresh"
+            />
+          }
+          style={{paddingTop: 10}}
+          renderItem={renderLyricsHomeItem}
+          keyExtractor={(item: any, index: number) => index.toString()}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 

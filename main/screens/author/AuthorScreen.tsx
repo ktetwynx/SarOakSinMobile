@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BackButton} from '../../components/BackButton';
@@ -9,6 +16,13 @@ import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import i18n from '../../language/i18n';
 import {ConnectedProps, connect} from 'react-redux';
+import {LoadingScreen} from '../components/LoadingScreen';
+import Animated, {
+  FadeOut,
+  FadeInDown,
+  SlideInUp,
+  FadeIn,
+} from 'react-native-reanimated';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -37,6 +51,8 @@ function AuthorScreen(props: Props) {
   const [authorImage, setAuthorImage] = useState<string>('-');
   const [authorType, setAuthorType] = useState<number>(0);
   const [lyricsImages, setLyricsImages] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),
     books: i18n.t('books'),
@@ -65,6 +81,12 @@ function AuthorScreen(props: Props) {
     }
   }, [authorId]);
 
+  useEffect(() => {
+    if (screenRefresh) {
+      fetchAuthorApi();
+    }
+  }, [screenRefresh]);
+
   const fetchAuthorApi = useCallback(async () => {
     let formData = new FormData();
     let url;
@@ -82,10 +104,12 @@ function AuthorScreen(props: Props) {
       'Content-Type': 'multipart/form-data',
       Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
     }).then((response: any) => {
-      console.log(response);
+      setTimeout(() => {
+        setIsLoading(false);
+        setScreenRefresh(false);
+      }, 1000);
       if (response.code == 200) {
         setAuthorData(response.data.content);
-
         let images = [];
         for (let data of response.data.content) {
           images.push({
@@ -117,17 +141,22 @@ function AuthorScreen(props: Props) {
     [authorType, lyricsImages],
   );
 
+  const onRefreshScreen = useCallback(() => {
+    setScreenRefresh(true);
+  }, []);
+
   const renderByAuthorItem = useCallback(
     (item: any) => {
       return authorType == 1 ? (
-        <>
-          <TouchableOpacity
-            onPress={() => clickedAuthorItem(item)}
-            style={{
-              flexDirection: 'column',
-              marginTop: 12,
-              flex: 0.5,
-            }}>
+        <Animated.View
+          style={{
+            flexDirection: 'column',
+            marginTop: 12,
+            flex: 0.5,
+          }}
+          entering={FadeInDown}
+          exiting={FadeOut}>
+          <TouchableOpacity onPress={() => clickedAuthorItem(item)}>
             <Image
               style={{
                 backgroundColor: 'grey',
@@ -159,7 +188,7 @@ function AuthorScreen(props: Props) {
               />
             )}
           </TouchableOpacity>
-        </>
+        </Animated.View>
       ) : (
         <>
           <TouchableOpacity
@@ -197,62 +226,79 @@ function AuthorScreen(props: Props) {
   );
 
   return (
-    <SafeAreaView
-      style={{
-        width: '100%',
-        height: '100%',
-        flexDirection: 'column',
-        backgroundColor: theme.backgroundColor,
-      }}
-      edges={['top']}>
-      <BackButton
-        style={{marginLeft: 16, marginTop: 12, alignSelf: 'flex-start'}}
-        clickedGoBack={goBack}
-      />
-      <View
+    <View>
+      <SafeAreaView
         style={{
+          width: '100%',
+          height: '100%',
           flexDirection: 'column',
-          marginTop: -25,
-          alignItems: 'center',
-          alignSelf: 'center',
-        }}>
-        <Image
-          source={{uri: API_URL + authorImage}}
+          backgroundColor: theme.backgroundColor,
+        }}
+        edges={['top']}>
+        <BackButton
+          style={{marginLeft: 16, marginTop: 12, alignSelf: 'flex-start'}}
+          clickedGoBack={goBack}
+        />
+        <View
           style={{
-            width: 100,
-            height: 100,
-            backgroundColor: 'grey',
-            // marginLeft: -80,
-            borderRadius: 100,
-          }}
-        />
-        <TextView
-          text={authorName}
-          numberOfLines={1}
-          textStyle={{fontSize: 22, fontWeight: 'bold', marginTop: 12}}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: 'column',
-          paddingHorizontal: 16,
-          flex: 1,
-        }}>
-        <TextView
-          text={authorType == 1 ? label.books : label.lyrics}
-          textStyle={{fontSize: 18, marginTop: 6}}
-        />
+            flexDirection: 'column',
+            marginTop: -25,
+            alignItems: 'center',
+            alignSelf: 'center',
+          }}>
+          <Animated.Image
+            entering={SlideInUp.duration(400)}
+            source={{uri: API_URL + authorImage}}
+            style={{
+              width: 100,
+              height: 100,
+              backgroundColor: 'grey',
+              // marginLeft: -80,
+              borderRadius: 100,
+            }}
+          />
+          <Animated.View entering={FadeIn.delay(500).duration(400)}>
+            <TextView
+              text={authorName}
+              numberOfLines={1}
+              textStyle={{fontSize: 22, fontWeight: 'bold', marginTop: 12}}
+            />
+          </Animated.View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'column',
+            paddingHorizontal: 16,
+            flex: 1,
+          }}>
+          <Animated.View entering={FadeIn.delay(200).duration(600)}>
+            <TextView
+              text={authorType == 1 ? label.books : label.lyrics}
+              textStyle={{fontSize: 18, marginVertical: 6}}
+            />
+          </Animated.View>
 
-        <FlatList
-          data={authorData}
-          numColumns={2}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          renderItem={renderByAuthorItem}
-          keyExtractor={(item: any, index: number) => index.toString()}
-        />
-      </View>
-    </SafeAreaView>
+          <FlatList
+            data={authorData}
+            numColumns={2}
+            refreshControl={
+              <RefreshControl
+                refreshing={screenRefresh}
+                onRefresh={onRefreshScreen}
+                tintColor={theme.backgroundColor2}
+                // titleColor={theme.backgroundColor2}
+                // title="Pull to refresh"
+              />
+            }
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            renderItem={renderByAuthorItem}
+            keyExtractor={(item: any, index: number) => index.toString()}
+          />
+        </View>
+      </SafeAreaView>
+      {isLoading ? <LoadingScreen /> : <></>}
+    </View>
   );
 }
 

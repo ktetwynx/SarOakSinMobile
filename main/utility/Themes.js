@@ -17,4 +17,5 @@ export const DarkThemeColor = {
 export const GeneralColor = {
   blue: '#3196de',
   white: '#FFFFFF',
+  black: '#000000',
 };

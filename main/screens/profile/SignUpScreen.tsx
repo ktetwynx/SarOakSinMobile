@@ -1,5 +1,12 @@
-import React, {useState, useEffect, useCallback, useRef, Ref} from 'react';
-import {View, Text, TouchableOpacity, Dimensions} from 'react-native';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  Ref,
+  useContext,
+} from 'react';
+import {View, TouchableOpacity, Dimensions} from 'react-native';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {TextInputView} from '../../components/TextInputView';
@@ -11,6 +18,9 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_URL} from '../../config/Constant';
+import {ThemeContext} from '../../utility/ThemeProvider';
+import {TextView} from '../../components/TextView';
+import i18n from '../../language/i18n';
 const {width, height} = Dimensions.get('screen');
 
 interface SignUpData {
@@ -20,6 +30,8 @@ interface SignUpData {
   password2: string;
 }
 export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
+  const context = useContext(ThemeContext);
+  const {theme} = context;
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [passwordBackgroundColor, setPasswordBackgroundColor] = useState({
@@ -34,6 +46,28 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
     password1: '',
     password2: '',
   });
+  const [label, setLabel] = React.useState({
+    sign_up: i18n.t('sign_up'),
+    email: i18n.t('email'),
+    username: i18n.t('username'),
+    password: i18n.t('password'),
+    repeat_password: i18n.t('repeat_password'),
+    confirm: i18n.t('confirm'),
+  });
+
+  useEffect(() => {
+    const unsubscribe = i18n.onChange(() => {
+      setLabel({
+        sign_up: i18n.t('sign_up'),
+        email: i18n.t('email'),
+        username: i18n.t('username'),
+        password: i18n.t('password'),
+        repeat_password: i18n.t('repeat_password'),
+        confirm: i18n.t('confirm'),
+      });
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     if (signUpData.password2.length != 0) {
@@ -79,6 +113,7 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
     formData.append('username', signUpData.username);
     formData.append('email', signUpData.email);
     formData.append('password', signUpData.password1);
+    console.log(formData);
     await ApiFetchService(API_URL + `user/register-user/register`, formData, {
       'Content-Type': 'multipart/form-data',
       Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
@@ -86,6 +121,8 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
       console.log(response);
       if (response.code == 201) {
         props.navigation.navigate('VerifyScreen', {email: response.data.email});
+      } else {
+        setErrorMessage(response.message);
       }
     });
   }, [signUpData]);
@@ -159,7 +196,7 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
     <KeyboardAwareScrollView
       extraHeight={150}
       showsVerticalScrollIndicator={false}
-      style={{flex: 1}}>
+      style={{flex: 1, backgroundColor: theme.backgroundColor}}>
       <SafeAreaView style={{flex: 1, flexDirection: 'column'}} edges={['top']}>
         <BackButton
           style={{marginLeft: 16, marginTop: 10}}
@@ -178,19 +215,20 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
               flexDirection: 'column',
               width: '88%',
             }}>
-            <Text style={{fontSize: 24, fontWeight: 'bold', marginLeft: 16}}>
-              {'Sign Up'}
-            </Text>
+            <TextView
+              text={label.sign_up}
+              textStyle={{fontSize: 24, fontWeight: 'bold', marginLeft: 16}}
+            />
           </View>
           <TextInputView
             onChangeText={onChangeText('username')}
             style={{marginTop: 44}}
-            placeholder={'Username'}
+            placeholder={label.username}
             icon={
               <MaterialCommunityIcons
                 name="account-circle"
                 size={30}
-                color={'black'}
+                color={theme.backgroundColor2}
                 style={{alignSelf: 'center'}}
               />
             }
@@ -199,12 +237,12 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
             autoCapitalize={'none'}
             onChangeText={onChangeText('email')}
             style={{marginTop: 16}}
-            placeholder={'Email'}
+            placeholder={label.email}
             icon={
               <MaterialCommunityIcons
                 name="email"
                 size={30}
-                color={'black'}
+                color={theme.backgroundColor2}
                 style={{alignSelf: 'center'}}
               />
             }
@@ -221,11 +259,11 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
               <Fontisto
                 name="locked"
                 size={25}
-                color={'black'}
+                color={theme.backgroundColor2}
                 style={{alignSelf: 'center'}}
               />
             }
-            placeholder="Password"
+            placeholder={label.password}
           />
 
           {signUpData.password1.length != 0 ? (
@@ -290,21 +328,21 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
               <MaterialCommunityIcons
                 name="form-textbox-password"
                 size={25}
-                color={'black'}
+                color={theme.backgroundColor2}
                 style={{alignSelf: 'center'}}
               />
             }
-            placeholder={'Repeat your password'}
+            placeholder={label.repeat_password}
           />
-          <Text
-            style={{
+          <TextView
+            text={errorMessage}
+            textStyle={{
               fontSize: 14,
               color: 'red',
               fontWeight: 'bold',
               marginTop: 12,
-            }}>
-            {errorMessage}
-          </Text>
+            }}
+          />
 
           <TouchableOpacity
             onPress={clickedSignUp}
@@ -318,9 +356,10 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>
-              {'Sign Up'}
-            </Text>
+            <TextView
+              text={label.confirm}
+              textStyle={{fontSize: 20, fontWeight: 'bold'}}
+            />
           </TouchableOpacity>
         </View>
       </SafeAreaView>

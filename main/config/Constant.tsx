@@ -1,4 +1,4 @@
-export const API_URL = 'http://163.44.198.43:8080/api/';
+export const API_URL = 'http://163.44.196.35:80/api/';
 // export const API_URL = 'http://localhost:8082/api/';
 
 export const ALBUM_TITLE = 'Albums';
@@ -12,3 +12,5 @@ export const APP_NAME = 'Sar Oak Sin';
 
 export const PENDING = 'PENDING';
 export const ACTIVATED = 'ACTIVATED';
+
+export const ROW_COUNT = 9;

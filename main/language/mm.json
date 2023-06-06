@@ -24,5 +24,14 @@
     "page_number":"စာမျက်နှာနံပါတ်",
     "go":"သွားမည်",
     "go_to_bookmark_page":"မှတ်ထားသောစာမျက်နှာသို့သွားမည်",
-    "bookmark_page_at": "မှတ်ထားသောစာမျက်နှာ"
+    "bookmark_page_at": "မှတ်ထားသောစာမျက်နှာ",
+    "username":"နာမည်",
+    "repeat_password":"လျှိုဝှက်ကုဒ်ထပ်ရိုက်ပါ",
+    "confirm": "အတည်ပြုပါ",
+    "verify_your_otp": "သင်ရရှိသော OTP ကုဒ်ကိုအတည်ပြုပါ",
+    "otp_sent_to":"OTP ကုဒ်ပို့ထားသောအီးမေးလ် ",
+    "please_wait":"ခတ္တခဏစောင့်ပါ ",
+    "resend_otp":"OTP ကုဒ်ထပ်ပို့မယ်",
+    "seconds": " စက္ကန့်"
+    
 }

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {View, Image, TouchableOpacity} from 'react-native';
+import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import {
   RootStackScreenProps,
   RootTabScreenProps,
@@ -26,6 +26,18 @@ import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {useFocusEffect} from '@react-navigation/native';
+import {LoadingScreen} from '../components/LoadingScreen';
+import Animated, {
+  FadeOut,
+  FadeInDown,
+  SlideInUp,
+} from 'react-native-reanimated';
+import {FadeInUp} from 'react-native-reanimated';
+import {FadeIn} from 'react-native-reanimated';
+import {SlideInLeft} from 'react-native-reanimated';
+import {FadeInLeft} from 'react-native-reanimated';
+import {BounceInRight} from 'react-native-reanimated';
+import {BounceIn} from 'react-native-reanimated';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -74,10 +86,11 @@ function BookDetailScreen(props: Props) {
   }
   const context = useContext(ThemeContext);
   const {theme} = context;
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [bookDetailData, setBookDetailData] = useState<BookDetail>({
-    bookName: '',
+    bookName: ' ',
     bookImage: '-',
-    authorName: '',
+    authorName: ' ',
     authorId: 0,
     authorImage: '-',
     readPageAt: -1,
@@ -116,6 +129,9 @@ function BookDetailScreen(props: Props) {
       'Content-Type': 'multipart/form-data',
       Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
     }).then((response: any) => {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
       if (response.code == 200) {
         setIsFavourite(response.data.saved);
         console.log(response.data);
@@ -202,142 +218,186 @@ function BookDetailScreen(props: Props) {
   }, [bookDetailData, props.route.params, isFavourite]);
 
   return (
-    <SafeAreaView
-      edges={['top']}
-      style={{
-        width: '100%',
-        height: '100%',
-        flexDirection: 'column',
-        backgroundColor: theme.backgroundColor,
-      }}>
-      <BackButton
-        style={{position: 'absolute', left: 12}}
-        clickedGoBack={goBack}
-      />
-      <Image
-        source={{uri: API_URL + bookDetailData.bookImage}}
+    <View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         style={{
-          width: '75%',
-          zIndex: -1,
-          height: '50%',
-          backgroundColor: 'grey',
-          borderRadius: 20,
-          alignSelf: 'center',
-          marginTop: 36,
-        }}
-      />
-      <TextView
-        text={bookDetailData?.bookName}
-        textStyle={{
-          fontSize: 24,
-          width: '90%',
-          textAlign: 'center',
-          fontWeight: 'bold',
-          alignSelf: 'center',
-          marginTop: 16,
-        }}
-      />
-      <View style={{width: '90%', alignSelf: 'center', marginTop: 12}}>
-        <View
+          width: '100%',
+          height: '100%',
+          backgroundColor: theme.backgroundColor,
+        }}>
+        <SafeAreaView
+          edges={['top']}
           style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            width: '100%',
+            height: '100%',
+            flexDirection: 'column',
           }}>
-          <TouchableOpacity
-            onPress={clickedAuthor}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderRadius: 30,
-              marginTop: 12,
-            }}>
-            <TextView
-              text={label.author}
-              textStyle={{fontSize: 12, opacity: 0.5, marginRight: 12}}
+          <View style={{flex: 1}}>
+            <BackButton
+              style={{marginLeft: 12, marginTop: 12, alignSelf: 'flex-start'}}
+              clickedGoBack={goBack}
             />
 
-            <TextView
-              text={bookDetailData.authorName}
-              textStyle={{fontSize: 14, textDecorationLine: 'underline'}}
-            />
-
-            <Image
-              source={{uri: API_URL + bookDetailData.authorImage}}
+            <Animated.Image
+              entering={FadeInUp.duration(600)}
+              source={{uri: API_URL + bookDetailData.bookImage}}
               style={{
-                width: 40,
-                height: 40,
+                width: '75%',
+                height: 400,
                 backgroundColor: 'grey',
-                borderRadius: 40,
-                marginLeft: 10,
+                borderRadius: 20,
+                alignSelf: 'center',
               }}
             />
-          </TouchableOpacity>
-
-          {props.token != null ? (
-            <TouchableOpacity
-              onPress={clickedFavourite}
-              style={{justifyContent: 'center'}}>
-              <AntDesign
-                name={isFavourite ? 'heart' : 'hearto'}
-                size={30}
-                color={isFavourite ? 'red' : theme.backgroundColor2}
+            <Animated.View
+              style={{marginTop: 16}}
+              entering={FadeIn.delay(600).duration(600)}>
+              <TextView
+                text={bookDetailData?.bookName}
+                textStyle={{
+                  fontSize: 24,
+                  width: '90%',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  alignSelf: 'center',
+                }}
               />
-            </TouchableOpacity>
-          ) : (
-            <></>
-          )}
-        </View>
-        {bookDetailData?.readPageAt == -1 ? (
-          <></>
-        ) : (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: 16,
-              justifyContent: 'flex-start',
-            }}>
-            <Ionicons
-              style={{marginRight: 10}}
-              name="bookmark"
-              size={20}
-              color={theme.backgroundColor2}
-            />
-            <TextView
-              textStyle={{marginRight: 12, fontSize: 12}}
-              text={label.bookmark_page_at}
-            />
-            <TextView
-              textStyle={{fontSize: 22, fontWeight: 'bold'}}
-              text={bookDetailData?.readPageAt.toString()}
-            />
-          </View>
-        )}
+            </Animated.View>
+            <View
+              style={{
+                width: '90%',
+                alignSelf: 'center',
+                marginTop: 12,
+              }}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <TouchableOpacity
+                  onPress={clickedAuthor}
+                  style={{
+                    flexDirection: 'row',
+                    borderRadius: 30,
+                    marginTop: 12,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <Animated.View
+                      entering={FadeInLeft.delay(800).duration(600)}>
+                      <TextView
+                        text={label.author}
+                        textStyle={{
+                          fontSize: 12,
+                          opacity: 0.5,
+                          marginRight: 12,
+                        }}
+                      />
+                    </Animated.View>
 
-        <TouchableOpacity
-          onPress={clickedReadNow}
-          style={{
-            width: 120,
-            height: 40,
-            marginTop: 60,
-            backgroundColor: 'grey',
-            justifyContent: 'center',
-            alignSelf: 'center',
-            borderRadius: 30,
-          }}>
-          <TextView
-            text={label.read}
-            textStyle={{
-              textAlign: 'center',
-              fontSize: 18,
-              color: 'white',
-              fontWeight: 'bold',
-            }}
-          />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+                    <Animated.Image
+                      entering={FadeIn.delay(1000).duration(600)}
+                      source={{uri: API_URL + bookDetailData.authorImage}}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: 'grey',
+                        borderRadius: 40,
+                        marginRight: 10,
+                      }}
+                    />
+
+                    <Animated.View entering={FadeIn.delay(1400).duration(600)}>
+                      <TextView
+                        text={bookDetailData.authorName}
+                        textStyle={{
+                          fontSize: 14,
+                          textDecorationLine: 'underline',
+                        }}
+                      />
+                    </Animated.View>
+                  </View>
+                </TouchableOpacity>
+
+                {props.token != null ? (
+                  <Animated.View entering={BounceIn.duration(600).delay(1600)}>
+                    <TouchableOpacity
+                      onPress={clickedFavourite}
+                      style={{justifyContent: 'center'}}>
+                      <AntDesign
+                        name={isFavourite ? 'heart' : 'hearto'}
+                        size={30}
+                        color={isFavourite ? 'red' : theme.backgroundColor2}
+                      />
+                    </TouchableOpacity>
+                  </Animated.View>
+                ) : (
+                  <></>
+                )}
+              </View>
+              {bookDetailData?.readPageAt == -1 ? (
+                <></>
+              ) : (
+                <Animated.View
+                  entering={FadeIn.duration(600).delay(2000)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 16,
+                    justifyContent: 'flex-start',
+                  }}>
+                  <Ionicons
+                    style={{marginRight: 10}}
+                    name="bookmark"
+                    size={20}
+                    color={theme.backgroundColor2}
+                  />
+                  <TextView
+                    textStyle={{marginRight: 12, fontSize: 12}}
+                    text={label.bookmark_page_at}
+                  />
+                  <TextView
+                    textStyle={{fontSize: 22, fontWeight: 'bold'}}
+                    text={bookDetailData?.readPageAt.toString()}
+                  />
+                </Animated.View>
+              )}
+
+              <Animated.View entering={FadeInDown.delay(2000).duration(300)}>
+                <TouchableOpacity
+                  onPress={clickedReadNow}
+                  style={{
+                    width: 120,
+                    height: 40,
+                    marginTop: 60,
+                    backgroundColor: 'grey',
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    borderRadius: 30,
+                  }}>
+                  <TextView
+                    text={label.read}
+                    textStyle={{
+                      textAlign: 'center',
+                      fontSize: 18,
+                      color: 'white',
+                      fontWeight: 'bold',
+                    }}
+                  />
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
+          </View>
+        </SafeAreaView>
+      </ScrollView>
+      {isLoading ? <LoadingScreen /> : <></>}
+    </View>
   );
 }
 

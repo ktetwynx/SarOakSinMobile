@@ -57,7 +57,7 @@ function PDFView(props: Props) {
   const [totalPage, setTotalPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [readPageAt, setReadPageAt] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
   const [goPageNumber, setGoPageNumber] = useState<string>('');
@@ -251,11 +251,11 @@ function PDFView(props: Props) {
           }
         }}
         onLoadProgress={(percent: number) => {
-          console.log(Math.floor(percent * 100));
           setProgress(Math.floor(percent * 100));
         }}
         onLoadComplete={(numberOfPages: any, filePath: any) => {
           // console.log(`Number of pages: ${numberOfPages}`);
+          setIsVisible(true);
         }}
         onPageChanged={(page: any, numberOfPages: any) => {
           // console.log(`Current page: ${page}`);

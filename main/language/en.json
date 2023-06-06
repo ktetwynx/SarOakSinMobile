@@ -24,6 +24,14 @@
     "page_number":"Page number",
     "go":"Go",
     "go_to_bookmark_page":"Go to bookmark page",
-    "bookmark_page_at": "Bookmark page at"
+    "bookmark_page_at": "Bookmark page at",
+    "username":"Username",
+    "repeat_password":"Repeat your password",
+    "confirm": "Confirm",
+    "verify_your_otp": "Verify your OTP code",
+    "otp_sent_to":"OTP sent to ",
+    "please_wait":"Please wait ",
+    "resend_otp":"Resend OTP code",
+    "seconds": " seconds"
 
 }

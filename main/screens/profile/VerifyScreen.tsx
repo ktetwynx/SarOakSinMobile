@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useContext,
+} from 'react';
+import {View, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BackButton} from '../../components/BackButton';
@@ -13,16 +13,77 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CountDown from 'react-native-countdown-component';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_URL} from '../../config/Constant';
+import i18n from '../../language/i18n';
+import {ThemeContext} from '../../utility/ThemeProvider';
+import {TextView} from '../../components/TextView';
+import {
+  Profile,
+  setFavBookCount,
+  setFavLyricCount,
+  setProfile,
+  setToken,
+} from '../../redux/actions';
+import {ConnectedProps, connect} from 'react-redux';
 
 export interface AppProps {}
 
-export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
+const mapstateToProps = (state: {}) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch: (arg0: any) => void) => {
+  return {
+    setToken: (token: any) => {
+      dispatch(setToken(token));
+    },
+    setProfile: (profile: Profile) => {
+      dispatch(setProfile(profile));
+    },
+    setFavBookCount: (fav_book_count: number) => {
+      dispatch(setFavBookCount(fav_book_count));
+    },
+    setFavLyricCount: (fav_lyric_count: number) => {
+      dispatch(setFavLyricCount(fav_lyric_count));
+    },
+  };
+};
+
+const connector = connect(mapstateToProps, mapDispatchToProps);
+
+type Props = ConnectedProps<typeof connector> &
+  RootStackScreenProps<'VerifyScreen'>;
+
+const VerifyScreen = (props: Props) => {
+  const context = useContext(ThemeContext);
+  const {theme} = context;
   const [otpCode, setOtpCode] = useState<string>('');
   const [isResend, setIsResend] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [time, setTime] = React.useState(0);
   const timerRef = React.useRef(time);
+  const [label, setLabel] = React.useState({
+    verify_your_otp: i18n.t('verify_your_otp'),
+    confirm: i18n.t('confirm'),
+    otp_sent_to: i18n.t('otp_sent_to'),
+    please_wait: i18n.t('please_wait'),
+    resend_otp: i18n.t('otp_sent_to'),
+    seconds: i18n.t('seconds'),
+  });
+
+  useEffect(() => {
+    const unsubscribe = i18n.onChange(() => {
+      setLabel({
+        verify_your_otp: i18n.t('verify_your_otp'),
+        confirm: i18n.t('confirm'),
+        otp_sent_to: i18n.t('otp_sent_to'),
+        please_wait: i18n.t('please_wait'),
+        resend_otp: i18n.t('otp_sent_to'),
+        seconds: i18n.t('seconds'),
+      });
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     setUserEmail(props.route.params.email);
@@ -85,13 +146,21 @@ export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
       Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
     }).then((response: any) => {
       console.log(response);
-      props.navigation.popToTop();
+      if (response.code == 200) {
+        props.navigation.popToTop();
+        props.setToken(response.data.jwtToken);
+        props.setProfile(response.data);
+        props.setFavBookCount(response.data.bookCount);
+        props.setFavLyricCount(response.data.lyricCount);
+      } else {
+        setErrorMessage(response.message);
+      }
     });
   }, [otpCode]);
 
   const clickedVerify = useCallback(() => {
     if (otpCode.length < 6) {
-      setErrorMessage('Please your otp code');
+      setErrorMessage('Please enter your otp code');
       return;
     } else {
       setErrorMessage('');
@@ -106,7 +175,7 @@ export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
   return (
     <KeyboardAwareScrollView
       extraHeight={200}
-      style={{flex: 1}}
+      style={{flex: 1, backgroundColor: theme.backgroundColor}}
       showsVerticalScrollIndicator={false}>
       <SafeAreaView
         edges={['top']}
@@ -117,7 +186,7 @@ export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
           keyboardType={'numeric'}
           onChangeText={onChangeOtpText}
           maxLength={6}
-          style={styles.otp_textInput}
+          style={[styles.otp_textInput, {color: theme.textColor}]}
         />
 
         <View style={{width: '100%'}}>
@@ -127,15 +196,15 @@ export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
           />
         </View>
 
-        <Text
-          style={{
+        <TextView
+          text={label.verify_your_otp}
+          textStyle={{
             fontSize: 24,
             fontWeight: 'bold',
             marginBottom: 26,
             marginTop: 80,
-          }}>
-          Verify your OTP code
-        </Text>
+          }}
+        />
 
         <View
           style={{
@@ -143,8 +212,11 @@ export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
             marginBottom: 56,
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 12}}>{`OTP sent to `}</Text>
-          <Text style={{fontSize: 14, fontWeight: 'bold'}}>{userEmail}</Text>
+          <TextView text={label.otp_sent_to} textStyle={{fontSize: 12}} />
+          <TextView
+            text={userEmail}
+            textStyle={{fontSize: 14, fontWeight: 'bold', maxWidth: 200}}
+          />
         </View>
 
         <View style={styles.otpView}>
@@ -155,23 +227,27 @@ export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
                 onPress={clickedOtpText}
                 activeOpacity={1}
                 key={index}
-                style={styles.verifyCode}>
-                <Text style={styles.otp_text}>
-                  {otpCode && otpCode.length > 0 ? otpCode[index] : ''}
-                </Text>
+                style={[
+                  styles.verifyCode,
+                  {backgroundColor: theme.backgroundColor3},
+                ]}>
+                <TextView
+                  text={otpCode && otpCode.length > 0 ? otpCode[index] : ''}
+                  textStyle={styles.otp_text}
+                />
               </TouchableOpacity>
             ))}
         </View>
 
-        <Text
-          style={{
+        <TextView
+          text={errorMessage}
+          textStyle={{
             color: 'red',
             fontSize: 14,
             fontWeight: 'bold',
             marginTop: 20,
-          }}>
-          {errorMessage}
-        </Text>
+          }}
+        />
         <TouchableOpacity
           onPress={clickedVerify}
           style={{
@@ -184,9 +260,10 @@ export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>
-            {'Verify'}
-          </Text>
+          <TextView
+            text={label.confirm}
+            textStyle={{fontSize: 20, fontWeight: 'bold'}}
+          />
         </TouchableOpacity>
 
         {time != 0 ? (
@@ -196,26 +273,26 @@ export function VerifyScreen(props: RootStackScreenProps<'VerifyScreen'>) {
               flexDirection: 'row',
               marginTop: 20,
             }}>
-            <Text style={{color: 'black'}}>{`please wait`}</Text>
-            <Text style={{color: 'black', fontWeight: 'bold'}}> {time} </Text>
-            <Text style={{color: 'black'}}>{'seconds'}</Text>
+            <TextView text={label.please_wait} textStyle={{fontSize: 14}} />
+            <TextView text={time.toString()} textStyle={{fontWeight: 'bold'}} />
+            <TextView text={label.seconds} textStyle={{}} />
           </View>
         ) : (
           <TouchableOpacity onPress={clickedResend}>
-            <Text
-              style={{
+            <TextView
+              text={label.resend_otp}
+              textStyle={{
                 fontSize: 14,
                 marginTop: 20,
                 textDecorationLine: 'underline',
-              }}>
-              {'Resend OTP code'}
-            </Text>
+              }}
+            />
           </TouchableOpacity>
         )}
       </SafeAreaView>
     </KeyboardAwareScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   otpView: {
@@ -231,7 +308,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     justifyContent: 'center',
-    backgroundColor: '#CDAEAE',
     borderRadius: 10,
   },
 
@@ -244,7 +320,8 @@ const styles = StyleSheet.create({
   otp_text: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'black',
     alignSelf: 'center',
   },
 });
+
+export default connector(VerifyScreen);

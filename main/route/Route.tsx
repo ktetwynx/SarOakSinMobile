@@ -4,7 +4,6 @@ import {LandingScreen} from '../screens/landing/LandingScreen';
 import {BookListViewmoreScreen} from '../screens/view_more/BookListViewmoreScreen';
 import {RootStackParamList} from './StackParamsTypes';
 import {SignUpScreen} from '../screens/profile/SignUpScreen';
-import {VerifyScreen} from '../screens/profile/VerifyScreen';
 import {AlbumListViewmoreScreen} from '../screens/view_more/AlbumListViewmoreScreen';
 import BookDetailScreen from '../screens/books/BookDetailScreen';
 import {AuthorListViewmoreScreen} from '../screens/view_more/AuthorListViewmoreScreen';
@@ -17,6 +16,7 @@ import AuthorScreen from '../screens/author/AuthorScreen';
 import FavouriteBookScreen from '../screens/favourites/FavouriteBookScreen';
 import FavouriteLyricScreen from '../screens/favourites/FavouriteLyricScreen';
 import LyricListViewmoreScreen from '../screens/view_more/LyricListViewmoreScreen';
+import VerifyScreen from '../screens/profile/VerifyScreen';
 
 const mapstateToProps = (state: {app_language: string}) => {
   return {
