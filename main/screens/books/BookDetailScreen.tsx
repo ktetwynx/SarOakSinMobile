@@ -342,14 +342,14 @@ function BookDetailScreen(props: Props) {
                 )}
               </View>
               {bookDetailData?.readPageAt == -1 ? (
-                <></>
+                <View style={{height: 60}} />
               ) : (
                 <Animated.View
-                  entering={FadeIn.duration(600).delay(2000)}
+                  entering={FadeIn.duration(600).delay(1000)}
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    marginTop: 16,
+                    height: 60,
                     justifyContent: 'flex-start',
                   }}>
                   <Ionicons
@@ -369,13 +369,14 @@ function BookDetailScreen(props: Props) {
                 </Animated.View>
               )}
 
-              <Animated.View entering={FadeInDown.delay(2000).duration(300)}>
+              <Animated.View
+                style={{marginBottom: 60}}
+                entering={FadeInDown.delay(2000).duration(300)}>
                 <TouchableOpacity
                   onPress={clickedReadNow}
                   style={{
                     width: 120,
                     height: 40,
-                    marginTop: 60,
                     backgroundColor: 'grey',
                     justifyContent: 'center',
                     alignSelf: 'center',
