@@ -190,15 +190,16 @@ function AuthorScreen(props: Props) {
           </TouchableOpacity>
         </Animated.View>
       ) : (
-        <>
-          <TouchableOpacity
-            onPress={() => clickedAuthorItem(item)}
-            style={{
-              flexDirection: 'column',
-              marginTop: 12,
-              flex: 0.5,
-              margin: 6,
-            }}>
+        <Animated.View
+          style={{
+            flexDirection: 'column',
+            marginTop: 12,
+            flex: 0.5,
+            margin: 6,
+          }}
+          entering={FadeInDown}
+          exiting={FadeOut}>
+          <TouchableOpacity onPress={() => clickedAuthorItem(item)}>
             <Image
               style={{
                 backgroundColor: 'grey',
@@ -219,7 +220,7 @@ function AuthorScreen(props: Props) {
               }}
             />
           </TouchableOpacity>
-        </>
+        </Animated.View>
       );
     },
     [authorData, authorType, lyricsImages],

@@ -16,6 +16,12 @@ import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import {ConnectedProps, connect} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Animated, {
+  FadeInDown,
+  FadeOutDown,
+  SlideInLeft,
+  SlideInRight,
+} from 'react-native-reanimated';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -111,7 +117,7 @@ function LyricsScreen(props: Props) {
           });
         }
         setLyricsImages(images);
-        data.push(ablums, lyrics, authors);
+        data.push(authors, ablums, lyrics);
         setLyricHomeData(data);
       }
     });
@@ -166,29 +172,33 @@ function LyricsScreen(props: Props) {
               justifyContent: 'space-between',
               marginHorizontal: 16,
             }}>
-            <TextView
-              text={item.item.title}
-              textStyle={{fontSize: 18, fontWeight: 'bold'}}
-            />
+            <Animated.View entering={FadeInDown.delay(item.index * 300)}>
+              <TextView
+                text={item.item.title}
+                textStyle={{fontSize: 20, fontWeight: 'bold'}}
+              />
+            </Animated.View>
 
-            <ViewMoreButton
-              clickedViewMore={() => {
-                if (item.index == 0) {
-                  clickedAlbumViewmore();
-                } else if (item.index == 1) {
-                  clickedLyricsViewmore();
-                } else {
-                  clickedSingerViewmore();
-                }
-              }}
-            />
+            <Animated.View entering={SlideInRight.delay(item.index * 300)}>
+              <ViewMoreButton
+                clickedViewMore={() => {
+                  if (item.index == 0) {
+                    clickedSingerViewmore();
+                  } else if (item.index == 1) {
+                    clickedAlbumViewmore();
+                  } else {
+                    clickedLyricsViewmore();
+                  }
+                }}
+              />
+            </Animated.View>
           </View>
           <FlatList
             style={{paddingLeft: 16, marginTop: 10, marginBottom: 12}}
             showsHorizontalScrollIndicator={false}
-            horizontal={item.index == 0 ? false : true}
+            horizontal={item.index == 1 ? false : true}
             data={item.item.data}
-            numColumns={item.index == 0 ? 2 : undefined}
+            numColumns={item.index == 1 ? 2 : undefined}
             renderItem={(data: any) =>
               renderLyricsHomeDetailItem(data, item.item.title)
             }
@@ -204,72 +214,83 @@ function LyricsScreen(props: Props) {
     (item: any, title: string) => {
       if (title == label.albums) {
         return (
-          <TouchableOpacity
-            onPress={() => clickedAlbum(item)}
+          <Animated.View
             style={{
               flexDirection: 'column',
               marginRight: 16,
               marginBottom: 12,
               flex: 1,
-            }}>
-            <Image
-              style={{
-                height: 100,
-                borderRadius: 10,
-                flex: 1,
-                backgroundColor: 'grey',
-              }}
-              source={{
-                uri: API_URL + item.item.imgPath,
-              }}
-            />
-            <TextView
-              text={item.item.name}
-              textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
-            />
-          </TouchableOpacity>
+            }}
+            entering={FadeInDown.delay(item.index * 300)}
+            exiting={FadeOutDown.delay(item.index * 300)}>
+            <TouchableOpacity onPress={() => clickedAlbum(item)}>
+              <Image
+                style={{
+                  height: 100,
+                  borderRadius: 10,
+                  flex: 1,
+                  backgroundColor: 'grey',
+                }}
+                source={{
+                  uri: API_URL + item.item.imgPath,
+                }}
+              />
+              <TextView
+                text={item.item.name}
+                textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
+              />
+            </TouchableOpacity>
+          </Animated.View>
         );
       } else if (title == label.lyrics) {
         return (
-          <TouchableOpacity
-            onPress={() => clickedLyric(item)}
-            style={{flexDirection: 'column', marginRight: 12}}>
-            <Image
-              style={{
-                width: 140,
-                height: 160,
-                backgroundColor: 'grey',
-                borderRadius: 15,
-              }}
-              source={{uri: API_URL + item.item.imgPath}}
-            />
-            <TextView
-              text={item.item.name}
-              textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
-            />
-          </TouchableOpacity>
+          <Animated.View
+            entering={FadeInDown.delay(item.index * 300)}
+            exiting={FadeOutDown.delay(item.index * 300)}>
+            <TouchableOpacity
+              onPress={() => clickedLyric(item)}
+              style={{flexDirection: 'column', marginRight: 12}}>
+              <Image
+                style={{
+                  width: 140,
+                  height: 160,
+                  backgroundColor: 'grey',
+                  borderRadius: 15,
+                }}
+                source={{uri: API_URL + item.item.imgPath}}
+              />
+              <TextView
+                text={item.item.name}
+                textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
+              />
+            </TouchableOpacity>
+          </Animated.View>
         );
       } else if (title == label.singers) {
         return (
-          <TouchableOpacity
-            onPress={() => clickedSinger(item)}
-            style={{flexDirection: 'column', marginRight: 12}}>
-            <Image
-              style={{
-                width: 80,
-                height: 80,
-                backgroundColor: 'grey',
-                borderRadius: 50,
-              }}
-              source={{
-                uri: API_URL + item.item.profile,
-              }}
-            />
-            <TextView
-              text={item.item.name}
-              textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
-            />
-          </TouchableOpacity>
+          <Animated.View
+            entering={FadeInDown.delay(item.index * 300)}
+            exiting={FadeOutDown.delay(item.index * 300)}>
+            <TouchableOpacity
+              onPress={() => clickedSinger(item)}
+              style={{flexDirection: 'column', marginRight: 12}}>
+              <Image
+                style={{
+                  width: 80,
+                  height: 80,
+                  backgroundColor: 'grey',
+                  borderRadius: 50,
+                }}
+                source={{
+                  uri: API_URL + item.item.profile,
+                }}
+              />
+              <TextView
+                text={item.item.name}
+                textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
+              />
+            </TouchableOpacity>
+          </Animated.View>
         );
       }
       return <></>;
