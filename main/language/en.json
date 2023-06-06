@@ -32,6 +32,10 @@
     "otp_sent_to":"OTP sent to ",
     "please_wait":"Please wait ",
     "resend_otp":"Resend OTP code",
-    "seconds": " seconds"
+    "seconds": " seconds",
+    "old_password": "Old Password",
+    "new_password":"New Password",
+    "repeat_new_password": "Repeat your new password",
+    "success":"Success"
 
 }

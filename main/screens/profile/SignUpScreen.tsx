@@ -21,6 +21,7 @@ import {API_URL} from '../../config/Constant';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
+import {LoadingScreen} from '../components/LoadingScreen';
 const {width, height} = Dimensions.get('screen');
 
 interface SignUpData {
@@ -32,6 +33,7 @@ interface SignUpData {
 export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
   const context = useContext(ThemeContext);
   const {theme} = context;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [passwordBackgroundColor, setPasswordBackgroundColor] = useState({
@@ -109,6 +111,7 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
   }, [isShowPassword]);
 
   const fetchSignUpApi = useCallback(async () => {
+    setIsLoading(true);
     let formData = new FormData();
     formData.append('username', signUpData.username);
     formData.append('email', signUpData.email);
@@ -118,10 +121,15 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
       'Content-Type': 'multipart/form-data',
       Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
     }).then((response: any) => {
-      console.log(response);
       if (response.code == 201) {
-        props.navigation.navigate('VerifyScreen', {email: response.data.email});
+        setTimeout(() => {
+          setIsLoading(false);
+          props.navigation.navigate('VerifyScreen', {
+            email: response.data.email,
+          });
+        }, 1000);
       } else {
+        setIsLoading(false);
         setErrorMessage(response.message);
       }
     });
@@ -193,176 +201,181 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
   };
 
   return (
-    <KeyboardAwareScrollView
-      extraHeight={150}
-      showsVerticalScrollIndicator={false}
-      style={{flex: 1, backgroundColor: theme.backgroundColor}}>
-      <SafeAreaView style={{flex: 1, flexDirection: 'column'}} edges={['top']}>
-        <BackButton
-          style={{marginLeft: 16, marginTop: 10}}
-          clickedGoBack={goBack}
-        />
-        <View
-          style={{
-            flex: 1,
-            marginTop: height / 10,
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+    <>
+      <KeyboardAwareScrollView
+        extraHeight={150}
+        showsVerticalScrollIndicator={false}
+        style={{flex: 1, backgroundColor: theme.backgroundColor}}>
+        <SafeAreaView
+          style={{flex: 1, flexDirection: 'column'}}
+          edges={['top']}>
+          <BackButton
+            style={{marginLeft: 16, marginTop: 10}}
+            clickedGoBack={goBack}
+          />
           <View
             style={{
+              flex: 1,
+              marginTop: height / 10,
               flexDirection: 'column',
-              width: '88%',
-            }}>
-            <TextView
-              text={label.sign_up}
-              textStyle={{fontSize: 24, fontWeight: 'bold', marginLeft: 16}}
-            />
-          </View>
-          <TextInputView
-            onChangeText={onChangeText('username')}
-            style={{marginTop: 44}}
-            placeholder={label.username}
-            icon={
-              <MaterialCommunityIcons
-                name="account-circle"
-                size={30}
-                color={theme.backgroundColor2}
-                style={{alignSelf: 'center'}}
-              />
-            }
-          />
-          <TextInputView
-            autoCapitalize={'none'}
-            onChangeText={onChangeText('email')}
-            style={{marginTop: 16}}
-            placeholder={label.email}
-            icon={
-              <MaterialCommunityIcons
-                name="email"
-                size={30}
-                color={theme.backgroundColor2}
-                style={{alignSelf: 'center'}}
-              />
-            }
-          />
-
-          <PasswordTextInputView
-            extraIcon={<></>}
-            onChangeText={onChangeText('password1')}
-            isHideEyeButton={false}
-            style={{marginTop: 16}}
-            isShowPassword={isShowPassword}
-            clickedHidePassword={clickedHidePassword}
-            icon={
-              <Fontisto
-                name="locked"
-                size={25}
-                color={theme.backgroundColor2}
-                style={{alignSelf: 'center'}}
-              />
-            }
-            placeholder={label.password}
-          />
-
-          {signUpData.password1.length != 0 ? (
-            <View
-              style={{
-                height: 1,
-                flexDirection: 'row',
-                width: '80%',
-                justifyContent: 'flex-end',
-                marginTop: 8,
-              }}>
-              <View
-                style={{
-                  width: 50,
-                  height: 5,
-                  borderRadius: 10,
-                  backgroundColor: passwordBackgroundColor.bg1,
-                  marginRight: 12,
-                }}
-              />
-              <View
-                style={{
-                  width: 50,
-                  height: 5,
-                  borderRadius: 10,
-                  backgroundColor: passwordBackgroundColor.bg2,
-                  marginRight: 12,
-                }}
-              />
-              <View
-                style={{
-                  width: 50,
-                  height: 5,
-                  backgroundColor: passwordBackgroundColor.bg3,
-                  borderRadius: 10,
-                }}
-              />
-            </View>
-          ) : (
-            <></>
-          )}
-
-          <PasswordTextInputView
-            extraIcon={
-              signUpData.password2.length != 0 ? (
-                <AntDesign
-                  name={isSamePassword ? 'checkcircle' : 'closecircle'}
-                  size={23}
-                  color={isSamePassword ? 'green' : 'red'}
-                  style={{alignSelf: 'center'}}
-                />
-              ) : (
-                <></>
-              )
-            }
-            onChangeText={onChangeText('password2')}
-            isHideEyeButton={true}
-            style={{marginTop: 16}}
-            isShowPassword={false}
-            clickedHidePassword={clickedHidePassword}
-            icon={
-              <MaterialCommunityIcons
-                name="form-textbox-password"
-                size={25}
-                color={theme.backgroundColor2}
-                style={{alignSelf: 'center'}}
-              />
-            }
-            placeholder={label.repeat_password}
-          />
-          <TextView
-            text={errorMessage}
-            textStyle={{
-              fontSize: 14,
-              color: 'red',
-              fontWeight: 'bold',
-              marginTop: 12,
-            }}
-          />
-
-          <TouchableOpacity
-            onPress={clickedSignUp}
-            style={{
-              width: '50%',
-              height: 50,
-              marginTop: 48,
-              marginBottom: 100,
-              borderRadius: 50,
-              backgroundColor: 'grey',
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <TextView
-              text={label.confirm}
-              textStyle={{fontSize: 20, fontWeight: 'bold'}}
+            <View
+              style={{
+                flexDirection: 'column',
+                width: '88%',
+              }}>
+              <TextView
+                text={label.sign_up}
+                textStyle={{fontSize: 24, fontWeight: 'bold', marginLeft: 16}}
+              />
+            </View>
+            <TextInputView
+              onChangeText={onChangeText('username')}
+              style={{marginTop: 44}}
+              placeholder={label.username}
+              icon={
+                <MaterialCommunityIcons
+                  name="account-circle"
+                  size={30}
+                  color={theme.backgroundColor2}
+                  style={{alignSelf: 'center'}}
+                />
+              }
             />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+            <TextInputView
+              autoCapitalize={'none'}
+              onChangeText={onChangeText('email')}
+              style={{marginTop: 16}}
+              placeholder={label.email}
+              icon={
+                <MaterialCommunityIcons
+                  name="email"
+                  size={30}
+                  color={theme.backgroundColor2}
+                  style={{alignSelf: 'center'}}
+                />
+              }
+            />
+
+            <PasswordTextInputView
+              extraIcon={<></>}
+              onChangeText={onChangeText('password1')}
+              isHideEyeButton={false}
+              style={{marginTop: 16}}
+              isShowPassword={isShowPassword}
+              clickedHidePassword={clickedHidePassword}
+              icon={
+                <Fontisto
+                  name="locked"
+                  size={25}
+                  color={theme.backgroundColor2}
+                  style={{alignSelf: 'center'}}
+                />
+              }
+              placeholder={label.password}
+            />
+
+            {signUpData.password1.length != 0 ? (
+              <View
+                style={{
+                  height: 1,
+                  flexDirection: 'row',
+                  width: '80%',
+                  justifyContent: 'flex-end',
+                  marginTop: 8,
+                }}>
+                <View
+                  style={{
+                    width: 50,
+                    height: 5,
+                    borderRadius: 10,
+                    backgroundColor: passwordBackgroundColor.bg1,
+                    marginRight: 12,
+                  }}
+                />
+                <View
+                  style={{
+                    width: 50,
+                    height: 5,
+                    borderRadius: 10,
+                    backgroundColor: passwordBackgroundColor.bg2,
+                    marginRight: 12,
+                  }}
+                />
+                <View
+                  style={{
+                    width: 50,
+                    height: 5,
+                    backgroundColor: passwordBackgroundColor.bg3,
+                    borderRadius: 10,
+                  }}
+                />
+              </View>
+            ) : (
+              <></>
+            )}
+
+            <PasswordTextInputView
+              extraIcon={
+                signUpData.password2.length != 0 ? (
+                  <AntDesign
+                    name={isSamePassword ? 'checkcircle' : 'closecircle'}
+                    size={23}
+                    color={isSamePassword ? 'green' : 'red'}
+                    style={{alignSelf: 'center'}}
+                  />
+                ) : (
+                  <></>
+                )
+              }
+              onChangeText={onChangeText('password2')}
+              isHideEyeButton={true}
+              style={{marginTop: 16}}
+              isShowPassword={false}
+              clickedHidePassword={clickedHidePassword}
+              icon={
+                <MaterialCommunityIcons
+                  name="form-textbox-password"
+                  size={25}
+                  color={theme.backgroundColor2}
+                  style={{alignSelf: 'center'}}
+                />
+              }
+              placeholder={label.repeat_password}
+            />
+            <TextView
+              text={errorMessage}
+              textStyle={{
+                fontSize: 14,
+                color: 'red',
+                fontWeight: 'bold',
+                marginTop: 12,
+              }}
+            />
+
+            <TouchableOpacity
+              onPress={clickedSignUp}
+              style={{
+                width: '50%',
+                height: 50,
+                marginTop: 48,
+                marginBottom: 100,
+                borderRadius: 50,
+                backgroundColor: 'grey',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <TextView
+                text={label.confirm}
+                textStyle={{fontSize: 20, fontWeight: 'bold'}}
+              />
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </KeyboardAwareScrollView>
+      {isLoading ? <LoadingScreen /> : <></>}
+    </>
   );
 }

@@ -239,7 +239,9 @@ const ProfileScreen = (props: Props) => {
     props.setToken(null);
   }, []);
 
-  const clickedChangePassword = useCallback(() => {}, []);
+  const clickedChangePassword = useCallback(() => {
+    props.navigation.navigate('ChangePassword');
+  }, []);
 
   const clickedChangeLanguage = useCallback(() => {
     if (!isVisibleChangeLanguageModal) {
@@ -283,37 +285,37 @@ const ProfileScreen = (props: Props) => {
           {props.token != null ? (
             <View
               style={{width: '100%', height: '100%', flexDirection: 'column'}}>
-              <TouchableOpacity>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginTop: 20,
-                    marginLeft: 20,
-                  }}>
-                  <MaterialCommunityIcons
-                    name="account-circle"
-                    size={60}
-                    color={theme.backgroundColor2}
-                    style={{alignSelf: 'center'}}
+              {/* <TouchableOpacity> */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 20,
+                  marginLeft: 20,
+                }}>
+                <MaterialCommunityIcons
+                  name="account-circle"
+                  size={60}
+                  color={theme.backgroundColor2}
+                  style={{alignSelf: 'center'}}
+                />
+                <View style={{flexDirection: 'column', marginLeft: 12}}>
+                  <TextView
+                    text={profile.username}
+                    textStyle={{
+                      fontSize: 26,
+                      fontWeight: 'bold',
+                      marginBottom: 2,
+                    }}
                   />
-                  <View style={{flexDirection: 'column', marginLeft: 12}}>
-                    <TextView
-                      text={profile.username}
-                      textStyle={{
-                        fontSize: 26,
-                        fontWeight: 'bold',
-                        marginBottom: 2,
-                      }}
-                    />
 
-                    <TextView
-                      text={profile.email}
-                      textStyle={{fontSize: 14, marginBottom: 12}}
-                    />
-                  </View>
+                  <TextView
+                    text={profile.email}
+                    textStyle={{fontSize: 14, marginBottom: 12}}
+                  />
+                </View>
 
-                  <MaterialCommunityIcons
+                {/* <MaterialCommunityIcons
                     style={{
                       marginLeft: 12,
                       position: 'absolute',
@@ -323,9 +325,9 @@ const ProfileScreen = (props: Props) => {
                     name="account-edit"
                     size={25}
                     color={theme.backgroundColor2}
-                  />
-                </View>
-              </TouchableOpacity>
+                  /> */}
+              </View>
+              {/* </TouchableOpacity> */}
               <TextView
                 text={label.yourFav}
                 textStyle={{marginLeft: 20, marginTop: 24}}

@@ -17,6 +17,7 @@ import FavouriteBookScreen from '../screens/favourites/FavouriteBookScreen';
 import FavouriteLyricScreen from '../screens/favourites/FavouriteLyricScreen';
 import LyricListViewmoreScreen from '../screens/view_more/LyricListViewmoreScreen';
 import VerifyScreen from '../screens/profile/VerifyScreen';
+import ChangePassword from '../screens/profile/ChangePassword';
 
 const mapstateToProps = (state: {app_language: string}) => {
   return {
@@ -93,6 +94,12 @@ const Route = (props: Props) => {
         options={option}
         name="BookDetailScreen"
         component={BookDetailScreen}
+      />
+
+      <RootStack.Screen
+        options={option}
+        name="ChangePassword"
+        component={ChangePassword}
       />
 
       <RootStack.Screen
