@@ -14,3 +14,8 @@ export const PENDING = 'PENDING';
 export const ACTIVATED = 'ACTIVATED';
 
 export const ROW_COUNT = 9;
+
+export const STORAGE_KEYS = {
+  USER_EMAIL: '@com.zote.mobile.search.AUTH.email',
+  USER_PASSWORD: '@com.zote.mobile.search.AUTH.Password',
+};

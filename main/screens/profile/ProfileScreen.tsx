@@ -9,7 +9,7 @@ import {TextInputView} from '../../components/TextInputView';
 import {PasswordTextInputView} from '../../components/PasswordTextInputView';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL, PENDING} from '../../config/Constant';
+import {API_URL, PENDING, STORAGE_KEYS} from '../../config/Constant';
 import {ConnectedProps, connect} from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -30,11 +30,13 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {LoadingScreen} from '../components/LoadingScreen';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFocusEffect} from '@react-navigation/native';
 const {width, height} = Dimensions.get('screen');
 
 interface LoginData {
-  email: '';
-  password: '';
+  email: string;
+  password: string;
 }
 
 const mapstateToProps = (state: {
@@ -87,6 +89,8 @@ const ProfileScreen = (props: Props) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isLightMode, setIsLightMode] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCheckKeepLoggedIn, setIsCheckKeepLoggedIn] =
+    useState<boolean>(false);
   const [isVisibleChangeLanguageModal, setIsVisibleChangeLanguageModal] =
     useState<boolean>(false);
   const [profile, setProfile] = useState<Profile>({
@@ -100,6 +104,7 @@ const ProfileScreen = (props: Props) => {
     email: '',
     password: '',
   });
+
   const [label, setLabel] = React.useState({
     yourFav: i18n.t('your_fav'),
     books: i18n.t('books'),
@@ -138,6 +143,12 @@ const ProfileScreen = (props: Props) => {
   }, []);
 
   useEffect(() => {
+    if (props.token == null) {
+      getUserInfo();
+    }
+  }, [props.token]);
+
+  useEffect(() => {
     if (props.app_theme === 'light') {
       setIsLightMode(true);
     } else {
@@ -154,6 +165,20 @@ const ProfileScreen = (props: Props) => {
       lyricCollectionId: props.profile?.lyricCollectionId,
     });
   }, [props.profile]);
+
+  const getUserInfo = async () => {
+    try {
+      let userEmail = await AsyncStorage.getItem(STORAGE_KEYS.USER_EMAIL);
+      let userPassword = await AsyncStorage.getItem(STORAGE_KEYS.USER_PASSWORD);
+
+      setLoginData({
+        email: userEmail ? userEmail : '',
+        password: userPassword ? userPassword : '',
+      });
+    } catch (error) {
+      console.log('retrieve login info eroor =>', error);
+    }
+  };
 
   const clickedHidePassword = useCallback(() => {
     if (isShowPassword) {
@@ -184,11 +209,11 @@ const ProfileScreen = (props: Props) => {
     let password = true;
 
     switch (true) {
-      case !loginData.email.trim():
+      case !loginData.email?.trim():
         email = false;
         setErrorMessage('Please fill your email');
         break;
-      case !loginData.password.trim():
+      case !loginData.password?.trim():
         password = false;
         setErrorMessage('Please fill your password');
         break;
@@ -207,7 +232,7 @@ const ProfileScreen = (props: Props) => {
     } else {
       fetchLoginApi();
     }
-  }, [loginData]);
+  }, [loginData, isCheckKeepLoggedIn]);
 
   const fetchLoginApi = useCallback(async () => {
     setIsLoading(true);
@@ -218,7 +243,6 @@ const ProfileScreen = (props: Props) => {
       'Content-Type': 'multipart/form-data',
       Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
     }).then((response: any) => {
-      console.log(response);
       if (response.code == 200) {
         if (response.data.status == PENDING) {
           props.navigation.navigate('VerifyScreen', {email: loginData.email});
@@ -227,13 +251,27 @@ const ProfileScreen = (props: Props) => {
           props.setProfile(response.data);
           props.setFavBookCount(response.data.bookCount);
           props.setFavLyricCount(response.data.lyricCount);
+          saveLoginInfo();
         }
       } else {
         setErrorMessage(response.message);
       }
       setIsLoading(false);
     });
-  }, [loginData]);
+  }, [loginData, isCheckKeepLoggedIn]);
+
+  const saveLoginInfo = useCallback(async () => {
+    if (isCheckKeepLoggedIn) {
+      await AsyncStorage.setItem(STORAGE_KEYS.USER_EMAIL, loginData.email);
+      await AsyncStorage.setItem(
+        STORAGE_KEYS.USER_PASSWORD,
+        loginData.password,
+      );
+    } else {
+      await AsyncStorage.removeItem(STORAGE_KEYS.USER_EMAIL);
+      await AsyncStorage.removeItem(STORAGE_KEYS.USER_PASSWORD);
+    }
+  }, [loginData, isCheckKeepLoggedIn]);
 
   const clickedLogout = useCallback(() => {
     props.setToken(null);
@@ -268,6 +306,18 @@ const ProfileScreen = (props: Props) => {
   const clickedFavLyricList = useCallback(() => {
     props.navigation.navigate('FavouriteLyricScreen');
   }, []);
+
+  const clickedForgotPassword = useCallback(() => {
+    props.navigation.navigate('ForgotPassword');
+  }, []);
+
+  const clickedKeepLoggedIn = useCallback(() => {
+    if (isCheckKeepLoggedIn) {
+      setIsCheckKeepLoggedIn(false);
+    } else {
+      setIsCheckKeepLoggedIn(true);
+    }
+  }, [isCheckKeepLoggedIn]);
 
   return (
     <View style={{flex: 1}}>
@@ -656,12 +706,13 @@ const ProfileScreen = (props: Props) => {
               />
               <TextInputView
                 autoCapitalize={'none'}
+                value={loginData.email}
                 onChangeText={onChangeText('email')}
                 style={{marginTop: 46}}
                 placeholder={label.email}
                 icon={
                   <MaterialCommunityIcons
-                    name="account-circle"
+                    name="email"
                     size={30}
                     color={theme.backgroundColor2}
                     style={{alignSelf: 'center'}}
@@ -674,6 +725,7 @@ const ProfileScreen = (props: Props) => {
                 isHideEyeButton={false}
                 style={{marginTop: 16}}
                 isShowPassword={isShowPassword}
+                value={loginData.password}
                 clickedHidePassword={clickedHidePassword}
                 icon={
                   <Fontisto
@@ -696,24 +748,24 @@ const ProfileScreen = (props: Props) => {
                   alignItems: 'center',
                 }}>
                 <TouchableOpacity
+                  onPress={clickedKeepLoggedIn}
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
                   <CheckBox
-                    disabled={false}
                     boxType="square"
                     style={{width: 18, height: 18}}
-                    // value={toggleCheckBox}
-                    // onValueChange={newValue => setToggleCheckBox(newValue)}
+                    value={isCheckKeepLoggedIn}
+                    onValueChange={newValue => setIsCheckKeepLoggedIn(newValue)}
                   />
                   <TextView
                     text={label.keep_me_logged_in}
-                    textStyle={{fontSize: 12, marginLeft: 6}}
+                    textStyle={{fontSize: 12, paddingLeft: 6}}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={clickedForgotPassword}>
                   <TextView
                     text={label.forgot_ur_password}
                     textStyle={{fontSize: 12, marginLeft: 6}}

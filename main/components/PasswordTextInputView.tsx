@@ -12,6 +12,7 @@ export interface PasswordTextInputViewProps {
   isHideEyeButton: boolean;
   onChangeText: Function;
   extraIcon: any;
+  value?: string;
 }
 
 export function PasswordTextInputView(props: PasswordTextInputViewProps) {
@@ -29,6 +30,7 @@ export function PasswordTextInputView(props: PasswordTextInputViewProps) {
       }}>
       <View style={{width: 50, justifyContent: 'center'}}>{props.icon}</View>
       <TextInput
+        value={props.value}
         onChangeText={text => props.onChangeText(text)}
         placeholder={props.placeholder}
         secureTextEntry={!props.isShowPassword}

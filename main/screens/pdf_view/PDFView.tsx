@@ -322,33 +322,41 @@ function PDFView(props: Props) {
               />
             </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingRight: 12,
-                flex: 0.5,
-              }}>
-              <TouchableOpacity onPress={clickedFavourite}>
-                <AntDesign
-                  name={isFavourite ? 'heart' : 'hearto'}
-                  size={26}
-                  color={isFavourite ? 'red' : theme.backgroundColor2}
-                  style={{marginRight: 20}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={clickedBookmark}>
-                <Ionicons
-                  name={
-                    currentPage == readPageAt ? 'bookmark' : 'bookmark-outline'
-                  }
-                  size={30}
-                  color={
-                    currentPage == readPageAt ? 'green' : theme.backgroundColor2
-                  }
-                />
-              </TouchableOpacity>
-            </View>
+            {props.token ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingRight: 12,
+                  flex: 0.5,
+                }}>
+                <TouchableOpacity onPress={clickedFavourite}>
+                  <AntDesign
+                    name={isFavourite ? 'heart' : 'hearto'}
+                    size={26}
+                    color={isFavourite ? 'red' : theme.backgroundColor2}
+                    style={{marginRight: 20}}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={clickedBookmark}>
+                  <Ionicons
+                    name={
+                      currentPage == readPageAt
+                        ? 'bookmark'
+                        : 'bookmark-outline'
+                    }
+                    size={30}
+                    color={
+                      currentPage == readPageAt
+                        ? 'green'
+                        : theme.backgroundColor2
+                    }
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <></>
+            )}
           </View>
         </View>
       ) : (

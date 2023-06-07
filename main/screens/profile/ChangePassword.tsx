@@ -39,7 +39,7 @@ interface ChangePasswordData {
   password2: string;
 }
 const ChangePassword = (props: Props) => {
-  const context = React.useContext(ThemeContext);
+  const context = useContext(ThemeContext);
   const {theme} = context;
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [passwordBackgroundColor, setPasswordBackgroundColor] = useState({
@@ -188,7 +188,7 @@ const ChangePassword = (props: Props) => {
     formData.append('password', changePasswordData.password1);
     console.log(formData);
     await ApiFetchService(
-      API_URL + `user/register-user/reset-password`,
+      API_URL + `user/register-user/change-password`,
       formData,
       {
         'Content-Type': 'multipart/form-data',
@@ -356,7 +356,7 @@ const ChangePassword = (props: Props) => {
           <TouchableOpacity
             onPress={clickedChangePassword}
             style={{
-              width: '50%',
+              width: '40%',
               height: 50,
               marginTop: 48,
               marginBottom: 100,
@@ -367,7 +367,7 @@ const ChangePassword = (props: Props) => {
             }}>
             <TextView
               text={label.confirm}
-              textStyle={{fontSize: 20, fontWeight: 'bold'}}
+              textStyle={{fontSize: 18, fontWeight: 'bold'}}
             />
           </TouchableOpacity>
         </View>

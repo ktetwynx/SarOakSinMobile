@@ -8,6 +8,7 @@ export interface TextInputViewProps {
   style?: ViewStyle;
   onChangeText: Function;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined;
+  value?: string;
 }
 
 export function TextInputView(props: TextInputViewProps) {
@@ -29,6 +30,7 @@ export function TextInputView(props: TextInputViewProps) {
         autoCapitalize={
           props.autoCapitalize == null ? 'words' : props.autoCapitalize
         }
+        value={props.value}
         onChangeText={text => props.onChangeText(text)}
         placeholder={props.placeholder}
         placeholderTextColor={theme.textColor}

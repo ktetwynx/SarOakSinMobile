@@ -18,6 +18,7 @@ export type RootStackParamList = {
   AlbumListViewmoreScreen: undefined;
   LyricListViewmoreScreen: undefined;
   ChangePassword: undefined;
+  ForgotPassword: undefined;
   BookDetailScreen: {bookId: number};
   FavouriteBookScreen: undefined;
   FavouriteLyricScreen: undefined;

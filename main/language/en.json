@@ -36,6 +36,7 @@
     "old_password": "Old Password",
     "new_password":"New Password",
     "repeat_new_password": "Repeat your new password",
-    "success":"Success"
+    "success":"Success",
+    "enter_your_email": "Enter yor email below"
 
 }
