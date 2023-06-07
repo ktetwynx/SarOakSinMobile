@@ -22,6 +22,7 @@ export type RootStackParamList = {
   BookDetailScreen: {bookId: number};
   FavouriteBookScreen: undefined;
   FavouriteLyricScreen: undefined;
+  SearchScreen: {searchType: number};
   PDFView: {
     bookId: number;
     bookPath: string;

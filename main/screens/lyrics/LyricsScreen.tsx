@@ -22,6 +22,7 @@ import Animated, {
   SlideInLeft,
   SlideInRight,
 } from 'react-native-reanimated';
+import {SearchBar} from '../components/SearchBar';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -54,6 +55,7 @@ function LyricsScreen(props: Props) {
     albums: i18n.t('albums'),
     lyrics: i18n.t('lyrics'),
     singers: i18n.t('singers'),
+    search_lyric_text: i18n.t('search_lyric_text'),
   });
 
   useEffect(() => {
@@ -62,6 +64,7 @@ function LyricsScreen(props: Props) {
         albums: i18n.t('albums'),
         lyrics: i18n.t('lyrics'),
         singers: i18n.t('singers'),
+        search_lyric_text: i18n.t('search_lyric_text'),
       });
     });
     return unsubscribe;
@@ -85,7 +88,6 @@ function LyricsScreen(props: Props) {
   }, []);
 
   const fetchHomeLyricsApi = useCallback(async () => {
-    console.log('here');
     let formData = new FormData();
     formData.append('userId', props.profile?.id ? props.profile?.id : 0);
     await ApiFetchService(API_URL + `user/lyric/home`, formData, {
@@ -162,6 +164,16 @@ function LyricsScreen(props: Props) {
     });
   }, []);
 
+  const clickedSearch = useCallback(() => {
+    props.navigation.navigate('SearchScreen', {searchType: 2});
+  }, []);
+
+  const renderHeaderLyricItem = useCallback(() => {
+    return (
+      <SearchBar text={label.search_lyric_text} clickedSearch={clickedSearch} />
+    );
+  }, [label]);
+
   const renderLyricsHomeItem = useCallback(
     (item: any) => {
       return (
@@ -171,6 +183,8 @@ function LyricsScreen(props: Props) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginHorizontal: 16,
+              alignItems: 'center',
+              marginBottom: 12,
             }}>
             <Animated.View entering={FadeInDown.delay(item.index * 300)}>
               <TextView
@@ -323,6 +337,7 @@ function LyricsScreen(props: Props) {
           }
           style={{paddingTop: 10}}
           renderItem={renderLyricsHomeItem}
+          ListHeaderComponent={renderHeaderLyricItem}
           keyExtractor={(item: any, index: number) => index.toString()}
         />
       </View>

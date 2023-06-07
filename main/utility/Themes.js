@@ -10,7 +10,7 @@ export const DarkThemeColor = {
   backgroundColor: '#333333',
   backgroundColor1: '#000000',
   backgroundColor2: '#FFFFFF',
-  backgroundColor3: '#828282',
+  backgroundColor3: '#4d4c4c',
   textColor: '#FFFFFF',
 };
 
@@ -18,4 +18,5 @@ export const GeneralColor = {
   blue: '#3196de',
   white: '#FFFFFF',
   black: '#000000',
+  grey: 'grey',
 };
