@@ -170,7 +170,9 @@ const ProfileScreen = (props: Props) => {
     try {
       let userEmail = await AsyncStorage.getItem(STORAGE_KEYS.USER_EMAIL);
       let userPassword = await AsyncStorage.getItem(STORAGE_KEYS.USER_PASSWORD);
+      let keepLogin = await AsyncStorage.getItem(STORAGE_KEYS.KEEP_LOGIN);
 
+      setIsCheckKeepLoggedIn(keepLogin === 'isSave' ? true : false);
       setLoginData({
         email: userEmail ? userEmail : '',
         password: userPassword ? userPassword : '',
@@ -270,9 +272,11 @@ const ProfileScreen = (props: Props) => {
         STORAGE_KEYS.USER_PASSWORD,
         loginData.password,
       );
+      await AsyncStorage.setItem(STORAGE_KEYS.KEEP_LOGIN, 'isSave');
     } else {
       await AsyncStorage.removeItem(STORAGE_KEYS.USER_EMAIL);
       await AsyncStorage.removeItem(STORAGE_KEYS.USER_PASSWORD);
+      await AsyncStorage.removeItem(STORAGE_KEYS.KEEP_LOGIN);
     }
   }, [loginData, isCheckKeepLoggedIn]);
 
@@ -328,7 +332,7 @@ const ProfileScreen = (props: Props) => {
         edges={['top']}
         style={{flex: 1, backgroundColor: theme.backgroundColor}}>
         <KeyboardAwareScrollView
-          extraHeight={200}
+          // extraHeight={200}
           contentContainerStyle={{flex: 1}}
           style={{
             backgroundColor: theme.backgroundColor,
@@ -758,14 +762,16 @@ const ProfileScreen = (props: Props) => {
                     alignItems: 'center',
                   }}>
                   <CheckBox
+                    tintColors={theme.textColor}
+                    tintColor="white"
                     boxType="square"
-                    style={{width: 18, height: 18}}
+                    style={{width: 18, height: 18, marginRight: 12}}
                     value={isCheckKeepLoggedIn}
                     onValueChange={newValue => setIsCheckKeepLoggedIn(newValue)}
                   />
                   <TextView
                     text={label.keep_me_logged_in}
-                    textStyle={{fontSize: 12, paddingLeft: 6}}
+                    textStyle={{fontSize: 12}}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={clickedForgotPassword}>

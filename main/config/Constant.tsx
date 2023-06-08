@@ -18,4 +18,5 @@ export const ROW_COUNT = 9;
 export const STORAGE_KEYS = {
   USER_EMAIL: '@com.zote.mobile.search.AUTH.email',
   USER_PASSWORD: '@com.zote.mobile.search.AUTH.Password',
+  KEEP_LOGIN: '@com.zote.mobile.search.AUTH.keep_login',
 };
