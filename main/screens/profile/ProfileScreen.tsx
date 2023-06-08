@@ -62,7 +62,7 @@ const mapDispatchToProps = (dispatch: (arg0: any) => void) => {
     setToken: (token: any) => {
       dispatch(setToken(token));
     },
-    setProfile: (profile: Profile) => {
+    setProfile: (profile?: Profile) => {
       dispatch(setProfile(profile));
     },
     setFavBookCount: (fav_book_count: number) => {
@@ -282,6 +282,7 @@ const ProfileScreen = (props: Props) => {
 
   const clickedLogout = useCallback(() => {
     props.setToken(null);
+    props.setProfile(undefined);
   }, []);
 
   const clickedChangePassword = useCallback(() => {

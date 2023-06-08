@@ -94,7 +94,7 @@ function AuthorScreen(props: Props) {
       url = `user/book/author/get-by-id`;
     } else if (authorType == 2) {
       url = `user/lyric/author/get-by-id`;
-      formData.append('userId', props.profile?.id);
+      formData.append('userId', props.profile?.id ? props.profile?.id : 0);
     } else {
       url = '';
     }

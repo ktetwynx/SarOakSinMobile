@@ -15,7 +15,7 @@ export function setToken(token: any) {
   return {type: BEARER_TOKEN, token};
 }
 
-export function setProfile(profile: Profile) {
+export function setProfile(profile?: Profile) {
   return {type: PROFILE, profile};
 }
 

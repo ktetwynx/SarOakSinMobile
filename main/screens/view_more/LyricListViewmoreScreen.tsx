@@ -71,7 +71,7 @@ function LyricListViewmoreScreen(props: Props) {
     async (pageAt: number) => {
       let formData = new FormData();
       formData.append('name', 'lyric');
-      formData.append('userId', props.profile?.id);
+      formData.append('userId', props.profile?.id ? props.profile.id : 0);
       formData.append('page', pageAt);
       formData.append('size', ROW_COUNT);
       await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {

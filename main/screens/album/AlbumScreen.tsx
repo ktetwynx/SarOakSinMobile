@@ -82,7 +82,8 @@ function AlbumScreen(props: Props) {
   const fetchAblumApi = useCallback(async () => {
     let formData = new FormData();
     formData.append('id', albumId);
-    formData.append('userId', props.profile?.id);
+    formData.append('userId', props.profile?.id ? props.profile?.id : 0);
+    console.log(formData);
     await ApiFetchService(API_URL + `user/lyric/album/get-by-id`, formData, {
       'Content-Type': 'multipart/form-data',
       Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
