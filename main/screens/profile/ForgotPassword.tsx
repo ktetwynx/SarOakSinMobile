@@ -8,12 +8,16 @@ import i18n from '../../language/i18n';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TextInputView} from '../../components/TextInputView';
+import {ApiFetchService} from '../../service/ApiFetchService';
+import {API_URL} from '../../config/Constant';
+import {LoadingScreen} from '../components/LoadingScreen';
 
 export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
   const context = useContext(ThemeContext);
   const {theme} = context;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [email, setEmail] = useState<any>('');
+  const [email, setEmail] = useState<string>('');
   const [label, setLabel] = React.useState({
     forgot_ur_password: i18n.t('forgot_ur_password'),
     email: i18n.t('email'),
@@ -33,7 +37,7 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
     return unsubscribe;
   }, []);
 
-  const onChangeText = useCallback((text: any) => {
+  const onChangeText = useCallback((text: string) => {
     setEmail(text);
   }, []);
 
@@ -41,7 +45,7 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
     if (!onValidate()) {
       return;
     } else {
-      //   fetchChangePasswordApi();
+      fetchSendOtpApi();
     }
   }, [email]);
 
@@ -60,6 +64,33 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
 
     return emailText;
   };
+
+  const fetchSendOtpApi = useCallback(async () => {
+    setIsLoading(true);
+    let formData = new FormData();
+    formData.append('email', email);
+    console.log(formData);
+    await ApiFetchService(
+      API_URL + `user/register-user/send-otp-by-email`,
+      formData,
+      {
+        'Content-Type': 'multipart/form-data',
+        Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      },
+    ).then((response: any) => {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+      if (response.code == 200) {
+        props.navigation.navigate('VerifyScreen', {
+          email: email,
+          verifyType: 2,
+        });
+      } else {
+        setErrorMessage(response.message);
+      }
+    });
+  }, [email]);
 
   const goBack = useCallback(() => {
     props.navigation.goBack();
@@ -148,6 +179,7 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
+      {isLoading ? <LoadingScreen /> : <></>}
     </View>
   );
 }

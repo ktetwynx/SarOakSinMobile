@@ -126,6 +126,7 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
           setIsLoading(false);
           props.navigation.navigate('VerifyScreen', {
             email: response.data.email,
+            verifyType: 1,
           });
         }, 1000);
       } else {

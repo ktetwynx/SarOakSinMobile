@@ -245,7 +245,10 @@ const ProfileScreen = (props: Props) => {
     }).then((response: any) => {
       if (response.code == 200) {
         if (response.data.status == PENDING) {
-          props.navigation.navigate('VerifyScreen', {email: loginData.email});
+          props.navigation.navigate('VerifyScreen', {
+            email: loginData.email,
+            verifyType: 1,
+          });
         } else {
           props.setToken(response.data.token);
           props.setProfile(response.data);

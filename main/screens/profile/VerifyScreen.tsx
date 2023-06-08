@@ -61,6 +61,7 @@ const VerifyScreen = (props: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isResend, setIsResend] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>('');
+  const [verifyType, setVerifyType] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [time, setTime] = React.useState(0);
   const timerRef = React.useRef(time);
@@ -89,6 +90,7 @@ const VerifyScreen = (props: Props) => {
 
   useEffect(() => {
     setUserEmail(props.route.params.email);
+    setVerifyType(props.route.params.verifyType);
   }, [props.route.params]);
 
   useEffect(() => {
@@ -148,22 +150,31 @@ const VerifyScreen = (props: Props) => {
       'Content-Type': 'multipart/form-data',
       Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
     }).then((response: any) => {
-      console.log(response);
       if (response.code == 200) {
-        setTimeout(() => {
-          setIsLoading(false);
-          props.setToken(response.data.jwtToken);
-          props.setProfile(response.data);
-          props.setFavBookCount(response.data.bookCount);
-          props.setFavLyricCount(response.data.lyricCount);
-          props.navigation.popToTop();
-        }, 1000);
+        if (verifyType == 1) {
+          setTimeout(() => {
+            setIsLoading(false);
+            props.setToken(response.data.jwtToken);
+            props.setProfile(response.data);
+            props.setFavBookCount(response.data.bookCount);
+            props.setFavLyricCount(response.data.lyricCount);
+            props.navigation.popToTop();
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            setIsLoading(false);
+            props.navigation.navigate('ResetPassword', {
+              email: userEmail,
+              token: response.data.jwtToken,
+            });
+          }, 1000);
+        }
       } else {
         setIsLoading(false);
         setErrorMessage(response.message);
       }
     });
-  }, [otpCode]);
+  }, [otpCode, verifyType]);
 
   const clickedVerify = useCallback(() => {
     if (otpCode.length < 6) {
@@ -173,7 +184,7 @@ const VerifyScreen = (props: Props) => {
       setErrorMessage('');
       fetchVerifyApi();
     }
-  }, [otpCode]);
+  }, [otpCode, verifyType]);
 
   const finishCountDown = useCallback(() => {
     setIsResend(false);

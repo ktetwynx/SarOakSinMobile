@@ -20,6 +20,7 @@ import VerifyScreen from '../screens/profile/VerifyScreen';
 import ChangePassword from '../screens/profile/ChangePassword';
 import {ForgotPassword} from '../screens/profile/ForgotPassword';
 import SearchScreen from '../screens/search/SearchScreen';
+import ResetPassword from '../screens/profile/ResetPassword';
 
 const mapstateToProps = (state: {app_language: string}) => {
   return {
@@ -119,6 +120,12 @@ const Route = (props: Props) => {
         options={option}
         name="SearchScreen"
         component={SearchScreen}
+      />
+
+      <RootStack.Screen
+        options={option}
+        name="ResetPassword"
+        component={ResetPassword}
       />
 
       <RootStack.Screen

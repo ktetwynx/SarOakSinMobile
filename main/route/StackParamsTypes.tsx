@@ -13,7 +13,7 @@ export type RootStackParamList = {
     authorImage: string;
   };
   AlbumScreen: {albumId: number; albumName: string; albumImage: string};
-  VerifyScreen: {email: string};
+  VerifyScreen: {email: string; verifyType: number};
   SignUpScreen: undefined;
   AlbumListViewmoreScreen: undefined;
   LyricListViewmoreScreen: undefined;
@@ -23,6 +23,7 @@ export type RootStackParamList = {
   FavouriteBookScreen: undefined;
   FavouriteLyricScreen: undefined;
   SearchScreen: {searchType: number};
+  ResetPassword: {email: string; token: string};
   PDFView: {
     bookId: number;
     bookPath: string;

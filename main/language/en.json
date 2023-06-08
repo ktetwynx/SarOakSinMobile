@@ -43,6 +43,7 @@
     "success":"Success",
     "enter_your_email": "Enter yor email below",
     "search_lyric_text": "Search Lyric",
-    "search_book_text": "Search Book"
+    "search_book_text": "Search Book",
+    "reset_password": "Reset Password"
 
 }
