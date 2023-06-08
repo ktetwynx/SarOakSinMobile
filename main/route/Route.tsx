@@ -19,7 +19,7 @@ import LyricListViewmoreScreen from '../screens/view_more/LyricListViewmoreScree
 import VerifyScreen from '../screens/profile/VerifyScreen';
 import ChangePassword from '../screens/profile/ChangePassword';
 import {ForgotPassword} from '../screens/profile/ForgotPassword';
-import {SearchScreen} from '../screens/search/SearchScreen';
+import SearchScreen from '../screens/search/SearchScreen';
 
 const mapstateToProps = (state: {app_language: string}) => {
   return {

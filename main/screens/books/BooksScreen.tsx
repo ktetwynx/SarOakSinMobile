@@ -243,7 +243,6 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   );
 
   const clickedAuthor = (item: any) => {
-    console.log(item.item);
     props.navigation.navigate('AuthorScreen', {
       authorId: item.item.id,
       authorName: item.item.name,

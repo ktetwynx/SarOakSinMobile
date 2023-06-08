@@ -33,17 +33,9 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
     return unsubscribe;
   }, []);
 
-  const onChangeText = useCallback(
-    (name: 'email') => (text: any) => {
-      setEmail((prev: any) => {
-        return {
-          ...prev,
-          [name]: text,
-        };
-      });
-    },
-    [],
-  );
+  const onChangeText = useCallback((text: any) => {
+    setEmail(text);
+  }, []);
 
   const clickedForgotPassword = useCallback(() => {
     if (!onValidate()) {
@@ -114,7 +106,7 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
           />
           <TextInputView
             autoCapitalize={'none'}
-            onChangeText={onChangeText('email')}
+            onChangeText={onChangeText}
             style={{marginTop: 8}}
             placeholder={label.email}
             icon={
