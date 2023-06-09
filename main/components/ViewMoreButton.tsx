@@ -1,9 +1,10 @@
 import React, {useContext, useEffect} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Platform} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {TextView} from './TextView';
 import i18n from '../language/i18n';
 import {ThemeContext} from '../utility/ThemeProvider';
+import {GeneralColor} from '../utility/Themes';
 
 export interface AppProps {
   clickedViewMore: Function;
@@ -31,10 +32,10 @@ export function ViewMoreButton(props: AppProps) {
         style={{
           flexDirection: 'row',
           borderWidth: 1.5,
-          borderColor: theme.textColor,
+          borderColor: GeneralColor.app_theme,
           borderRadius: 20,
           paddingHorizontal: 6,
-          paddingVertical: 1,
+          paddingVertical: Platform.OS == 'ios' ? 1 : 2,
         }}>
         <TextView
           text={label.viewMore}
@@ -43,7 +44,7 @@ export function ViewMoreButton(props: AppProps) {
         <AntDesign
           name="caretright"
           size={15}
-          color={theme.textColor}
+          color={GeneralColor.app_theme}
           style={{alignSelf: 'center'}}
         />
       </View>

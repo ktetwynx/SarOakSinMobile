@@ -195,8 +195,7 @@ const SearchScreen = (props: Props) => {
       endPointPrefix = 'user/lyric/search/get-by-filter';
       formData.append('type', lyricFilterArray[lyricFilterIndex].type);
     }
-
-    formData.append('userId', props.profile?.id);
+    formData.append('userId', props.profile?.id ? props.profile.id : 0);
     formData.append('name', searchKeyword);
     await ApiFetchService(API_URL + endPointPrefix, formData, {
       'Content-Type': 'multipart/form-data',
@@ -236,23 +235,23 @@ const SearchScreen = (props: Props) => {
             <Animated.View
               style={{
                 flexDirection: 'column',
-                margin: 6,
-                marginBottom: 12,
+                marginTop: 12,
                 flex: 0.5,
-                justifyContent: 'center',
-                alignItems: 'center',
+                margin: 6,
               }}
               entering={FadeInDown}
               exiting={FadeOutDown}>
-              <TouchableOpacity onPress={() => clickedBookDetail(item.item.id)}>
+              <TouchableOpacity onPress={() => clickedLyric(item)}>
                 <Image
                   style={{
                     backgroundColor: 'grey',
                     width: '100%',
-                    height: 200,
+                    height: 220,
                     borderRadius: 20,
                   }}
-                  source={{uri: API_URL + item.item.imgPath}}
+                  source={{
+                    uri: API_URL + item.item.imgPath,
+                  }}
                 />
                 <TextView
                   text={item.item.name}
@@ -273,6 +272,32 @@ const SearchScreen = (props: Props) => {
                 />
               </TouchableOpacity>
             </Animated.View>
+            // <Animated.View
+            //   style={{
+            //     flexDirection: 'column',
+            //     margin: 6,
+            //     marginBottom: 12,
+            //     flex: 0.5,
+            //     justifyContent: 'center',
+            //     alignItems: 'center',
+            //   }}
+            //   entering={FadeInDown}
+            //   exiting={FadeOutDown}>
+            //   <TouchableOpacity
+            //     style={{backgroundColor: 'red'}}
+            //     onPress={() => clickedBookDetail(item.item.id)}>
+            //     <Image
+            //       style={{
+            //         backgroundColor: 'grey',
+            //         width: '100%',
+            //         height: 200,
+            //         borderRadius: 20,
+            //       }}
+            //       source={{uri: API_URL + item.item.imgPath}}
+            //     />
+
+            //   </TouchableOpacity>
+            // </Animated.View>
           );
         } else if (bookFilterArray[bookFilterIndex].title === label.author) {
           return (
@@ -480,7 +505,7 @@ const SearchScreen = (props: Props) => {
                 <Ionicons
                   name="search-circle"
                   size={40}
-                  color={theme.textColor}
+                  color={GeneralColor.app_theme}
                   style={{alignSelf: 'center', marginRight: 6}}
                 />
               </TouchableOpacity>
@@ -561,6 +586,8 @@ const SearchScreen = (props: Props) => {
           <FlatList
             data={searchData}
             numColumns={2}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
             style={{paddingHorizontal: 12, marginTop: 16}}
             renderItem={renderSearchItem}
             keyExtractor={(item: any, index: number) => index.toString()}

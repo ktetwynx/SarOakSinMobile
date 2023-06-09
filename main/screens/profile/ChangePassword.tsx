@@ -16,6 +16,7 @@ import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_URL} from '../../config/Constant';
 import {LoadingScreen} from '../components/LoadingScreen';
 import {SuccessfulDialog} from '../components/SuccessfulDialog';
+import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {token: any; profile: any}) => {
   return {
@@ -356,18 +357,22 @@ const ChangePassword = (props: Props) => {
           <TouchableOpacity
             onPress={clickedChangePassword}
             style={{
-              width: '40%',
-              height: 50,
+              width: 120,
+              height: 40,
               marginTop: 48,
               marginBottom: 100,
               borderRadius: 50,
-              backgroundColor: 'grey',
+              backgroundColor: GeneralColor.app_theme,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             <TextView
               text={label.confirm}
-              textStyle={{fontSize: 18, fontWeight: 'bold'}}
+              textStyle={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: GeneralColor.white,
+              }}
             />
           </TouchableOpacity>
         </View>

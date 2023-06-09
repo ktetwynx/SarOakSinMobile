@@ -21,7 +21,7 @@ export function LoadingScreen(props: AppProps) {
         opacity: 0.7,
         backgroundColor: GeneralColor.black,
       }}>
-      <DotIndicator size={8} color={GeneralColor.white} />
+      <DotIndicator size={8} color={GeneralColor.app_theme} />
     </View>
   );
 }

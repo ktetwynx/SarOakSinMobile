@@ -291,6 +291,7 @@ function AuthorScreen(props: Props) {
                 // title="Pull to refresh"
               />
             }
+            contentContainerStyle={{paddingBottom: 50}}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             renderItem={renderByAuthorItem}

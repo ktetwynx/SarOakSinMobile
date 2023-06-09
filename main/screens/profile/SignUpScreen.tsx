@@ -22,6 +22,7 @@ import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import {LoadingScreen} from '../components/LoadingScreen';
+import {GeneralColor} from '../../utility/Themes';
 const {width, height} = Dimensions.get('screen');
 
 interface SignUpData {
@@ -359,18 +360,22 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
             <TouchableOpacity
               onPress={clickedSignUp}
               style={{
-                width: '50%',
-                height: 50,
+                width: 120,
+                height: 40,
                 marginTop: 48,
                 marginBottom: 100,
                 borderRadius: 50,
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.app_theme,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
               <TextView
                 text={label.confirm}
-                textStyle={{fontSize: 20, fontWeight: 'bold'}}
+                textStyle={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: GeneralColor.white,
+                }}
               />
             </TouchableOpacity>
           </View>

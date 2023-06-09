@@ -281,6 +281,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
               // title="Pull to refresh"
             />
           }
+          contentContainerStyle={{paddingBottom: 100}}
           style={{paddingTop: 10, backgroundColor: theme.backgroundColor}}
           renderItem={renderBookCategoryItem}
           ListHeaderComponent={renderBookAuthorItem}

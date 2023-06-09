@@ -335,6 +335,7 @@ function LyricsScreen(props: Props) {
               // title="Pull to refresh"
             />
           }
+          contentContainerStyle={{paddingBottom: 100}}
           style={{paddingTop: 10}}
           renderItem={renderLyricsHomeItem}
           ListHeaderComponent={renderHeaderLyricItem}

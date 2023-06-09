@@ -25,6 +25,7 @@ import {
 } from '../../redux/actions';
 import {ConnectedProps, connect} from 'react-redux';
 import {LoadingScreen} from '../components/LoadingScreen';
+import {GeneralColor} from '../../utility/Themes';
 
 export interface AppProps {}
 
@@ -70,7 +71,7 @@ const VerifyScreen = (props: Props) => {
     confirm: i18n.t('confirm'),
     otp_sent_to: i18n.t('otp_sent_to'),
     please_wait: i18n.t('please_wait'),
-    resend_otp: i18n.t('otp_sent_to'),
+    resend_otp: i18n.t('resend_otp'),
     seconds: i18n.t('seconds'),
   });
 
@@ -81,7 +82,7 @@ const VerifyScreen = (props: Props) => {
         confirm: i18n.t('confirm'),
         otp_sent_to: i18n.t('otp_sent_to'),
         please_wait: i18n.t('please_wait'),
-        resend_otp: i18n.t('otp_sent_to'),
+        resend_otp: i18n.t('resend_otp'),
         seconds: i18n.t('seconds'),
       });
     });
@@ -270,18 +271,22 @@ const VerifyScreen = (props: Props) => {
           <TouchableOpacity
             onPress={clickedVerify}
             style={{
-              width: '50%',
-              height: 50,
+              width: 120,
+              height: 40,
               marginTop: 40,
               //   marginBottom: 100,
               borderRadius: 50,
-              backgroundColor: 'grey',
+              backgroundColor: GeneralColor.app_theme,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             <TextView
               text={label.confirm}
-              textStyle={{fontSize: 20, fontWeight: 'bold'}}
+              textStyle={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: GeneralColor.white,
+              }}
             />
           </TouchableOpacity>
 

@@ -5,7 +5,7 @@ import React, {
   useContext,
   useRef,
 } from 'react';
-import {View, TouchableOpacity, TextInput} from 'react-native';
+import {View, TouchableOpacity, TextInput, Platform} from 'react-native';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import Pdf from 'react-native-pdf';
 import {API_URL} from '../../config/Constant';
@@ -275,7 +275,7 @@ function PDFView(props: Props) {
         <View
           style={{
             width: '100%',
-            height: 100,
+            height: Platform.OS == 'ios' ? 100 : 70,
             flexDirection: 'column',
             position: 'absolute',
             justifyContent: 'flex-end',
@@ -286,7 +286,7 @@ function PDFView(props: Props) {
               height: '100%',
               opacity: 0.8,
               position: 'absolute',
-              backgroundColor: theme.backgroundColor1,
+              backgroundColor: GeneralColor.black,
             }}
           />
           <View
@@ -317,6 +317,7 @@ function PDFView(props: Props) {
                   marginLeft: 12,
                   fontWeight: 'bold',
                   marginRight: 12,
+                  color: GeneralColor.white,
                   flex: 1,
                 }}
               />
@@ -367,7 +368,7 @@ function PDFView(props: Props) {
         <View
           style={{
             width: '100%',
-            height: 100,
+            height: Platform.OS == 'ios' ? 100 : 70,
             bottom: 0,
             flexDirection: 'column',
             position: 'absolute',
@@ -378,18 +379,23 @@ function PDFView(props: Props) {
               height: '100%',
               opacity: 0.8,
               position: 'absolute',
-              backgroundColor: theme.backgroundColor1,
+              backgroundColor: GeneralColor.black,
             }}
           />
           <TextView
-            textStyle={{fontSize: 16, marginTop: 12, alignSelf: 'center'}}
+            textStyle={{
+              fontSize: 16,
+              marginTop: 12,
+              alignSelf: 'center',
+              color: GeneralColor.white,
+            }}
             text={`${currentPage}/${totalPage}`}
           />
 
           <TouchableOpacity
             onPress={clickedPageNumber}
             style={{
-              backgroundColor: theme.backgroundColor2,
+              backgroundColor: GeneralColor.white,
               position: 'absolute',
               top: 12,
               right: 12,
@@ -403,13 +409,13 @@ function PDFView(props: Props) {
               text={label.page_number}
               textStyle={{
                 fontSize: 16,
-                color: theme.backgroundColor1,
+                color: GeneralColor.black,
               }}
             />
             <AntDesign
               name={'rightcircleo'}
               size={16}
-              color={theme.backgroundColor1}
+              color={GeneralColor.black}
               style={{marginLeft: 6}}
             />
           </TouchableOpacity>

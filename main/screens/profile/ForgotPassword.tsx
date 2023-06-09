@@ -11,6 +11,7 @@ import {TextInputView} from '../../components/TextInputView';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_URL} from '../../config/Constant';
 import {LoadingScreen} from '../components/LoadingScreen';
+import {GeneralColor} from '../../utility/Themes';
 
 export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
   const context = useContext(ThemeContext);
@@ -163,18 +164,22 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
           <TouchableOpacity
             onPress={clickedForgotPassword}
             style={{
-              width: '40%',
-              height: 50,
+              width: 120,
+              height: 40,
               marginTop: 38,
               marginBottom: 100,
               borderRadius: 50,
-              backgroundColor: 'grey',
+              backgroundColor: GeneralColor.app_theme,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             <TextView
               text={label.confirm}
-              textStyle={{fontSize: 18, fontWeight: 'bold'}}
+              textStyle={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: GeneralColor.white,
+              }}
             />
           </TouchableOpacity>
         </View>

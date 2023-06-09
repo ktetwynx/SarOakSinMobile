@@ -214,6 +214,7 @@ function AlbumScreen(props: Props) {
               numColumns={2}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
+              contentContainerStyle={{paddingBottom: 50}}
               refreshControl={
                 <RefreshControl
                   refreshing={screenRefresh}

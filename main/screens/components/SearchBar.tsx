@@ -4,6 +4,7 @@ import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Animated, {FadeInUp} from 'react-native-reanimated';
+import {GeneralColor} from '../../utility/Themes';
 
 export interface AppProps {
   clickedSearch: any;
@@ -38,7 +39,7 @@ export function SearchBar(props: AppProps) {
         <Ionicons
           name="search-circle"
           size={35}
-          color={theme.textColor}
+          color={GeneralColor.app_theme}
           style={{alignSelf: 'center', marginRight: 16}}
         />
       </Animated.View>

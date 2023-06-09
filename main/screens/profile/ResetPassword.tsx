@@ -22,6 +22,7 @@ import {
   setProfile,
   setToken,
 } from '../../redux/actions';
+import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {}) => {
   return {};
@@ -349,18 +350,22 @@ const ResetPassword = (props: Props) => {
           <TouchableOpacity
             onPress={clickedResetPassword}
             style={{
-              width: '40%',
-              height: 50,
+              width: 120,
+              height: 40,
               marginTop: 48,
               marginBottom: 100,
               borderRadius: 50,
-              backgroundColor: 'grey',
+              backgroundColor: GeneralColor.app_theme,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             <TextView
               text={label.confirm}
-              textStyle={{fontSize: 18, fontWeight: 'bold'}}
+              textStyle={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: GeneralColor.white,
+              }}
             />
           </TouchableOpacity>
         </View>

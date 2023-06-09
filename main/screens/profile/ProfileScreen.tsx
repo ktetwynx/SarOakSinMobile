@@ -32,6 +32,7 @@ import {LoadingScreen} from '../components/LoadingScreen';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';
+import {GeneralColor} from '../../utility/Themes';
 const {width, height} = Dimensions.get('screen');
 
 interface LoginData {
@@ -353,8 +354,8 @@ const ProfileScreen = (props: Props) => {
                 }}>
                 <MaterialCommunityIcons
                   name="account-circle"
-                  size={60}
-                  color={theme.backgroundColor2}
+                  size={70}
+                  color={GeneralColor.app_theme}
                   style={{alignSelf: 'center'}}
                 />
                 <View style={{flexDirection: 'column', marginLeft: 12}}>
@@ -363,7 +364,7 @@ const ProfileScreen = (props: Props) => {
                     textStyle={{
                       fontSize: 26,
                       fontWeight: 'bold',
-                      marginBottom: 2,
+                      color: theme.textColor,
                     }}
                   />
 
@@ -410,7 +411,7 @@ const ProfileScreen = (props: Props) => {
                   <FontAwesome
                     name="book"
                     size={30}
-                    color={theme.backgroundColor2}
+                    color={GeneralColor.app_theme}
                     style={{alignSelf: 'center'}}
                   />
                   <TextView
@@ -428,7 +429,7 @@ const ProfileScreen = (props: Props) => {
                       width: 33,
                       height: 33,
                       justifyContent: 'center',
-                      backgroundColor: theme.backgroundColor1,
+                      backgroundColor: GeneralColor.app_theme,
                       borderRadius: 33,
                       marginRight: 12,
                     }}>
@@ -448,7 +449,7 @@ const ProfileScreen = (props: Props) => {
                   <FontAwesome
                     name="angle-right"
                     size={25}
-                    color={'black'}
+                    color={theme.backgroundColor2}
                     style={{alignSelf: 'center'}}
                   />
                 </View>
@@ -472,7 +473,7 @@ const ProfileScreen = (props: Props) => {
                   <Entypo
                     name="folder-music"
                     size={30}
-                    color={theme.backgroundColor2}
+                    color={GeneralColor.app_theme}
                     style={{alignSelf: 'center'}}
                   />
                   <TextView
@@ -490,7 +491,7 @@ const ProfileScreen = (props: Props) => {
                       width: 33,
                       height: 33,
                       justifyContent: 'center',
-                      backgroundColor: theme.backgroundColor1,
+                      backgroundColor: GeneralColor.app_theme,
                       borderRadius: 33,
                       marginRight: 12,
                     }}>
@@ -510,7 +511,7 @@ const ProfileScreen = (props: Props) => {
                   <FontAwesome
                     name="angle-right"
                     size={25}
-                    color={'black'}
+                    color={theme.backgroundColor2}
                     style={{alignSelf: 'center'}}
                   />
                 </View>
@@ -703,14 +704,14 @@ const ProfileScreen = (props: Props) => {
                 alignSelf: 'center',
                 alignItems: 'center',
               }}>
-              <View
+              <Image
                 style={{
                   width: 120,
                   height: 120,
                   backgroundColor: 'grey',
                   borderRadius: 20,
                 }}
-                // source={{uri: undefined}}
+                source={require('../../assets/images/sar_oak_sin_logo.jpg')}
               />
               <TextInputView
                 autoCapitalize={'none'}
@@ -763,8 +764,10 @@ const ProfileScreen = (props: Props) => {
                     alignItems: 'center',
                   }}>
                   <CheckBox
-                    tintColors={theme.textColor}
-                    tintColor="white"
+                    tintColors={{
+                      true: GeneralColor.app_theme,
+                      false: GeneralColor.grey,
+                    }}
                     boxType="square"
                     style={{width: 18, height: 18, marginRight: 12}}
                     value={isCheckKeepLoggedIn}
@@ -796,17 +799,17 @@ const ProfileScreen = (props: Props) => {
               <TouchableOpacity
                 onPress={clickedLogin}
                 style={{
-                  width: '50%',
-                  height: 50,
-                  marginTop: 40,
+                  width: 120,
+                  height: 40,
+                  marginTop: 30,
                   borderRadius: 50,
-                  backgroundColor: 'grey',
+                  backgroundColor: GeneralColor.app_theme,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
                 <TextView
                   text={label.login}
-                  textStyle={{fontSize: 20, fontWeight: 'bold', color: 'white'}}
+                  textStyle={{fontSize: 18, fontWeight: 'bold', color: 'white'}}
                 />
               </TouchableOpacity>
 
@@ -823,7 +826,7 @@ const ProfileScreen = (props: Props) => {
                     textStyle={{
                       padding: 6,
                       borderWidth: 1,
-                      borderColor: theme.backgroundColor2,
+                      borderColor: GeneralColor.app_theme,
                       fontSize: 12,
                       borderRadius: 5,
                       marginLeft: 10,

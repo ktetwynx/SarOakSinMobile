@@ -19,4 +19,7 @@ export const GeneralColor = {
   white: '#FFFFFF',
   black: '#000000',
   grey: 'grey',
+  app_theme: '#51a9df',
+  app_dark_theme: '#2183b5',
+  app_light_theme: '#a9e2ff',
 };

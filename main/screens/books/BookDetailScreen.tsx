@@ -38,6 +38,7 @@ import {SlideInLeft} from 'react-native-reanimated';
 import {FadeInLeft} from 'react-native-reanimated';
 import {BounceInRight} from 'react-native-reanimated';
 import {BounceIn} from 'react-native-reanimated';
+import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -377,7 +378,7 @@ function BookDetailScreen(props: Props) {
                   style={{
                     width: 120,
                     height: 40,
-                    backgroundColor: 'grey',
+                    backgroundColor: GeneralColor.app_theme,
                     justifyContent: 'center',
                     alignSelf: 'center',
                     borderRadius: 30,
@@ -387,7 +388,7 @@ function BookDetailScreen(props: Props) {
                     textStyle={{
                       textAlign: 'center',
                       fontSize: 18,
-                      color: 'white',
+                      color: GeneralColor.white,
                       fontWeight: 'bold',
                     }}
                   />
