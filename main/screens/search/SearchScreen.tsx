@@ -241,7 +241,7 @@ const SearchScreen = (props: Props) => {
               }}
               entering={FadeInDown}
               exiting={FadeOutDown}>
-              <TouchableOpacity onPress={() => clickedLyric(item)}>
+              <TouchableOpacity onPress={() => clickedBookDetail(item.item.id)}>
                 <Image
                   style={{
                     backgroundColor: 'grey',
@@ -588,7 +588,7 @@ const SearchScreen = (props: Props) => {
             numColumns={2}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
-            style={{paddingHorizontal: 12, marginTop: 16}}
+            style={{paddingHorizontal: 12, marginTop: 6}}
             renderItem={renderSearchItem}
             keyExtractor={(item: any, index: number) => index.toString()}
           />

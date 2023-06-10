@@ -1,5 +1,4 @@
-export const API_URL = 'http://163.44.196.35:80/api/';
-// export const API_URL = 'http://localhost:8082/api/';
+export const API_URL = 'http://163.44.196.216:8081/api/';
 
 export const ALBUM_TITLE = 'Albums';
 export const LYRICS_TITLE = 'သီချင်းစားသားများ';

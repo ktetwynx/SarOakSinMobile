@@ -139,7 +139,6 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
             alignItems: 'center',
             marginBottom: 12,
           }}>
-          {/* <Animated.View entering={FadeInDown} exiting={FadeOut}> */}
           <TextView
             text={label.authors}
             textStyle={{
@@ -148,12 +147,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
               marginBottom: 6,
             }}
           />
-          {/* </Animated.View> */}
-          {/* <Animated.View
-            entering={SlideInRight.delay(600)}
-            exiting={SlideOutRight}> */}
           <ViewMoreButton clickedViewMore={() => clickedAuthorViewmore()} />
-          {/* </Animated.View> */}
         </View>
         <FlatList
           showsHorizontalScrollIndicator={false}

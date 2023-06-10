@@ -335,7 +335,7 @@ function PDFView(props: Props) {
                   <AntDesign
                     name={isFavourite ? 'heart' : 'hearto'}
                     size={26}
-                    color={isFavourite ? 'red' : theme.backgroundColor2}
+                    color={isFavourite ? 'red' : GeneralColor.white}
                     style={{marginRight: 20}}
                   />
                 </TouchableOpacity>
@@ -348,9 +348,7 @@ function PDFView(props: Props) {
                     }
                     size={30}
                     color={
-                      currentPage == readPageAt
-                        ? 'green'
-                        : theme.backgroundColor2
+                      currentPage == readPageAt ? 'green' : GeneralColor.white
                     }
                   />
                 </TouchableOpacity>
