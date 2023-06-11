@@ -462,7 +462,7 @@ const SearchScreen = (props: Props) => {
             style={{
               width: '100%',
               flexDirection: 'row',
-              marginTop: 6,
+              marginTop: 16,
               alignItems: 'center',
             }}>
             <BackButton clickedGoBack={goBack} style={{marginLeft: 12}} />
