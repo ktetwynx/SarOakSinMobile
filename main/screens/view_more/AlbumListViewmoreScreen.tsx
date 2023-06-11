@@ -96,7 +96,7 @@ export function AlbumListViewmoreScreen(
     props.navigation.navigate('AlbumScreen', {
       albumId: item.item.id,
       albumName: item.item.name,
-      albumImage: API_URL + item.item.imgPath,
+      albumImage: item.item.imgPath,
     });
   }, []);
 

@@ -28,16 +28,12 @@ import {ThemeContext} from '../../utility/ThemeProvider';
 import {useFocusEffect} from '@react-navigation/native';
 import {LoadingScreen} from '../components/LoadingScreen';
 import Animated, {
-  FadeOut,
   FadeInDown,
-  SlideInUp,
+  FadeInUp,
+  FadeIn,
+  FadeInLeft,
+  BounceIn,
 } from 'react-native-reanimated';
-import {FadeInUp} from 'react-native-reanimated';
-import {FadeIn} from 'react-native-reanimated';
-import {SlideInLeft} from 'react-native-reanimated';
-import {FadeInLeft} from 'react-native-reanimated';
-import {BounceInRight} from 'react-native-reanimated';
-import {BounceIn} from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {

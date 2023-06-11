@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, useColorScheme} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -7,6 +7,8 @@ import {Provider} from 'react-redux';
 import store from './main/redux';
 import Route from './main/route/Route';
 import ThemeProvider from './main/utility/ThemeProvider';
+import SplashScreen from 'react-native-splash-screen';
+import {NeedUpdateDialog} from './main/screens/components/NeedUpdateDialog';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -15,17 +17,16 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  useEffect(() => {
+    SplashScreen.hide(); //hides the splash screen on app load.
+  }, []);
+
   return (
     <Provider store={store}>
       <ThemeProvider>
         <NavigationContainer>
           <Route />
         </NavigationContainer>
-        {/* <SafeAreaView style={{width: '100%', height: '100%'}} edges={['top']}>
-          <NavigationContainer>
-            <Route />
-          </NavigationContainer>
-        </SafeAreaView> */}
       </ThemeProvider>
     </Provider>
   );

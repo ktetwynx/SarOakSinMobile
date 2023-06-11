@@ -33,6 +33,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';
 import {GeneralColor} from '../../utility/Themes';
+import Animated, {
+  FadeOut,
+  FadeIn,
+  FadeInDown,
+  FadeOutDown,
+} from 'react-native-reanimated';
 const {width, height} = Dimensions.get('screen');
 
 interface LoginData {
@@ -282,8 +288,12 @@ const ProfileScreen = (props: Props) => {
   }, [loginData, isCheckKeepLoggedIn]);
 
   const clickedLogout = useCallback(() => {
-    props.setToken(null);
-    props.setProfile(undefined);
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      props.setToken(null);
+      props.setProfile(undefined);
+    }, 2000);
   }, []);
 
   const clickedChangePassword = useCallback(() => {
@@ -342,7 +352,10 @@ const ProfileScreen = (props: Props) => {
           }}
           showsVerticalScrollIndicator={false}>
           {props.token != null ? (
-            <View
+            <Animated.View
+              key={props.token}
+              entering={FadeIn}
+              exiting={FadeOut}
               style={{width: '100%', height: '100%', flexDirection: 'column'}}>
               {/* <TouchableOpacity> */}
               <View
@@ -692,9 +705,12 @@ const ProfileScreen = (props: Props) => {
                   </View>
                 </View>
               </Modal>
-            </View>
+            </Animated.View>
           ) : (
-            <View
+            <Animated.View
+              key={props.token}
+              entering={FadeInDown}
+              exiting={FadeOutDown}
               style={{
                 flexDirection: 'column',
                 width: '100%',
@@ -834,7 +850,7 @@ const ProfileScreen = (props: Props) => {
                   />
                 </View>
               </TouchableOpacity>
-            </View>
+            </Animated.View>
           )}
         </KeyboardAwareScrollView>
       </SafeAreaView>
