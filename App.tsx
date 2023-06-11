@@ -8,7 +8,6 @@ import store from './main/redux';
 import Route from './main/route/Route';
 import ThemeProvider from './main/utility/ThemeProvider';
 import SplashScreen from 'react-native-splash-screen';
-import {NeedUpdateDialog} from './main/screens/components/NeedUpdateDialog';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -18,7 +17,9 @@ function App(): JSX.Element {
   };
 
   useEffect(() => {
-    SplashScreen.hide(); //hides the splash screen on app load.
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 1000);
   }, []);
 
   return (

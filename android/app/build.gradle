@@ -94,7 +94,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.saroaksin"
+    namespace "com.bigCode64.saroaksin"
     defaultConfig {
         applicationId "com.bigCode64.saroaksin"
         minSdkVersion rootProject.ext.minSdkVersion
