@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import {API_URL} from '../../config/Constant';
+import {ADS_INTERSTITIAL_UNIT_ID, API_URL} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {BackButton} from '../../components/BackButton';
@@ -16,10 +16,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ConnectedProps, connect} from 'react-redux';
 import {setFavBookCount, setFavLyricCount} from '../../redux/actions';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import i18n from '../../language/i18n';
-import Modal from 'react-native-modal';
 import {GeneralColor} from '../../utility/Themes';
 import {TouchableOpacity, View} from 'react-native';
+import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -47,11 +46,22 @@ function ImageView(props: Props) {
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const interstitial = InterstitialAd.createForAdRequest(
+    ADS_INTERSTITIAL_UNIT_ID,
+    {
+      requestNonPersonalizedAdsOnly: true,
+      keywords: ['fashion', 'clothing'],
+    },
+  );
+  interstitial.load();
 
   useEffect(() => {
     setLyricsImages(props.route.params.lyricsImages);
     setCurrentImageIndex(props.route.params.currentImageIndex);
     initialCheckFav();
+    setTimeout(() => {
+      interstitial.show();
+    }, 6000);
   }, [props.route.params]);
 
   const initialCheckFav = useCallback(() => {

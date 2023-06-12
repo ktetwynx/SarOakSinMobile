@@ -7,6 +7,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {
+  ADS_BANNER_UNIT_ID,
   API_URL,
   BOOKS_AUTHOR_TITLE,
   BOOK_AUTHOR_TITLE,
@@ -35,6 +36,7 @@ import Animated, {
   BounceIn,
 } from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -391,9 +393,23 @@ function BookDetailScreen(props: Props) {
                 </TouchableOpacity>
               </Animated.View>
             </View>
+            <View
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+              }}>
+              <BannerAd
+                unitId={ADS_BANNER_UNIT_ID}
+                size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                requestOptions={{
+                  requestNonPersonalizedAdsOnly: true,
+                }}
+              />
+            </View>
           </View>
         </SafeAreaView>
       </ScrollView>
+
       {isLoading ? <LoadingScreen /> : <></>}
     </View>
   );

@@ -7,8 +7,9 @@ import React, {
 } from 'react';
 import {View, TouchableOpacity, TextInput, Platform} from 'react-native';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
+import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
 import Pdf from 'react-native-pdf';
-import {API_URL} from '../../config/Constant';
+import {ADS_INTERSTITIAL_UNIT_ID, API_URL} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {BackButton} from '../../components/BackButton';
@@ -64,7 +65,14 @@ function PDFView(props: Props) {
   const [isVisibleModal, setIsVisbleModal] = useState<boolean>(false);
 
   const pdfRef = useRef<Pdf>(null);
-
+  const interstitial = InterstitialAd.createForAdRequest(
+    ADS_INTERSTITIAL_UNIT_ID,
+    {
+      requestNonPersonalizedAdsOnly: true,
+      keywords: ['fashion', 'clothing'],
+    },
+  );
+  interstitial.load();
   const [label, setLabel] = React.useState({
     page_number: i18n.t('page_number'),
     go: i18n.t('go'),
@@ -256,6 +264,9 @@ function PDFView(props: Props) {
         onLoadComplete={(numberOfPages: any, filePath: any) => {
           // console.log(`Number of pages: ${numberOfPages}`);
           setIsVisible(true);
+          setTimeout(() => {
+            interstitial.show();
+          }, 8000);
         }}
         onPageChanged={(page: any, numberOfPages: any) => {
           // console.log(`Current page: ${page}`);

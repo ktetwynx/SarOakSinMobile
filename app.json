@@ -1,4 +1,8 @@
 {
   "name": "SarOakSin",
-  "displayName": "SarOakSin"
+  "displayName": "SarOakSin",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-5673291811584669~2665308043",
+    "ios_app_id": "ca-app-pub-xxxxxxxx~xxxxxxxx"
+  }
 }

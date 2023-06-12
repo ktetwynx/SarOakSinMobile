@@ -19,3 +19,8 @@ export const STORAGE_KEYS = {
   USER_PASSWORD: '@com.zote.mobile.search.AUTH.Password',
   KEEP_LOGIN: '@com.zote.mobile.search.AUTH.keep_login',
 };
+
+import {TestIds} from 'react-native-google-mobile-ads';
+
+export const ADS_BANNER_UNIT_ID = TestIds.BANNER; //ca-app-pub-5673291811584669/8679255893
+export const ADS_INTERSTITIAL_UNIT_ID = TestIds.INTERSTITIAL; //ca-app-pub-5673291811584669/8704140774;

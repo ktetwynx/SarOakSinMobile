@@ -8,6 +8,7 @@ import store from './main/redux';
 import Route from './main/route/Route';
 import ThemeProvider from './main/utility/ThemeProvider';
 import SplashScreen from 'react-native-splash-screen';
+import mobileAds from 'react-native-google-mobile-ads';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -20,6 +21,11 @@ function App(): JSX.Element {
     setTimeout(() => {
       SplashScreen.hide();
     }, 1000);
+    mobileAds()
+      .initialize()
+      .then(adapterStatuses => {
+        console.log('Initialization complete!', adapterStatuses);
+      });
   }, []);
 
   return (
