@@ -265,7 +265,11 @@ function PDFView(props: Props) {
           // console.log(`Number of pages: ${numberOfPages}`);
           setIsVisible(true);
           setTimeout(() => {
-            interstitial.show();
+            try {
+              interstitial.show();
+            } catch (error) {
+              console.log('Ads Error', error);
+            }
           }, 8000);
         }}
         onPageChanged={(page: any, numberOfPages: any) => {

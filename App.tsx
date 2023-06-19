@@ -21,12 +21,16 @@ function App(): JSX.Element {
     setTimeout(() => {
       SplashScreen.hide();
     }, 1000);
-    mobileAds()
+    initApp();
+  }, []);
+
+  const initApp = async () => {
+    await mobileAds()
       .initialize()
       .then(adapterStatuses => {
         console.log('Initialization complete!', adapterStatuses);
       });
-  }, []);
+  };
 
   return (
     <Provider store={store}>
