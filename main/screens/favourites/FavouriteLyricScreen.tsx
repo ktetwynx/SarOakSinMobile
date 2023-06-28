@@ -44,7 +44,7 @@ function FavouriteLyricScreen(props: Props) {
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
-  const [totalPage, setTotalPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [label, setLabel] = React.useState({
     fav_lyric_list: i18n.t('fav_lyric_list'),
   });

@@ -31,7 +31,7 @@ export function AuthorListViewmoreScreen(
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
-  const [totalPage, setTotalPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [label, setLabel] = React.useState({
     authors: i18n.t('authors'),
     singers: i18n.t('singers'),

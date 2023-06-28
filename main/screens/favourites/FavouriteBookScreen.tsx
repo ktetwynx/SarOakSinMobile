@@ -43,7 +43,7 @@ function FavouriteBookScreen(props: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [favList, setFavList] = useState([]);
   const [pageAt, setPageAt] = useState<number>(0);
-  const [totalPage, setTotalPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [label, setLabel] = React.useState({
     fav_book_list: i18n.t('fav_book_list'),
   });

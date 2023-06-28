@@ -41,7 +41,7 @@ function LyricListViewmoreScreen(props: Props) {
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
-  const [totalPage, setTotalPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),

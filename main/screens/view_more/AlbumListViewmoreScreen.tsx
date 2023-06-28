@@ -25,7 +25,7 @@ export function AlbumListViewmoreScreen(
   const [viewMoreData, setViewMoreData] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
-  const [totalPage, setTotalPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [label, setLabel] = React.useState({
     albums: i18n.t('albums'),
