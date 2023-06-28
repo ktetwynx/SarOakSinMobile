@@ -79,14 +79,14 @@ export function AlbumListViewmoreScreen(
     setScreenRefresh(true);
   }, []);
 
-  const onEndListReached = useCallback(() => {
-    if (totalPage - 1 != pageAt) {
+  const onEndListReached = () => {
+    if (totalPage != pageAt) {
       const currentPage = pageAt + 1;
       setPageAt(currentPage);
       setIsLoading(true);
       fetchAlbumViewMoreApi(currentPage);
     }
-  }, [totalPage, pageAt]);
+  };
 
   const goBack = useCallback(() => {
     props.navigation.goBack();

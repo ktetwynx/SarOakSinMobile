@@ -75,14 +75,14 @@ function FavouriteLyricScreen(props: Props) {
     setScreenRefresh(true);
   }, []);
 
-  const onEndListReached = useCallback(() => {
-    if (totalPage - 1 != pageAt) {
+  const onEndListReached = () => {
+    if (totalPage != pageAt) {
       const currentPage = pageAt + 1;
       setPageAt(currentPage);
       setIsLoading(true);
       fetchFavouriteList(currentPage);
     }
-  }, []);
+  };
   const goBack = useCallback(() => {
     props.navigation.goBack();
   }, []);

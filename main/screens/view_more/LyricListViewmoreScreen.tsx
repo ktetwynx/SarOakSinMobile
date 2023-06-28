@@ -112,14 +112,14 @@ function LyricListViewmoreScreen(props: Props) {
     props.navigation.goBack();
   }, []);
 
-  const onEndListReached = useCallback(() => {
-    if (totalPage - 1 != pageAt) {
+  const onEndListReached = () => {
+    if (totalPage != pageAt) {
       const currentPage = pageAt + 1;
       setPageAt(currentPage);
       setIsLoading(true);
       fetchLyricsViewMoreApi(currentPage);
     }
-  }, [totalPage, pageAt]);
+  };
 
   const clickedLyric = useCallback(
     (item: any) => {

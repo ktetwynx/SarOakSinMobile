@@ -54,6 +54,7 @@ export function BookListViewmoreScreen(
       formData.append('id', categoryId);
       formData.append('page', currentPage);
       formData.append('size', ROW_COUNT);
+      console.log(formData);
       await ApiFetchService(
         API_URL + `user/book/category/get-by-id`,
         formData,
@@ -92,14 +93,14 @@ export function BookListViewmoreScreen(
     setScreenRefresh(true);
   }, []);
 
-  const onEndListReached = useCallback(() => {
-    if (totalPage - 1 != pageAt) {
+  const onEndListReached = () => {
+    if (totalPage != pageAt) {
       const currentPage = pageAt + 1;
       setPageAt(currentPage);
       setIsLoading(true);
       fetchViewMoreApi(currentPage);
     }
-  }, [totalPage, pageAt, categoryId]);
+  };
 
   const renderViewMoreItem = useCallback(
     (item: any) => {

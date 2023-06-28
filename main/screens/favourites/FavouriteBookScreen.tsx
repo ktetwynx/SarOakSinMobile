@@ -78,14 +78,14 @@ function FavouriteBookScreen(props: Props) {
     setScreenRefresh(true);
   }, []);
 
-  const onEndListReached = useCallback(() => {
-    if (totalPage - 1 != pageAt) {
+  const onEndListReached = () => {
+    if (totalPage != pageAt) {
       const currentPage = pageAt + 1;
       setPageAt(currentPage);
       setIsLoading(true);
       fetchFavouriteList(currentPage);
     }
-  }, [totalPage, pageAt]);
+  };
 
   const fetchFavouriteList = useCallback(
     async (pageAt: number) => {
