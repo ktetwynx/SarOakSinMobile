@@ -28,7 +28,7 @@ export function BookListViewmoreScreen(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [pageAt, setPageAt] = useState<number>(0);
-  const [totalPage, setTotalPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
 
   useEffect(() => {
     setCategoryName(props.route.params.categoryName);
@@ -94,6 +94,7 @@ export function BookListViewmoreScreen(
   }, []);
 
   const onEndListReached = () => {
+    console.log(totalPage);
     if (totalPage != pageAt) {
       const currentPage = pageAt + 1;
       setPageAt(currentPage);

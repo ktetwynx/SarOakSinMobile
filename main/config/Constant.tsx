@@ -12,7 +12,7 @@ export const APP_NAME = 'Sar Oak Sin';
 export const PENDING = 'PENDING';
 export const ACTIVATED = 'ACTIVATED';
 
-export const ROW_COUNT = 9;
+export const ROW_COUNT = 12;
 
 export const STORAGE_KEYS = {
   USER_EMAIL: '@com.zote.mobile.search.AUTH.email',
@@ -22,5 +22,6 @@ export const STORAGE_KEYS = {
 
 import {TestIds} from 'react-native-google-mobile-ads';
 
-export const ADS_BANNER_UNIT_ID = TestIds.BANNER; //ca-app-pub-5673291811584669/8679255893
-export const ADS_INTERSTITIAL_UNIT_ID = TestIds.INTERSTITIAL; //ca-app-pub-5673291811584669/8704140774;
+export const ADS_BANNER_UNIT_ID = 'ca-app-pub-5673291811584669/8679255893'; //TestIds.BANNER
+export const ADS_INTERSTITIAL_UNIT_ID =
+  'ca-app-pub-5673291811584669/8704140774'; //TestIds.INTERSTITIAL
