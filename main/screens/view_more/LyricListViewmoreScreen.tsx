@@ -138,7 +138,7 @@ function LyricListViewmoreScreen(props: Props) {
           style={{
             flexDirection: 'column',
             marginTop: 12,
-            flex: 1,
+            flex: 0.5,
             marginRight: 12,
           }}
           entering={FadeInDown}

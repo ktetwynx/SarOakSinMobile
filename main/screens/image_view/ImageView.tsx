@@ -17,7 +17,7 @@ import {ConnectedProps, connect} from 'react-redux';
 import {setFavBookCount, setFavLyricCount} from '../../redux/actions';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {GeneralColor} from '../../utility/Themes';
-import {TouchableOpacity, View} from 'react-native';
+import {Platform, TouchableOpacity, View} from 'react-native';
 import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
@@ -46,12 +46,10 @@ function ImageView(props: Props) {
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const [isShowAds, setIsShowAds] = useState<boolean>(false);
   const interstitial = InterstitialAd.createForAdRequest(
     ADS_INTERSTITIAL_UNIT_ID,
-    {
-      requestNonPersonalizedAdsOnly: true,
-      keywords: ['fashion', 'clothing'],
-    },
+    {},
   );
   interstitial.load();
 
@@ -59,10 +57,31 @@ function ImageView(props: Props) {
     setLyricsImages(props.route.params.lyricsImages);
     setCurrentImageIndex(props.route.params.currentImageIndex);
     initialCheckFav();
-    setTimeout(() => {
-      interstitial.show();
-    }, 6000);
+    setIsShowAds(true);
   }, [props.route.params]);
+
+  useEffect(() => {
+    const adsThread = setTimeout(() => {
+      try {
+        interstitial.show();
+      } catch (error) {
+        console.log('Ads Error', error);
+      }
+    }, 6000);
+
+    const adsShowEvery20minThread = setInterval(() => {
+      try {
+        interstitial.show();
+      } catch (error) {
+        console.log('Ads Error', error);
+      }
+    }, 900000);
+    return () => {
+      clearInterval(adsShowEvery20minThread);
+      clearTimeout(adsThread);
+      setIsShowAds(false);
+    };
+  }, [isShowAds]);
 
   const initialCheckFav = useCallback(() => {
     let data: any =
@@ -162,8 +181,8 @@ function ImageView(props: Props) {
       <View
         style={{
           position: 'absolute',
-          top: 50,
-          left: 20,
+          top: Platform.OS == 'ios' ? 50 : 10,
+          left: 12,
         }}>
         <TouchableOpacity
           style={{justifyContent: 'center', alignItems: 'center'}}
@@ -190,8 +209,8 @@ function ImageView(props: Props) {
         <View
           style={{
             position: 'absolute',
-            top: 50,
-            right: 20,
+            top: Platform.OS == 'ios' ? 50 : 10,
+            right: 12,
           }}>
           <TouchableOpacity
             style={{justifyContent: 'center', alignItems: 'center'}}

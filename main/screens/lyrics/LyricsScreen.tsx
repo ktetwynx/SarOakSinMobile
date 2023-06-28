@@ -233,7 +233,7 @@ function LyricsScreen(props: Props) {
               flexDirection: 'column',
               marginRight: 16,
               marginBottom: 12,
-              flex: 1,
+              flex: 0.5,
             }}
             entering={FadeInDown.delay(item.index * 300)}
             exiting={FadeOutDown.delay(item.index * 300)}>

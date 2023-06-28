@@ -20,8 +20,8 @@ function App(): JSX.Element {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
+      initApp();
     }, 1000);
-    initApp();
   }, []);
 
   const initApp = async () => {

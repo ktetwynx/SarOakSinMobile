@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   RefreshControl,
+  Dimensions,
 } from 'react-native';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -53,7 +54,6 @@ export function BookListViewmoreScreen(
       formData.append('id', categoryId);
       formData.append('page', currentPage);
       formData.append('size', ROW_COUNT);
-      console.log(formData);
       await ApiFetchService(
         API_URL + `user/book/category/get-by-id`,
         formData,
@@ -105,18 +105,25 @@ export function BookListViewmoreScreen(
     (item: any) => {
       return (
         <Animated.View
+          // style={{
+          //   flexDirection: 'column',
+          //   marginTop: 12,
+          //   flex: 0.333,
+          // }}
           style={{
             flexDirection: 'column',
-            marginTop: 12,
-            flex: 0.4,
+            marginTop: 22,
+            flex: 0.333,
           }}
           entering={FadeInDown}
           exiting={FadeOut}>
-          <TouchableOpacity onPress={() => clickedBookDetail(item.item.id)}>
+          <TouchableOpacity
+            style={{alignItems: 'center', marginHorizontal: 6}}
+            onPress={() => clickedBookDetail(item.item.id)}>
             <Image
               style={{
                 backgroundColor: 'grey',
-                width: 120,
+                width: '100%',
                 height: 140,
                 alignSelf: 'center',
                 borderRadius: 20,
@@ -179,7 +186,6 @@ export function BookListViewmoreScreen(
 
         <View style={{flex: 1}}>
           <FlatList
-            style={{width: '100%', marginVertical: 10}}
             numColumns={3}
             data={viewMoreData}
             refreshControl={

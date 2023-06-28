@@ -63,14 +63,11 @@ function PDFView(props: Props) {
   const [progress, setProgress] = useState<number>(0);
   const [goPageNumber, setGoPageNumber] = useState<string>('');
   const [isVisibleModal, setIsVisbleModal] = useState<boolean>(false);
-
+  const [isShowAds, setIsShowAds] = useState<boolean>(false);
   const pdfRef = useRef<Pdf>(null);
   const interstitial = InterstitialAd.createForAdRequest(
     ADS_INTERSTITIAL_UNIT_ID,
-    {
-      requestNonPersonalizedAdsOnly: true,
-      keywords: ['fashion', 'clothing'],
-    },
+    {},
   );
   interstitial.load();
   const [label, setLabel] = React.useState({
@@ -98,6 +95,29 @@ function PDFView(props: Props) {
       return () => clearTimeout(visibleThread);
     }
   }, [isVisible]);
+
+  useEffect(() => {
+    const adsThread = setTimeout(() => {
+      try {
+        interstitial.show();
+      } catch (error) {
+        console.log('Ads Error', error);
+      }
+    }, 8000);
+
+    const adsShowEvery20minThread = setInterval(() => {
+      try {
+        interstitial.show();
+      } catch (error) {
+        console.log('Ads Error', error);
+      }
+    }, 1200000);
+    return () => {
+      clearInterval(adsShowEvery20minThread);
+      clearTimeout(adsThread);
+      setIsShowAds(false);
+    };
+  }, [isShowAds]);
 
   useEffect(() => {
     setBookUri({uri: API_URL + props.route.params.bookPath, cache: true});
@@ -264,13 +284,7 @@ function PDFView(props: Props) {
         onLoadComplete={(numberOfPages: any, filePath: any) => {
           // console.log(`Number of pages: ${numberOfPages}`);
           setIsVisible(true);
-          setTimeout(() => {
-            try {
-              interstitial.show();
-            } catch (error) {
-              console.log('Ads Error', error);
-            }
-          }, 8000);
+          setIsShowAds(true);
         }}
         onPageChanged={(page: any, numberOfPages: any) => {
           // console.log(`Current page: ${page}`);
