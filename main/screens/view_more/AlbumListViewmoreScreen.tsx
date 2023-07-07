@@ -16,6 +16,7 @@ import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {LoadingScreen} from '../components/LoadingScreen';
 import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
+import {GeneralColor} from '../../utility/Themes';
 
 export function AlbumListViewmoreScreen(
   props: RootStackScreenProps<'AlbumListViewmoreScreen'>,
@@ -118,7 +119,7 @@ export function AlbumListViewmoreScreen(
                 height: 100,
                 borderRadius: 10,
                 flex: 1,
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
               }}
               source={{
                 uri: API_URL + item.item.imgPath,

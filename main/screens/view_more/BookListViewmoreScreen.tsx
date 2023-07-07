@@ -16,6 +16,7 @@ import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {LoadingScreen} from '../components/LoadingScreen';
 import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
+import {GeneralColor} from '../../utility/Themes';
 
 export function BookListViewmoreScreen(
   props: RootStackScreenProps<'BookListViewmoreScreen'>,
@@ -124,7 +125,7 @@ export function BookListViewmoreScreen(
             onPress={() => clickedBookDetail(item.item.id)}>
             <Image
               style={{
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 width: '100%',
                 height: 140,
                 alignSelf: 'center',

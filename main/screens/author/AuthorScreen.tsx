@@ -23,6 +23,7 @@ import Animated, {
   SlideInUp,
   FadeIn,
 } from 'react-native-reanimated';
+import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -159,7 +160,7 @@ function AuthorScreen(props: Props) {
           <TouchableOpacity onPress={() => clickedAuthorItem(item)}>
             <Image
               style={{
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 width: 150,
                 height: 180,
                 borderRadius: 20,
@@ -202,7 +203,7 @@ function AuthorScreen(props: Props) {
           <TouchableOpacity onPress={() => clickedAuthorItem(item)}>
             <Image
               style={{
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 width: '100%',
                 height: 220,
                 borderRadius: 20,
@@ -253,7 +254,7 @@ function AuthorScreen(props: Props) {
             style={{
               width: 100,
               height: 100,
-              backgroundColor: 'grey',
+              backgroundColor: GeneralColor.light_grey,
               // marginLeft: -80,
               borderRadius: 100,
             }}

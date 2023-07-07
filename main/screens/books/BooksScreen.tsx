@@ -7,7 +7,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL} from '../../config/Constant';
+import {API_URL, dummyData} from '../../config/Constant';
 import {RootTabScreenProps} from '../../route/StackParamsTypes';
 import {ViewMoreButton} from '../../components/ViewMoreButton';
 import {TextView} from '../../components/TextView';
@@ -22,12 +22,14 @@ import Animated, {
   SlideOutRight,
 } from 'react-native-reanimated';
 import {SearchBar} from '../components/SearchBar';
+import {ScrollView} from 'react-native-gesture-handler';
+import {GeneralColor} from '../../utility/Themes';
 
 export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   const context = useContext(ThemeContext);
   const {theme} = context;
-  const [bookListData, setBookListData] = useState([]);
-  const [authorListData, setAuthorListData] = useState([]);
+  const [bookListData, setBookListData] = useState(dummyData);
+  const [authorListData, setAuthorListData] = useState(dummyData);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [label, setLabel] = React.useState({
     authors: i18n.t('authors'),
@@ -111,8 +113,9 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
 
           <FlatList
             showsVerticalScrollIndicator={false}
-            data={item.item.bookList}
-            style={{marginTop: 16, paddingLeft: 16}}
+            data={item.item.bookList ? item.item.bookList : dummyData}
+            style={{marginTop: 16}}
+            contentContainerStyle={{paddingLeft: 12}}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             renderItem={renderBookListItem}
@@ -125,12 +128,8 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   );
 
   const renderBookAuthorItem = useCallback(() => {
-    return authorListData.length != 0 ? (
+    return (
       <View style={{flexDirection: 'column', paddingBottom: 20}}>
-        <SearchBar
-          text={label.search_book_text}
-          clickedSearch={clickedSearch}
-        />
         <View
           style={{
             marginHorizontal: 16,
@@ -158,8 +157,6 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
           keyExtractor={(item: any, index: number) => index.toString()}
         />
       </View>
-    ) : (
-      <></>
     );
   }, [authorListData, label]);
 
@@ -177,7 +174,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
                 width: 80,
                 height: 80,
                 alignSelf: 'center',
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 borderRadius: 50,
               }}
               source={{uri: API_URL + item.item.profile}}
@@ -202,10 +199,13 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
           exiting={FadeOutDown.delay(item.index * 300)}>
           <TouchableOpacity
             onPress={() => clickedBookDetail(item.item.id)}
-            style={{flexDirection: 'column', marginRight: 12}}>
+            style={{
+              flexDirection: 'column',
+              marginRight: 12,
+            }}>
             <Image
               style={{
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 width: 140,
                 height: 160,
                 borderRadius: 20,
@@ -226,7 +226,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
 
             <TextView
               numberOfLines={1}
-              text={item.item.myAuthor.name}
+              text={item.item.myAuthor?.name}
               textStyle={{alignSelf: 'center', marginTop: 2, opacity: 0.5}}
             />
           </TouchableOpacity>
@@ -257,31 +257,40 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
     <SafeAreaView
       edges={['top']}
       style={{flex: 1, backgroundColor: theme.backgroundColor}}>
-      <View
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={screenRefresh}
+            onRefresh={onRefreshScreen}
+            tintColor={theme.backgroundColor2}
+            // titleColor={theme.backgroundColor2}
+            // title="Pull to refresh"
+          />
+        }
         style={{
           flexDirection: 'column',
           flex: 1,
           backgroundColor: theme.backgroundColor,
         }}>
+        <SearchBar
+          paddingTop={10}
+          text={label.search_book_text}
+          clickedSearch={clickedSearch}
+        />
         <FlatList
+          nestedScrollEnabled={true}
+          scrollEnabled={false}
           showsVerticalScrollIndicator={false}
           data={bookListData}
-          refreshControl={
-            <RefreshControl
-              refreshing={screenRefresh}
-              onRefresh={onRefreshScreen}
-              tintColor={theme.backgroundColor2}
-              // titleColor={theme.backgroundColor2}
-              // title="Pull to refresh"
-            />
-          }
           contentContainerStyle={{paddingBottom: 100}}
-          style={{paddingTop: 10, backgroundColor: theme.backgroundColor}}
+          style={{backgroundColor: theme.backgroundColor}}
           renderItem={renderBookCategoryItem}
           ListHeaderComponent={renderBookAuthorItem}
           keyExtractor={(item: any, index: number) => index.toString()}
         />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {RootTabScreenProps} from '../../route/StackParamsTypes';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL} from '../../config/Constant';
+import {API_URL, dummyData} from '../../config/Constant';
 import {ViewMoreButton} from '../../components/ViewMoreButton';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
@@ -23,6 +23,7 @@ import Animated, {
   SlideInRight,
 } from 'react-native-reanimated';
 import {SearchBar} from '../components/SearchBar';
+import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -48,7 +49,6 @@ type Props = ConnectedProps<typeof connector> &
 function LyricsScreen(props: Props) {
   const context = useContext(ThemeContext);
   const {theme} = context;
-  const [lyricHomeData, setLyricHomeData] = useState([]);
   const [lyricsImages, setLyricsImages] = useState<any>();
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [label, setLabel] = React.useState({
@@ -57,6 +57,12 @@ function LyricsScreen(props: Props) {
     singers: i18n.t('singers'),
     search_lyric_text: i18n.t('search_lyric_text'),
   });
+
+  const [lyricHomeData, setLyricHomeData] = useState([
+    {id: 1, title: label.singers, data: []},
+    {id: 2, title: label.albums, data: []},
+    {id: 3, title: label.lyrics, data: []},
+  ]);
 
   useEffect(() => {
     const unsubscribe = i18n.onChange(() => {
@@ -211,7 +217,7 @@ function LyricsScreen(props: Props) {
             style={{paddingLeft: 16, marginTop: 10, marginBottom: 12}}
             showsHorizontalScrollIndicator={false}
             horizontal={item.index == 1 ? false : true}
-            data={item.item.data}
+            data={item.item.data.length != 0 ? item.item.data : dummyData}
             numColumns={item.index == 1 ? 2 : undefined}
             renderItem={(data: any) =>
               renderLyricsHomeDetailItem(data, item.item.title)
@@ -243,7 +249,7 @@ function LyricsScreen(props: Props) {
                   height: 100,
                   borderRadius: 10,
                   flex: 1,
-                  backgroundColor: 'grey',
+                  backgroundColor: GeneralColor.light_grey,
                 }}
                 source={{
                   uri: API_URL + item.item.imgPath,
@@ -268,7 +274,7 @@ function LyricsScreen(props: Props) {
                 style={{
                   width: 140,
                   height: 160,
-                  backgroundColor: 'grey',
+                  backgroundColor: GeneralColor.light_grey,
                   borderRadius: 15,
                 }}
                 source={{uri: API_URL + item.item.imgPath}}
@@ -292,7 +298,7 @@ function LyricsScreen(props: Props) {
                 style={{
                   width: 80,
                   height: 80,
-                  backgroundColor: 'grey',
+                  backgroundColor: GeneralColor.light_grey,
                   borderRadius: 50,
                 }}
                 source={{

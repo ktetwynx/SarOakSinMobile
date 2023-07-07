@@ -19,6 +19,7 @@ import {TextView} from '../../components/TextView';
 import {useFocusEffect} from '@react-navigation/native';
 import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
 import {LoadingScreen} from '../components/LoadingScreen';
+import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -135,7 +136,7 @@ function FavouriteBookScreen(props: Props) {
           <TouchableOpacity onPress={() => clickedBook(item.item.id)}>
             <Image
               style={{
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 borderRadius: 20,
                 height: 200,
               }}

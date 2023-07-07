@@ -724,7 +724,7 @@ const ProfileScreen = (props: Props) => {
                 style={{
                   width: 120,
                   height: 120,
-                  backgroundColor: 'grey',
+                  backgroundColor: GeneralColor.light_grey,
                   borderRadius: 20,
                 }}
                 source={require('../../assets/images/sar_oak_sin_logo.jpg')}

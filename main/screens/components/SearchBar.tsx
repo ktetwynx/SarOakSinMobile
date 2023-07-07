@@ -9,13 +9,16 @@ import {GeneralColor} from '../../utility/Themes';
 export interface AppProps {
   clickedSearch: any;
   text: string;
+  paddingTop?: number;
 }
 
 export function SearchBar(props: AppProps) {
   const context = useContext(ThemeContext);
   const {theme} = context;
   return (
-    <TouchableOpacity onPress={props.clickedSearch}>
+    <TouchableOpacity
+      style={{paddingTop: props.paddingTop}}
+      onPress={props.clickedSearch}>
       <Animated.View
         entering={FadeInUp.duration(400)}
         style={{
@@ -29,8 +32,6 @@ export function SearchBar(props: AppProps) {
           justifyContent: 'space-between',
           marginBottom: 16,
           marginTop: 6,
-          // borderWidth: 1,
-          // borderColor: theme.backgroundColor2,
         }}>
         <TextView
           text={props.text}

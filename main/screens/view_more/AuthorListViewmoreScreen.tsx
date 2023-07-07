@@ -21,6 +21,7 @@ import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import {LoadingScreen} from '../components/LoadingScreen';
 import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
+import {GeneralColor} from '../../utility/Themes';
 
 export function AuthorListViewmoreScreen(
   props: RootStackScreenProps<'AuthorListViewmoreScreen'>,
@@ -139,7 +140,7 @@ export function AuthorListViewmoreScreen(
                 width: 80,
                 height: 80,
                 borderRadius: 50,
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
               }}
             />
             <TextView

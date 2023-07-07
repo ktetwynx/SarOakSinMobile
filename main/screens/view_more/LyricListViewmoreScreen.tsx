@@ -17,6 +17,7 @@ import {TextView} from '../../components/TextView';
 import {ConnectedProps, connect} from 'react-redux';
 import {LoadingScreen} from '../components/LoadingScreen';
 import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
+import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -146,7 +147,7 @@ function LyricListViewmoreScreen(props: Props) {
           <TouchableOpacity onPress={() => clickedLyric(item)}>
             <Image
               style={{
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 width: '100%',
                 height: 220,
                 borderRadius: 20,

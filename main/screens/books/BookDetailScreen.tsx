@@ -245,7 +245,7 @@ function BookDetailScreen(props: Props) {
               style={{
                 width: '75%',
                 height: 400,
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 borderRadius: 20,
                 alignSelf: 'center',
               }}
@@ -306,7 +306,7 @@ function BookDetailScreen(props: Props) {
                       style={{
                         width: 40,
                         height: 40,
-                        backgroundColor: 'grey',
+                        backgroundColor: GeneralColor.light_grey,
                         borderRadius: 40,
                         marginRight: 10,
                       }}
@@ -369,7 +369,7 @@ function BookDetailScreen(props: Props) {
               )}
 
               <Animated.View
-                style={{marginBottom: 60}}
+                style={{marginBottom: 30}}
                 entering={FadeInDown.delay(2000).duration(300)}>
                 <TouchableOpacity
                   onPress={clickedReadNow}
@@ -403,6 +403,7 @@ function BookDetailScreen(props: Props) {
                 size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                 requestOptions={{
                   requestNonPersonalizedAdsOnly: true,
+                  keywords: ['fashion', 'clothing'],
                 }}
               />
             </View>

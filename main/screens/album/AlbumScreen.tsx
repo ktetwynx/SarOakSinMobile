@@ -17,6 +17,7 @@ import Animated, {
   SlideInUp,
   FadeIn,
 } from 'react-native-reanimated';
+import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -131,7 +132,7 @@ function AlbumScreen(props: Props) {
               style={{
                 height: 250,
                 borderRadius: 20,
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 width: '100%',
               }}
             />
@@ -184,7 +185,7 @@ function AlbumScreen(props: Props) {
               style={{
                 width: 150,
                 height: 100,
-                backgroundColor: 'grey',
+                backgroundColor: GeneralColor.light_grey,
                 marginRight: 16,
                 borderRadius: 20,
               }}

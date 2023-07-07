@@ -244,7 +244,7 @@ const SearchScreen = (props: Props) => {
               <TouchableOpacity onPress={() => clickedBookDetail(item.item.id)}>
                 <Image
                   style={{
-                    backgroundColor: 'grey',
+                    backgroundColor: GeneralColor.light_grey,
                     width: '100%',
                     height: 220,
                     borderRadius: 20,
@@ -318,7 +318,7 @@ const SearchScreen = (props: Props) => {
                     width: 100,
                     height: 100,
                     alignSelf: 'center',
-                    backgroundColor: 'grey',
+                    backgroundColor: GeneralColor.light_grey,
                     borderRadius: 50,
                   }}
                   source={{uri: API_URL + item.item.profile}}
@@ -349,7 +349,7 @@ const SearchScreen = (props: Props) => {
               <TouchableOpacity onPress={() => clickedLyric(item)}>
                 <Image
                   style={{
-                    backgroundColor: 'grey',
+                    backgroundColor: GeneralColor.light_grey,
                     width: '100%',
                     height: 220,
                     borderRadius: 20,
@@ -387,7 +387,7 @@ const SearchScreen = (props: Props) => {
                     height: 100,
                     borderRadius: 10,
                     flex: 1,
-                    backgroundColor: 'grey',
+                    backgroundColor: GeneralColor.light_grey,
                   }}
                   source={{
                     uri: API_URL + item.item.imgPath,
@@ -418,7 +418,7 @@ const SearchScreen = (props: Props) => {
                   style={{
                     width: 100,
                     height: 100,
-                    backgroundColor: 'grey',
+                    backgroundColor: GeneralColor.light_grey,
                     borderRadius: 50,
                   }}
                   source={{

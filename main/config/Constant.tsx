@@ -25,3 +25,5 @@ import {TestIds} from 'react-native-google-mobile-ads';
 export const ADS_BANNER_UNIT_ID = 'ca-app-pub-5673291811584669/8679255893'; //TestIds.BANNER
 export const ADS_INTERSTITIAL_UNIT_ID =
   'ca-app-pub-5673291811584669/8704140774'; //TestIds.INTERSTITIAL
+
+export const dummyData = [{id: 1}, {id: 2}, {id: 3}, {id: 4}];
