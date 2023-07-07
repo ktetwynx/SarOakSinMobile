@@ -47,11 +47,6 @@ function ImageView(props: Props) {
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [isShowAds, setIsShowAds] = useState<boolean>(false);
-  const interstitial = InterstitialAd.createForAdRequest(
-    ADS_INTERSTITIAL_UNIT_ID,
-    {},
-  );
-  interstitial.load();
 
   useEffect(() => {
     setLyricsImages(props.route.params.lyricsImages);
@@ -63,7 +58,7 @@ function ImageView(props: Props) {
   useEffect(() => {
     const adsThread = setTimeout(() => {
       try {
-        interstitial.show();
+        showAd();
       } catch (error) {
         console.log('Ads Error', error);
       }
@@ -71,7 +66,7 @@ function ImageView(props: Props) {
 
     const adsShowEvery20minThread = setInterval(() => {
       try {
-        interstitial.show();
+        showAd();
       } catch (error) {
         console.log('Ads Error', error);
       }
@@ -82,6 +77,27 @@ function ImageView(props: Props) {
       setIsShowAds(false);
     };
   }, [isShowAds]);
+
+  const showAd = () => {
+    const interstitial = InterstitialAd.createForAdRequest(
+      ADS_INTERSTITIAL_UNIT_ID,
+      {
+        requestNonPersonalizedAdsOnly: true,
+        keywords: ['fashion', 'clothing'],
+      },
+    );
+    interstitial.load();
+    const unsubscribeLoaded = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        interstitial.show();
+      },
+    );
+
+    return () => {
+      unsubscribeLoaded();
+    };
+  };
 
   const initialCheckFav = useCallback(() => {
     let data: any =

@@ -5,9 +5,15 @@ import React, {
   useContext,
   useRef,
 } from 'react';
-import {View, TouchableOpacity, TextInput, Platform} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  TextInput,
+  Platform,
+  AppState,
+} from 'react-native';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
-import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
+import {AdEventType, InterstitialAd} from 'react-native-google-mobile-ads';
 import Pdf from 'react-native-pdf';
 import {ADS_INTERSTITIAL_UNIT_ID, API_URL} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
@@ -50,7 +56,6 @@ function PDFView(props: Props) {
     uri: string;
     cache: boolean;
   }
-
   const context = useContext(ThemeContext);
   const {theme} = context;
   const [bookUri, setBookUri] = useState<source>({uri: '', cache: true});
@@ -65,11 +70,7 @@ function PDFView(props: Props) {
   const [isVisibleModal, setIsVisbleModal] = useState<boolean>(false);
   const [isShowAds, setIsShowAds] = useState<boolean>(false);
   const pdfRef = useRef<Pdf>(null);
-  const interstitial = InterstitialAd.createForAdRequest(
-    ADS_INTERSTITIAL_UNIT_ID,
-    {},
-  );
-  interstitial.load();
+
   const [label, setLabel] = React.useState({
     page_number: i18n.t('page_number'),
     go: i18n.t('go'),
@@ -99,7 +100,8 @@ function PDFView(props: Props) {
   useEffect(() => {
     const adsThread = setTimeout(() => {
       try {
-        interstitial.show();
+        // interstitial.show();
+        showAd();
       } catch (error) {
         console.log('Ads Error', error);
       }
@@ -107,7 +109,8 @@ function PDFView(props: Props) {
 
     const adsShowEvery20minThread = setInterval(() => {
       try {
-        interstitial.show();
+        // interstitial.show();
+        showAd();
       } catch (error) {
         console.log('Ads Error', error);
       }
@@ -134,6 +137,27 @@ function PDFView(props: Props) {
       }, 500);
     }
   }, [props.route.params.readPageAt]);
+
+  const showAd = () => {
+    const interstitial = InterstitialAd.createForAdRequest(
+      ADS_INTERSTITIAL_UNIT_ID,
+      {
+        requestNonPersonalizedAdsOnly: true,
+        keywords: ['fashion', 'clothing'],
+      },
+    );
+    interstitial.load();
+    const unsubscribeLoaded = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        interstitial.show();
+      },
+    );
+
+    return () => {
+      unsubscribeLoaded();
+    };
+  };
 
   const fetchSaveBookApi = useCallback(async () => {
     let formData = new FormData();
