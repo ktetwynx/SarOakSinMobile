@@ -121,7 +121,12 @@ function AlbumScreen(props: Props) {
     (item: any) => {
       return (
         <Animated.View
-          style={{flexDirection: 'column', flex: 1, marginRight: 12}}
+          style={{
+            flexDirection: 'column',
+            flex: 1,
+            marginRight: 12,
+            marginBottom: 16,
+          }}
           entering={FadeInDown}
           exiting={FadeOut}>
           <TouchableOpacity onPress={() => clickedLyric(item)}>

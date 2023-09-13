@@ -37,6 +37,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import {LoginDialog} from '../../components/LoginDialog';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -85,6 +86,7 @@ function BookDetailScreen(props: Props) {
   }
   const context = useContext(ThemeContext);
   const {theme} = context;
+  const [isShowLoginDialog, setIsShowLoginDialog] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [bookDetailData, setBookDetailData] = useState<BookDetail>({
     bookName: ' ',
@@ -194,10 +196,14 @@ function BookDetailScreen(props: Props) {
   }, [props.route.params.bookId, props.profile?.id, props.token]);
 
   const clickedFavourite = useCallback(() => {
-    if (isFavourite) {
-      fetchRemoveBookApi();
+    if (props.token != null) {
+      if (isFavourite) {
+        fetchRemoveBookApi();
+      } else {
+        fetchSaveBookApi();
+      }
     } else {
-      fetchSaveBookApi();
+      setIsShowLoginDialog(true);
     }
   }, [isFavourite]);
 
@@ -324,21 +330,17 @@ function BookDetailScreen(props: Props) {
                   </View>
                 </TouchableOpacity>
 
-                {props.token != null ? (
-                  <Animated.View entering={BounceIn.duration(600).delay(1600)}>
-                    <TouchableOpacity
-                      onPress={clickedFavourite}
-                      style={{justifyContent: 'center'}}>
-                      <AntDesign
-                        name={isFavourite ? 'heart' : 'hearto'}
-                        size={30}
-                        color={isFavourite ? 'red' : theme.backgroundColor2}
-                      />
-                    </TouchableOpacity>
-                  </Animated.View>
-                ) : (
-                  <></>
-                )}
+                <Animated.View entering={BounceIn.duration(600).delay(1600)}>
+                  <TouchableOpacity
+                    onPress={clickedFavourite}
+                    style={{justifyContent: 'center'}}>
+                    <AntDesign
+                      name={isFavourite ? 'heart' : 'hearto'}
+                      size={30}
+                      color={isFavourite ? 'red' : theme.backgroundColor2}
+                    />
+                  </TouchableOpacity>
+                </Animated.View>
               </View>
               {bookDetailData?.readPageAt == -1 ? (
                 <View style={{height: 60}} />
@@ -409,6 +411,19 @@ function BookDetailScreen(props: Props) {
             </View>
           </View>
         </SafeAreaView>
+        <LoginDialog
+          clickedLogin={() => {
+            props.navigation.navigate('ProfileScreen');
+          }}
+          clickedSignUp={() => {
+            props.navigation.navigate('SignUpScreen');
+            setIsShowLoginDialog(false);
+          }}
+          isVisible={isShowLoginDialog}
+          clickedClosed={() => {
+            setIsShowLoginDialog(false);
+          }}
+        />
       </ScrollView>
 
       {isLoading ? <LoadingScreen /> : <></>}

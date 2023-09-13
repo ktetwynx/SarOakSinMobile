@@ -12,6 +12,7 @@ import {GeneralColor} from '../../utility/Themes';
 import {NeedUpdateDialog} from '../components/NeedUpdateDialog';
 import {Linking, View} from 'react-native';
 import {checkVersion} from 'react-native-check-version';
+import Route from '../../route/Route';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 export function LandingScreen() {

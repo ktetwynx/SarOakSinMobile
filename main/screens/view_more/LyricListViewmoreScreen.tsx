@@ -38,7 +38,7 @@ type Props = ConnectedProps<typeof connector> &
 function LyricListViewmoreScreen(props: Props) {
   const context = useContext(ThemeContext);
   const {theme} = context;
-  const [viewMoreData, setViewMoreData] = useState([]);
+  const [viewMoreData, setViewMoreData] = useState<any>([]);
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
@@ -68,6 +68,18 @@ function LyricListViewmoreScreen(props: Props) {
     }
   }, [screenRefresh]);
 
+  useEffect(() => {
+    let images = [];
+    for (let data of viewMoreData) {
+      images.push({
+        url: API_URL + data.imgPath,
+        isSaved: data.saved,
+        lyricsId: data.id,
+      });
+    }
+    setLyricsImages(images);
+  }, [viewMoreData]);
+
   const fetchLyricsViewMoreApi = useCallback(
     async (pageAt: number) => {
       let formData = new FormData();
@@ -84,21 +96,12 @@ function LyricListViewmoreScreen(props: Props) {
           setScreenRefresh(false);
         }, 1000);
         if (response.code == 200) {
-          setViewMoreData(prev =>
+          setViewMoreData((prev: any) =>
             pageAt === 0
               ? response.data.content
               : [...prev, ...response.data.content],
           );
           setTotalPage(response.data.totalPages);
-          let images = [];
-          for (let data of response.data.content) {
-            images.push({
-              url: API_URL + data.imgPath,
-              isSaved: data.saved,
-              lyricsId: data.id,
-            });
-          }
-          setLyricsImages(images);
         }
       });
     },
@@ -138,7 +141,7 @@ function LyricListViewmoreScreen(props: Props) {
         <Animated.View
           style={{
             flexDirection: 'column',
-            marginTop: 12,
+            marginTop: 16,
             flex: 0.5,
             marginRight: 12,
           }}

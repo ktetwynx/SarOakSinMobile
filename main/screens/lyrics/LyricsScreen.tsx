@@ -214,8 +214,9 @@ function LyricsScreen(props: Props) {
             </Animated.View>
           </View>
           <FlatList
-            style={{paddingLeft: 16, marginTop: 10, marginBottom: 12}}
+            style={{marginTop: 10, marginBottom: 12}}
             showsHorizontalScrollIndicator={false}
+            contentContainerStyle={item.index == 1 ? {} : {paddingLeft: 12}}
             horizontal={item.index == 1 ? false : true}
             data={item.item.data.length != 0 ? item.item.data : dummyData}
             numColumns={item.index == 1 ? 2 : undefined}
@@ -237,8 +238,9 @@ function LyricsScreen(props: Props) {
           <Animated.View
             style={{
               flexDirection: 'column',
-              marginRight: 16,
-              marginBottom: 12,
+              marginRight: 6,
+              marginLeft: 8,
+              marginBottom: 6,
               flex: 0.5,
             }}
             entering={FadeInDown.delay(item.index * 300)}
@@ -281,7 +283,14 @@ function LyricsScreen(props: Props) {
               />
               <TextView
                 text={item.item.name}
-                textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
+                numberOfLines={2}
+                textStyle={{
+                  textAlign: 'center',
+                  alignSelf: 'center',
+                  marginTop: 6,
+                  fontSize: 16,
+                  width: 140,
+                }}
               />
             </TouchableOpacity>
           </Animated.View>
@@ -289,6 +298,9 @@ function LyricsScreen(props: Props) {
       } else if (title == label.singers) {
         return (
           <Animated.View
+            style={{
+              flexDirection: 'column',
+            }}
             entering={FadeInDown.delay(item.index * 300)}
             exiting={FadeOutDown.delay(item.index * 300)}>
             <TouchableOpacity
@@ -298,6 +310,7 @@ function LyricsScreen(props: Props) {
                 style={{
                   width: 80,
                   height: 80,
+                  alignSelf: 'center',
                   backgroundColor: GeneralColor.light_grey,
                   borderRadius: 50,
                 }}

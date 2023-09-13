@@ -1,10 +1,19 @@
-import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import {CompositeScreenProps} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {
+  BottomTabNavigationProp,
+  BottomTabScreenProps,
+} from '@react-navigation/bottom-tabs';
+import {
+  CompositeNavigationProp,
+  CompositeScreenProps,
+} from '@react-navigation/native';
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import {ConnectedProps} from 'react-redux';
 
 export type RootStackParamList = {
-  LandingScreen: undefined;
+  LandingScreen: RootTabParamList;
   BookListViewmoreScreen: {categoryId: number; categoryName: string};
   AuthorScreen: {
     authorId: number;
@@ -36,7 +45,10 @@ export type RootStackParamList = {
   AuthorListViewmoreScreen: {authorType: number};
 };
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
-  NativeStackScreenProps<RootStackParamList, Screen>;
+  CompositeScreenProps<
+    NativeStackScreenProps<RootStackParamList, Screen>,
+    BottomTabScreenProps<RootTabParamList>
+  >;
 
 export type RootTabParamList = {
   BooksScreen: undefined;

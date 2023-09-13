@@ -5,7 +5,7 @@ import React, {
   useContext,
   useRef,
 } from 'react';
-import {RootStackScreenProps} from '../../route/StackParamsTypes';
+import {MainProps, RootStackScreenProps} from '../../route/StackParamsTypes';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {ADS_INTERSTITIAL_UNIT_ID, API_URL} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
@@ -19,6 +19,7 @@ import {ApiFetchService} from '../../service/ApiFetchService';
 import {GeneralColor} from '../../utility/Themes';
 import {Platform, TouchableOpacity, View} from 'react-native';
 import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
+import {LoginDialog} from '../../components/LoginDialog';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -47,6 +48,7 @@ function ImageView(props: Props) {
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [isShowAds, setIsShowAds] = useState<boolean>(false);
+  const [isShowLoginDialog, setIsShowLoginDialog] = useState<boolean>(false);
 
   useEffect(() => {
     setLyricsImages(props.route.params.lyricsImages);
@@ -79,30 +81,32 @@ function ImageView(props: Props) {
   }, [isShowAds]);
 
   const showAd = () => {
-    const interstitial = InterstitialAd.createForAdRequest(
-      ADS_INTERSTITIAL_UNIT_ID,
-      {
-        requestNonPersonalizedAdsOnly: true,
-        keywords: ['fashion', 'clothing'],
-      },
-    );
-    interstitial.load();
-    const unsubscribeLoaded = interstitial.addAdEventListener(
-      AdEventType.LOADED,
-      () => {
-        interstitial.show();
-      },
-    );
+    if (isShowAds) {
+      const interstitial = InterstitialAd.createForAdRequest(
+        ADS_INTERSTITIAL_UNIT_ID,
+        {
+          requestNonPersonalizedAdsOnly: true,
+          keywords: ['fashion', 'clothing'],
+        },
+      );
+      interstitial.load();
+      const unsubscribeLoaded = interstitial.addAdEventListener(
+        AdEventType.LOADED,
+        () => {
+          interstitial.show();
+        },
+      );
 
-    return () => {
-      unsubscribeLoaded();
-    };
+      return () => {
+        unsubscribeLoaded();
+      };
+    }
   };
 
   const initialCheckFav = useCallback(() => {
     let data: any =
       props.route.params.lyricsImages[props.route.params.currentImageIndex];
-    if (data.isSaved) {
+    if (data?.isSaved) {
       setIsFavourite(true);
     } else {
       setIsFavourite(false);
@@ -168,12 +172,16 @@ function ImageView(props: Props) {
   );
 
   const clickedFavourite = useCallback(() => {
-    if (isFavourite) {
-      fetchRemoveLyricsApi();
+    if (props.token != null) {
+      if (isFavourite) {
+        fetchRemoveLyricsApi();
+      } else {
+        fetchSaveLyricsApi();
+      }
     } else {
-      fetchSaveLyricsApi();
+      setIsShowLoginDialog(true);
     }
-  }, [isFavourite, props.profile, lyricsImages, currentImageIndex]);
+  }, [isFavourite, props, lyricsImages, currentImageIndex]);
 
   return (
     <View style={{flex: 1}}>
@@ -221,36 +229,46 @@ function ImageView(props: Props) {
           />
         </TouchableOpacity>
       </View>
-      {props.token ? (
-        <View
-          style={{
-            position: 'absolute',
-            top: Platform.OS == 'ios' ? 50 : 10,
-            right: 12,
-          }}>
-          <TouchableOpacity
-            style={{justifyContent: 'center', alignItems: 'center'}}
-            onPress={clickedFavourite}>
-            <View
-              style={{
-                width: 45,
-                height: 45,
-                backgroundColor: 'black',
-                opacity: 0.6,
-                position: 'absolute',
-                borderRadius: 45,
-              }}
-            />
-            <AntDesign
-              name={isFavourite ? 'heart' : 'hearto'}
-              size={30}
-              color={isFavourite ? 'red' : GeneralColor.white}
-            />
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <></>
-      )}
+
+      <View
+        style={{
+          position: 'absolute',
+          top: Platform.OS == 'ios' ? 50 : 14,
+          right: Platform.OS == 'ios' ? 12 : 15,
+        }}>
+        <TouchableOpacity
+          style={{justifyContent: 'center', alignItems: 'center'}}
+          onPress={clickedFavourite}>
+          <View
+            style={{
+              width: 45,
+              height: 45,
+              backgroundColor: 'black',
+              opacity: 0.6,
+              position: 'absolute',
+              borderRadius: 45,
+            }}
+          />
+          <AntDesign
+            name={isFavourite ? 'heart' : 'hearto'}
+            size={30}
+            color={isFavourite ? 'red' : GeneralColor.white}
+          />
+        </TouchableOpacity>
+      </View>
+      <LoginDialog
+        clickedLogin={() => {
+          props.navigation.navigate('ProfileScreen');
+        }}
+        clickedSignUp={() => {
+          props.navigation.navigate('SignUpScreen');
+          setIsShowLoginDialog(false);
+        }}
+        isVisible={isShowLoginDialog}
+        clickedClosed={() => {
+          setIsShowLoginDialog(false);
+        }}
+      />
     </View>
   );
 }

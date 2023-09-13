@@ -13,6 +13,7 @@ export function TextView(props: AppProps) {
   const {theme} = context;
   return (
     <Text
+      adjustsFontSizeToFit={true}
       allowFontScaling={false}
       numberOfLines={props.numberOfLines}
       style={{

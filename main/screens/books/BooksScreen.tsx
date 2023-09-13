@@ -217,9 +217,9 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
               numberOfLines={2}
               textStyle={{
                 width: 140,
-                alignSelf: 'center',
                 marginTop: 6,
                 textAlign: 'center',
+                alignSelf: 'center',
                 fontSize: 16,
               }}
             />

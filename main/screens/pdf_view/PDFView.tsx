@@ -98,28 +98,30 @@ function PDFView(props: Props) {
   }, [isVisible]);
 
   useEffect(() => {
-    const adsThread = setTimeout(() => {
-      try {
-        // interstitial.show();
-        showAd();
-      } catch (error) {
-        console.log('Ads Error', error);
-      }
-    }, 8000);
+    if (isShowAds) {
+      const adsThread = setTimeout(() => {
+        try {
+          // interstitial.show();
+          showAd();
+        } catch (error) {
+          console.log('Ads Error', error);
+        }
+      }, 8000);
 
-    const adsShowEvery20minThread = setInterval(() => {
-      try {
-        // interstitial.show();
-        showAd();
-      } catch (error) {
-        console.log('Ads Error', error);
-      }
-    }, 1200000);
-    return () => {
-      clearInterval(adsShowEvery20minThread);
-      clearTimeout(adsThread);
-      setIsShowAds(false);
-    };
+      const adsShowEvery20minThread = setInterval(() => {
+        try {
+          // interstitial.show();
+          showAd();
+        } catch (error) {
+          console.log('Ads Error', error);
+        }
+      }, 1200000);
+      return () => {
+        clearInterval(adsShowEvery20minThread);
+        clearTimeout(adsThread);
+        setIsShowAds(false);
+      };
+    }
   }, [isShowAds]);
 
   useEffect(() => {
