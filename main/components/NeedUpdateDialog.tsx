@@ -1,10 +1,7 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {View, Text, TouchableOpacity, Image, Dimensions} from 'react-native';
 import Modal from 'react-native-modal';
-import {ThemeContext} from '../../utility/ThemeProvider';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {GeneralColor} from '../../utility/Themes';
-import {TextView} from '../../components/TextView';
 import Animated, {
   FadeOut,
   FadeInDown,
@@ -12,6 +9,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {BounceIn} from 'react-native-reanimated';
 import {BounceOut} from 'react-native-reanimated';
+import {ThemeContext} from '../utility/ThemeProvider';
+import {GeneralColor} from '../utility/Themes';
+import {TextView} from './TextView';
 
 export interface AppProps {
   isVisible: boolean;
@@ -61,7 +61,7 @@ export function NeedUpdateDialog(props: AppProps) {
               alignItems: 'center',
               resizeMode: 'contain',
             }}
-            source={require('../../assets/images/need_update.png')}
+            source={require('../assets/images/need_update.png')}
           />
 
           <View>

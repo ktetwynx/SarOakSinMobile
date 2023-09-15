@@ -24,7 +24,7 @@ import Animated, {
   FadeInDown,
   FadeOutDown,
 } from 'react-native-reanimated';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 
 const mapstateToProps = (state: {profile: any}) => {
   return {

@@ -22,8 +22,8 @@ import Animated, {
   SlideInLeft,
   SlideInRight,
 } from 'react-native-reanimated';
-import {SearchBar} from '../components/SearchBar';
 import {GeneralColor} from '../../utility/Themes';
+import {SearchBar} from '../../components/SearchBar';
 
 const mapstateToProps = (state: {
   profile: any;

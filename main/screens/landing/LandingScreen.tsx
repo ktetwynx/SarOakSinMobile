@@ -9,10 +9,10 @@ import ProfileScreen from '../profile/ProfileScreen';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import LyricsScreen from '../lyrics/LyricsScreen';
 import {GeneralColor} from '../../utility/Themes';
-import {NeedUpdateDialog} from '../components/NeedUpdateDialog';
 import {Linking, View} from 'react-native';
 import {checkVersion} from 'react-native-check-version';
 import Route from '../../route/Route';
+import {NeedUpdateDialog} from '../../components/NeedUpdateDialog';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 export function LandingScreen() {

@@ -19,7 +19,7 @@ import {ApiFetchService} from '../../service/ApiFetchService';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
 

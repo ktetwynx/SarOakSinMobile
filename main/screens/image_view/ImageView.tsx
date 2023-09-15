@@ -5,7 +5,7 @@ import React, {
   useContext,
   useRef,
 } from 'react';
-import {MainProps, RootStackScreenProps} from '../../route/StackParamsTypes';
+import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {ADS_INTERSTITIAL_UNIT_ID, API_URL} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
@@ -183,6 +183,48 @@ function ImageView(props: Props) {
     }
   }, [isFavourite, props, lyricsImages, currentImageIndex]);
 
+  const clickedPlayLyric = useCallback(() => {
+    const chordSheet = `
+{t: ဒီအတိုင်း}
+{artist:ဖော်ကာ}
+{key:G}
+{copyright:SarOakSin}
+
+
+[G]မဖြစ်နိုင်တော့တဲ့ဘဝမှာ ငါတို့[Em]လမ်းခွဲခဲ့ပြီးမှ
+[C]ပြန်ကာရှေ့ဆက်မတိုးပါနဲ့ ဒီအ[D]တိုင်းလေးကောင်းတာပဲ
+[G]အမှားအမှန်တချို့ကိုသိအောင် နင်[Em]ရွက်လွှင့်ခဲ့ပြီးမှ
+ဒါတွေ[C]နောက်ကျခဲ့ပြီပဲ တကယ်ဆိုအ[D]ကြိမ်ကြိမ်ငါလည်းမှားခဲ့တယ်
+
+{start_of_chorus}
+ဒီအ[G]တိုင်း ဒီအတိုင်းပဲခရီးဆက်[Em]ပါ ဆွေးမနေနဲ့
+ဟို[C]တုန်းကလိုမျိုးမဖြစ်နိုင်တာ ဒါတွေ[D]နောက်ကျခဲ့ပြီပဲ
+အရင်အ[G]တိုင်း အရင်အတိုင်းပဲမုန်းလိုက်[Em]ပါ အမှန်ကိုမသိချင်နဲ့
+[C]အစွန်းအထင်းတွေမှမရှိတာကွာ [D]ဘဝသစ်တစ်ခုပြန်စ
+{end_of_chorus}
+
+		Music: G Em C D
+
+အထင်လွဲတဲ့မီးတွေငြိမ်းအောင် ငါလေကြိုးစားခဲ့တုန်းက
+ဘာကြောင့်မင်းကမသိသလိုနဲ့ အဝေးကြီးပုန်းရှောင်ခဲ့
+မေတ္တာငတ်နေခဲ့သမျှ နင်လေကျောခိုင်းခဲ့တဲ့နောက်
+ဒဏ်ရာအားလုံးဖေးကူတဲ့ ကြင်နာနိုင်သူလက်ထဲရောက်ခဲ့တယ်
+
+		Solo: G Em C D
+
+မေ့[Em]ထားပါ အရင်အတိတ်[D]ဘဝ
+အခွင့်အရေးမှမရှိတော့[Em]တာ ဖြစ်သလိုစိတ်တင်း[D]ထား
+
+		Key change: A
+
+{comment: Made by SarOakSin}
+`;
+    props.navigation.navigate('LyricTextScreen', {
+      lyricText: chordSheet,
+      title: 'ဒီအတိုင်း',
+    });
+  }, []);
+
   return (
     <View style={{flex: 1}}>
       <ImageViewer
@@ -194,6 +236,45 @@ function ImageView(props: Props) {
         onSwipeDown={() => {
           goBack();
         }}
+        renderIndicator={(currentIndex?: number) => {
+          return <></>;
+        }}
+        renderHeader={(currentIndex?: number) => {
+          let number: any = currentIndex;
+          return (
+            <View
+              style={{
+                alignSelf: 'center',
+                position: 'absolute',
+                zIndex: 1,
+                marginTop: 16,
+              }}>
+              <View
+                style={{
+                  backgroundColor: 'black',
+                  width: 60,
+                  height: 30,
+                  opacity: 0.5,
+                  borderRadius: 30,
+                }}
+              />
+              <TextView
+                textStyle={{
+                  color: 'white',
+                  position: 'absolute',
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: 14,
+                  marginTop: 4,
+                }}
+                text={`${number + 1}/${lyricsImages.length}`}
+              />
+            </View>
+          );
+        }}
+        saveToLocalByLongPress={false}
         onChange={(index?: number) => changeImages(index)}
         enableImageZoom={true}
         enableSwipeDown={true}
@@ -254,6 +335,29 @@ function ImageView(props: Props) {
             size={30}
             color={isFavourite ? 'red' : GeneralColor.white}
           />
+        </TouchableOpacity>
+      </View>
+
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 30,
+          alignSelf: 'center',
+        }}>
+        <TouchableOpacity
+          style={{justifyContent: 'center', alignItems: 'center'}}
+          onPress={clickedPlayLyric}>
+          <View
+            style={{
+              width: 60,
+              height: 60,
+              backgroundColor: GeneralColor.app_theme,
+              opacity: 0.8,
+              position: 'absolute',
+              borderRadius: 45,
+            }}
+          />
+          <AntDesign name={'play'} size={35} color={GeneralColor.white} />
         </TouchableOpacity>
       </View>
       <LoginDialog

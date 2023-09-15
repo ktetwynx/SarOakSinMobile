@@ -13,7 +13,7 @@ import {
 import {ConnectedProps} from 'react-redux';
 
 export type RootStackParamList = {
-  LandingScreen: RootTabParamList;
+  LandingScreen: undefined;
   BookListViewmoreScreen: {categoryId: number; categoryName: string};
   AuthorScreen: {
     authorId: number;
@@ -43,6 +43,7 @@ export type RootStackParamList = {
   };
   ImageView: {currentImageIndex: number; lyricsImages: []};
   AuthorListViewmoreScreen: {authorType: number};
+  LyricTextScreen: {lyricText: string; title: string};
 };
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   CompositeScreenProps<

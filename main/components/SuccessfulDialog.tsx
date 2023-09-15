@@ -1,10 +1,9 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {View, Text} from 'react-native';
 import Modal from 'react-native-modal';
-import {ThemeContext} from '../../utility/ThemeProvider';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {GeneralColor} from '../../utility/Themes';
-import {TextView} from '../../components/TextView';
+
 import Animated, {
   FadeOut,
   FadeInDown,
@@ -12,6 +11,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {BounceIn} from 'react-native-reanimated';
 import {BounceOut} from 'react-native-reanimated';
+import {ThemeContext} from '../utility/ThemeProvider';
+import {GeneralColor} from '../utility/Themes';
+import {TextView} from './TextView';
 
 export interface AppProps {
   isVisible: boolean;

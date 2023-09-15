@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
 import {View, Text} from 'react-native';
 import {DotIndicator} from 'react-native-indicators';
-import {ThemeContext} from '../../utility/ThemeProvider';
-import {GeneralColor} from '../../utility/Themes';
+import {ThemeContext} from '../utility/ThemeProvider';
+import {GeneralColor} from '../utility/Themes';
 
 export interface AppProps {}
 

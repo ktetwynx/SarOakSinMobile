@@ -14,9 +14,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_URL} from '../../config/Constant';
-import {LoadingScreen} from '../components/LoadingScreen';
-import {SuccessfulDialog} from '../components/SuccessfulDialog';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import {GeneralColor} from '../../utility/Themes';
+import {SuccessfulDialog} from '../../components/SuccessfulDialog';
 
 const mapstateToProps = (state: {token: any; profile: any}) => {
   return {

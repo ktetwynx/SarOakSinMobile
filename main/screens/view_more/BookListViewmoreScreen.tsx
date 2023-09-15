@@ -14,7 +14,7 @@ import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_URL, ROW_COUNT} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
 

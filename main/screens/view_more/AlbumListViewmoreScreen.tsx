@@ -14,7 +14,7 @@ import {ALBUM_TITLE, API_URL, ROW_COUNT} from '../../config/Constant';
 import i18n from '../../language/i18n';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
 

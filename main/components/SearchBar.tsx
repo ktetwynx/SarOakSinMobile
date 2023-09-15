@@ -1,10 +1,10 @@
 import React, {useContext} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {ThemeContext} from '../../utility/ThemeProvider';
-import {TextView} from '../../components/TextView';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Animated, {FadeInUp} from 'react-native-reanimated';
-import {GeneralColor} from '../../utility/Themes';
+import {ThemeContext} from '../utility/ThemeProvider';
+import {TextView} from './TextView';
+import {GeneralColor} from '../utility/Themes';
 
 export interface AppProps {
   clickedSearch: any;

@@ -21,9 +21,9 @@ import Animated, {
   SlideInRight,
   SlideOutRight,
 } from 'react-native-reanimated';
-import {SearchBar} from '../components/SearchBar';
 import {ScrollView} from 'react-native-gesture-handler';
 import {GeneralColor} from '../../utility/Themes';
+import {SearchBar} from '../../components/SearchBar';
 
 export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   const context = useContext(ThemeContext);

@@ -21,6 +21,7 @@ import ChangePassword from '../screens/profile/ChangePassword';
 import {ForgotPassword} from '../screens/profile/ForgotPassword';
 import SearchScreen from '../screens/search/SearchScreen';
 import ResetPassword from '../screens/profile/ResetPassword';
+import LyricTextScreen from '../screens/lyric_txt_screen/LyricTextScreen';
 
 const mapstateToProps = (state: {app_language: string}) => {
   return {
@@ -133,6 +134,13 @@ const Route = (props: Props) => {
         name="FavouriteLyricScreen"
         component={FavouriteLyricScreen}
       />
+
+      <RootStack.Screen
+        options={option}
+        name="LyricTextScreen"
+        component={LyricTextScreen}
+      />
+
       <RootStack.Screen
         options={option}
         name="AuthorListViewmoreScreen"

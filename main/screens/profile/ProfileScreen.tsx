@@ -28,7 +28,7 @@ import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {ThemeContext} from '../../utility/ThemeProvider';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';

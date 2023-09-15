@@ -16,7 +16,7 @@ import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import i18n from '../../language/i18n';
 import {ConnectedProps, connect} from 'react-redux';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import Animated, {
   FadeOut,
   FadeInDown,

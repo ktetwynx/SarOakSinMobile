@@ -27,7 +27,7 @@ import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {useFocusEffect} from '@react-navigation/native';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import Animated, {
   FadeInDown,
   FadeInUp,

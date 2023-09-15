@@ -10,7 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {TextInputView} from '../../components/TextInputView';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_URL} from '../../config/Constant';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import {GeneralColor} from '../../utility/Themes';
 
 export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {

@@ -21,7 +21,7 @@ import {API_URL} from '../../config/Constant';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import {GeneralColor} from '../../utility/Themes';
 const {width, height} = Dimensions.get('screen');
 

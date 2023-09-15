@@ -24,7 +24,7 @@ import {
   setToken,
 } from '../../redux/actions';
 import {ConnectedProps, connect} from 'react-redux';
-import {LoadingScreen} from '../components/LoadingScreen';
+import {LoadingScreen} from '../../components/LoadingScreen';
 import {GeneralColor} from '../../utility/Themes';
 
 export interface AppProps {}
