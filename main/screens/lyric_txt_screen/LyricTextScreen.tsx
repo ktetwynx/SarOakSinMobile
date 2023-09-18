@@ -8,11 +8,13 @@ import React, {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
   Animated,
+  Image,
   Platform,
   ScrollView,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   RootStackScreenProps,
   RootTabScreenProps,
@@ -29,6 +31,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {GeneralColor} from '../../utility/Themes';
 import {TextView} from '../../components/TextView';
 import {ChangeKeyDialog} from '../../components/ChangeKeyDialog';
+import ImageView from '../image_view/ImageView';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -52,41 +55,79 @@ type Props = ConnectedProps<typeof connector> &
   RootStackScreenProps<'LyricTextScreen'>;
 
 function LyricTextScreen(props: Props) {
-  const [rawLyricText, setRawLyricText] = useState('');
+  const [song, setSong] = useState<Song>();
   const [formattedLyricText, setFormattedLyricText] = useState('');
   const [lyricKey, setLyricKey] = useState('');
+  const [lyricTitle, setLyricTitle] = useState('');
   const [currentKey, setCurrentKey] = useState('');
   const [shardOrFlat, setShardOrFlat] = useState('');
   const [isShowChangeKeyDialog, setIsShowChangeKeyDialog] = useState(false);
+  const [lyricFontSize, setLyricFontSize] = useState('16');
+  const [scrollSpeed, setScrollSpeed] = useState('Medium');
+  const [isPlaying, setIsPlaying] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
-  const [offset, setOffset] = useState(0);
-  let autoScrolling: number;
+  const [scrollSpeedRate, setScrollSpeedRate] = useState({
+    plusOffSet: 0,
+    duration: 0,
+  });
 
   useEffect(() => {
-    setRawLyricText(props.route.params.lyricText);
+    setLyricTitle(props.route.params.lyricTitle);
     const song = parseSong(props.route.params.lyricText);
-    setCurrentKey(song.metadata.key.split('', 2)[0]);
-    setShardOrFlat(
-      song.metadata.key.split('', 2)[1]
-        ? song.metadata.key.split('', 2)[1]
-        : '',
-    );
-    setFormattedLyricText(formatSong(song));
+    if (song.metadata?.key) {
+      setSong(song);
+    } else {
+      const defaultKeySong = song.setKey('G');
+      setSong(defaultKeySong);
+    }
   }, [props.route.params]);
 
   useEffect(() => {
-    const song = parseSong(rawLyricText);
+    setCurrentKey(
+      song?.metadata.key.split('', 2)[0]
+        ? song.metadata.key.split('', 2)[0]
+        : '',
+    );
+    setShardOrFlat(
+      song?.metadata.key.split('', 2)[1]
+        ? song.metadata.key.split('', 2)[1]
+        : '',
+    );
+  }, [song]);
+
+  useEffect(() => {
     if (lyricKey != '') {
-      const changedKeySong = song.changeKey(lyricKey);
-      setFormattedLyricText(formatSong(changedKeySong));
+      const changedKeySong = song?.changeKey(lyricKey);
+      setFormattedLyricText(changedKeySong ? formatSong(changedKeySong) : '');
     }
-  }, [lyricKey]);
+  }, [lyricKey, song]);
+
+  useEffect(() => {
+    if (scrollSpeed == 'Slow') {
+      setScrollSpeedRate({plusOffSet: 1, duration: 2000});
+    } else if (scrollSpeed == 'Medium') {
+      setScrollSpeedRate({plusOffSet: 1, duration: 1000});
+    } else if (scrollSpeed == 'Fast') {
+      setScrollSpeedRate({plusOffSet: 2, duration: 500});
+    }
+  }, [scrollSpeed]);
 
   useEffect(() => {
     if (shardOrFlat != '' || currentKey != '') {
       setLyricKey(`${currentKey}${shardOrFlat}`);
     }
   }, [shardOrFlat, currentKey]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      let offset = 0;
+      const autoScrolling = setInterval(() => {
+        offset += scrollSpeedRate.plusOffSet;
+        scrollViewRef.current?.scrollTo({x: 0, y: offset, animated: true});
+      }, scrollSpeedRate.duration);
+      return () => clearInterval(autoScrolling);
+    }
+  }, [isPlaying]);
 
   function parseSong(text: string) {
     const parser = new ChordSheetJS.ChordProParser();
@@ -100,16 +141,17 @@ function LyricTextScreen(props: Props) {
     return disp;
   }
   const clickedChangeKey = useCallback(() => {
+    setIsPlaying(false);
     setIsShowChangeKeyDialog(true);
   }, []);
 
-  const clickedPlayAutoScroll = () => {
-    let offset = 0;
-    autoScrolling = setInterval(() => {
-      offset += 1;
-      scrollViewRef.current?.scrollTo({x: 0, y: offset, animated: true});
-    }, 1000);
-  };
+  const clickedPlayAutoScroll = useCallback(() => {
+    if (isPlaying) {
+      setIsPlaying(false);
+    } else {
+      setIsPlaying(true);
+    }
+  }, [isPlaying]);
 
   const isReachToScrollEnd = ({
     layoutMeasurement,
@@ -120,61 +162,135 @@ function LyricTextScreen(props: Props) {
     return layoutMeasurement.height + contentOffset.y >= contentSize.height;
   };
 
+  const goBack = useCallback(() => {
+    setIsPlaying(false);
+    props.navigation.goBack();
+  }, []);
+
   return (
-    <SafeAreaView style={{flex: 1}} edges={['top']}>
+    <SafeAreaView style={{flex: 1, justifyContent: 'center'}} edges={['top']}>
+      <Image
+        style={{
+          width: 300,
+          height: 300,
+          opacity: 0.15,
+          alignSelf: 'center',
+          backgroundColor: GeneralColor.light_grey,
+          position: 'absolute',
+          borderRadius: 50,
+        }}
+        source={require('../../assets/images/sar_oak_sin_logo.jpg')}
+      />
       <ScrollView
         onScroll={({nativeEvent}) => {
           if (isReachToScrollEnd(nativeEvent)) {
-            clearInterval(autoScrolling);
+            setIsPlaying(false);
           }
-        }}
-        onTouchStart={event => {
-          clearInterval(autoScrolling);
         }}
         ref={scrollViewRef}
         style={{flexDirection: 'column'}}>
         <View
           style={{
-            position: 'absolute',
-            top: Platform.OS == 'ios' ? 50 : 14,
-            right: Platform.OS == 'ios' ? 12 : 15,
-            zIndex: 1,
+            flexDirection: 'row',
+            marginTop: 12,
+            marginHorizontal: 6,
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              style={{
+                justifyContent: 'center',
+              }}
+              onPress={goBack}>
+              <Ionicons
+                name="ios-arrow-back-circle-sharp"
+                size={38}
+                style={{marginLeft: 2}}
+                color={GeneralColor.black}
+              />
+            </TouchableOpacity>
+
+            <TextView
+              text={lyricTitle}
+              numberOfLines={2}
+              textStyle={{
+                fontSize: 18,
+                width: 160,
+                fontWeight: 'bold',
+                marginLeft: 10,
+              }}
+            />
+          </View>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginRight: 12,
+                marginRight: 10,
               }}
               onPress={() => clickedPlayAutoScroll()}>
-              <AntDesign name={'play'} size={30} color={'green'} />
+              <AntDesign
+                name={isPlaying ? 'pausecircle' : 'play'}
+                size={35}
+                color={isPlaying ? 'grey' : 'green'}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{justifyContent: 'center', alignItems: 'center'}}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 10,
+                borderRadius: 20,
+                backgroundColor: GeneralColor.app_theme,
+              }}
               onPress={() => clickedChangeKey()}>
               <TextView
                 text={'Change Key'}
                 textStyle={{
-                  backgroundColor: GeneralColor.app_theme,
-                  padding: 5,
                   color: GeneralColor.white,
+                  fontSize: 14,
+                  marginBottom: 2,
+                  marginRight: 5,
                   fontWeight: 'bold',
-                  borderRadius: 10,
                 }}
               />
+              <Ionicons name={'settings-sharp'} size={18} color={'white'} />
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{flex: 1}}>
+
+        <View
+          onTouchStart={event => {
+            setIsPlaying(false);
+          }}
+          style={{flex: 1}}>
           <TextView
             text={formattedLyricText}
-            textStyle={{color: 'black', padding: 12, flex: 1, fontSize: 16}}
+            textStyle={{
+              color: 'black',
+              padding: 12,
+              flex: 1,
+              fontSize: parseInt(lyricFontSize),
+            }}
           />
         </View>
       </ScrollView>
       <ChangeKeyDialog
+        clickedChangeFont={(_: any) => {
+          setLyricFontSize(_);
+        }}
+        clickedChangedScrollSpeed={(_: any) => {
+          setScrollSpeed(_);
+        }}
+        currentScrollSpeed={scrollSpeed}
+        currentLyricFontSize={lyricFontSize}
         currentKey={currentKey}
         shardOrFlat={shardOrFlat}
         clickedClosed={() => {

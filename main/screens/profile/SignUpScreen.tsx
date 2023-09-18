@@ -17,7 +17,7 @@ import {BackButton} from '../../components/BackButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL} from '../../config/Constant';
+import {API_KEY_PRODUCION, API_URL} from '../../config/Constant';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
@@ -120,7 +120,7 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
     console.log(formData);
     await ApiFetchService(API_URL + `user/register-user/register`, formData, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       if (response.code == 201) {
         setTimeout(() => {

@@ -17,7 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {GeneralColor} from '../../utility/Themes';
 import {TextView} from '../../components/TextView';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL} from '../../config/Constant';
+import {API_KEY_PRODUCION, API_URL} from '../../config/Constant';
 import {ConnectedProps, connect} from 'react-redux';
 import Animated, {
   FadeOut,
@@ -199,7 +199,7 @@ const SearchScreen = (props: Props) => {
     formData.append('name', searchKeyword);
     await ApiFetchService(API_URL + endPointPrefix, formData, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       setTimeout(() => {
         setIsLoading(false);
@@ -212,6 +212,8 @@ const SearchScreen = (props: Props) => {
             url: API_URL + data.imgPath,
             isSaved: data.saved,
             lyricsId: data.id,
+            lyricText: data.lyricText,
+            lyricTitle: data.name,
           });
         }
         setLyricsImages(images);

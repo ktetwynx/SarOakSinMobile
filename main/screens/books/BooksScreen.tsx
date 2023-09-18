@@ -7,7 +7,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL, dummyData} from '../../config/Constant';
+import {API_KEY_PRODUCION, API_URL, dummyData} from '../../config/Constant';
 import {RootTabScreenProps} from '../../route/StackParamsTypes';
 import {ViewMoreButton} from '../../components/ViewMoreButton';
 import {TextView} from '../../components/TextView';
@@ -59,7 +59,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   const fetchHomeBookApi = useCallback(async () => {
     await ApiFetchService(API_URL + `user/book/home`, null, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       setTimeout(() => {
         setScreenRefresh(false);

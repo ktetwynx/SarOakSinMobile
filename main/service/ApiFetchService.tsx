@@ -28,13 +28,3 @@ export const ApiFetchService = async (url: string, data: any, header: any) => {
         });
     });
 };
-
-// headers: {
-//   'Content-Type': 'multipart/form-data',
-//   Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
-// },
-
-// headers: {
-//   'Content-Type': 'multipart/form-data',
-//   Authorization: 'Bearer ' + store.getState().token,
-// },

@@ -4,7 +4,7 @@ import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BackButton} from '../../components/BackButton';
 import {FlatList} from 'react-native-gesture-handler';
-import {API_URL, LYRICS_TITLE} from '../../config/Constant';
+import {API_KEY_PRODUCION, API_URL, LYRICS_TITLE} from '../../config/Constant';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import i18n from '../../language/i18n';
@@ -87,7 +87,7 @@ function AlbumScreen(props: Props) {
     console.log(formData);
     await ApiFetchService(API_URL + `user/lyric/album/get-by-id`, formData, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       console.log(response);
       setTimeout(() => {
@@ -102,6 +102,8 @@ function AlbumScreen(props: Props) {
             url: API_URL + data.imgPath,
             isSaved: data.saved,
             lyricsId: data.id,
+            lyricText: data.lyricText,
+            lyricTitle: data.name,
           });
         }
         setLyricsImages(images);

@@ -9,7 +9,12 @@ import {TextInputView} from '../../components/TextInputView';
 import {PasswordTextInputView} from '../../components/PasswordTextInputView';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL, PENDING, STORAGE_KEYS} from '../../config/Constant';
+import {
+  API_KEY_PRODUCION,
+  API_URL,
+  PENDING,
+  STORAGE_KEYS,
+} from '../../config/Constant';
 import {ConnectedProps, connect} from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -250,7 +255,7 @@ const ProfileScreen = (props: Props) => {
     formData.append('password', loginData.password);
     await ApiFetchService(API_URL + `user/login`, formData, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       if (response.code == 200) {
         if (response.data.status == PENDING) {

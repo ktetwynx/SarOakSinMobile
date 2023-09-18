@@ -10,7 +10,12 @@ import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BackButton} from '../../components/BackButton';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {ALBUM_TITLE, API_URL, ROW_COUNT} from '../../config/Constant';
+import {
+  ALBUM_TITLE,
+  API_KEY_PRODUCION,
+  API_URL,
+  ROW_COUNT,
+} from '../../config/Constant';
 import i18n from '../../language/i18n';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
@@ -52,7 +57,7 @@ export function AlbumListViewmoreScreen(
     formData.append('size', ROW_COUNT);
     await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       setTimeout(() => {
         setIsLoading(false);

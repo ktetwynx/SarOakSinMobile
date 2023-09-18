@@ -20,6 +20,20 @@ import {GeneralColor} from '../../utility/Themes';
 import {Platform, TouchableOpacity, View} from 'react-native';
 import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
 import {LoginDialog} from '../../components/LoginDialog';
+import Animated, {
+  BounceIn,
+  BounceInDown,
+  BounceOut,
+  BounceOutDown,
+  FadeInDown,
+  FadeOutDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withSpring,
+} from 'react-native-reanimated';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -45,16 +59,22 @@ function ImageView(props: Props) {
   const context = useContext(ThemeContext);
   const {theme} = context;
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
+  const [lyricText, setLyricText] = useState('');
+  const [lyricTitle, setLyricTitle] = useState('');
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [isShowAds, setIsShowAds] = useState<boolean>(false);
   const [isShowLoginDialog, setIsShowLoginDialog] = useState<boolean>(false);
+  const rotation = useSharedValue(0);
+  const scale = useSharedValue(0.8);
 
   useEffect(() => {
     setLyricsImages(props.route.params.lyricsImages);
     setCurrentImageIndex(props.route.params.currentImageIndex);
     initialCheckFav();
     setIsShowAds(true);
+    startShake();
+    // startBigSmall();
   }, [props.route.params]);
 
   useEffect(() => {
@@ -111,6 +131,8 @@ function ImageView(props: Props) {
     } else {
       setIsFavourite(false);
     }
+    setLyricText(data?.lyricText);
+    setLyricTitle(data?.lyricTitle);
   }, []);
 
   const fetchSaveLyricsApi = useCallback(async () => {
@@ -167,6 +189,8 @@ function ImageView(props: Props) {
       } else {
         setIsFavourite(false);
       }
+      setLyricText(lyricsImages[index ? index : 0].lyricText);
+      setLyricTitle(lyricsImages[index ? index : 0].lyricTitle);
     },
     [lyricsImages],
   );
@@ -184,46 +208,62 @@ function ImageView(props: Props) {
   }, [isFavourite, props, lyricsImages, currentImageIndex]);
 
   const clickedPlayLyric = useCallback(() => {
-    const chordSheet = `
-{t: ဒီအတိုင်း}
-{artist:ဖော်ကာ}
-{key:G}
-{copyright:SarOakSin}
-
-
-[G]မဖြစ်နိုင်တော့တဲ့ဘဝမှာ ငါတို့[Em]လမ်းခွဲခဲ့ပြီးမှ
-[C]ပြန်ကာရှေ့ဆက်မတိုးပါနဲ့ ဒီအ[D]တိုင်းလေးကောင်းတာပဲ
-[G]အမှားအမှန်တချို့ကိုသိအောင် နင်[Em]ရွက်လွှင့်ခဲ့ပြီးမှ
-ဒါတွေ[C]နောက်ကျခဲ့ပြီပဲ တကယ်ဆိုအ[D]ကြိမ်ကြိမ်ငါလည်းမှားခဲ့တယ်
-
-{start_of_chorus}
-ဒီအ[G]တိုင်း ဒီအတိုင်းပဲခရီးဆက်[Em]ပါ ဆွေးမနေနဲ့
-ဟို[C]တုန်းကလိုမျိုးမဖြစ်နိုင်တာ ဒါတွေ[D]နောက်ကျခဲ့ပြီပဲ
-အရင်အ[G]တိုင်း အရင်အတိုင်းပဲမုန်းလိုက်[Em]ပါ အမှန်ကိုမသိချင်နဲ့
-[C]အစွန်းအထင်းတွေမှမရှိတာကွာ [D]ဘဝသစ်တစ်ခုပြန်စ
-{end_of_chorus}
-
-		Music: G Em C D
-
-အထင်လွဲတဲ့မီးတွေငြိမ်းအောင် ငါလေကြိုးစားခဲ့တုန်းက
-ဘာကြောင့်မင်းကမသိသလိုနဲ့ အဝေးကြီးပုန်းရှောင်ခဲ့
-မေတ္တာငတ်နေခဲ့သမျှ နင်လေကျောခိုင်းခဲ့တဲ့နောက်
-ဒဏ်ရာအားလုံးဖေးကူတဲ့ ကြင်နာနိုင်သူလက်ထဲရောက်ခဲ့တယ်
-
-		Solo: G Em C D
-
-မေ့[Em]ထားပါ အရင်အတိတ်[D]ဘဝ
-အခွင့်အရေးမှမရှိတော့[Em]တာ ဖြစ်သလိုစိတ်တင်း[D]ထား
-
-		Key change: A
-
-{comment: Made by SarOakSin}
-`;
     props.navigation.navigate('LyricTextScreen', {
-      lyricText: chordSheet,
-      title: 'ဒီအတိုင်း',
+      lyricText: lyricText,
+      lyricTitle: lyricTitle,
     });
-  }, []);
+  }, [lyricText, lyricTitle]);
+
+  const shakeAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{rotateZ: `${rotation.value}deg`}],
+    };
+  });
+
+  const stopShake = () => {
+    rotation.value = 0;
+  };
+
+  const startShake = () => {
+    rotation.value = withRepeat(
+      withSequence(
+        withSpring(10, {
+          damping: 50,
+          mass: 0.1,
+          stiffness: 200,
+          restDisplacementThreshold: 0.1,
+        }),
+
+        withSpring(-10, {
+          damping: 50,
+          mass: 0.1,
+          stiffness: 200,
+          restDisplacementThreshold: 0.1,
+        }),
+
+        withSpring(0, {
+          damping: 200,
+          mass: 1,
+          stiffness: 70,
+          restDisplacementThreshold: 1,
+        }),
+        withSpring(-10, {
+          damping: 50,
+          mass: 0.1,
+          stiffness: 200,
+          restDisplacementThreshold: 0.1,
+        }),
+        withSpring(10, {
+          damping: 50,
+          mass: 0.1,
+          stiffness: 200,
+          restDisplacementThreshold: 0.1,
+        }),
+      ),
+      -1,
+      true,
+    );
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -338,28 +378,54 @@ function ImageView(props: Props) {
         </TouchableOpacity>
       </View>
 
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 30,
-          alignSelf: 'center',
-        }}>
-        <TouchableOpacity
-          style={{justifyContent: 'center', alignItems: 'center'}}
-          onPress={clickedPlayLyric}>
-          <View
-            style={{
-              width: 60,
-              height: 60,
-              backgroundColor: GeneralColor.app_theme,
-              opacity: 0.8,
-              position: 'absolute',
-              borderRadius: 45,
-            }}
-          />
-          <AntDesign name={'play'} size={35} color={GeneralColor.white} />
-        </TouchableOpacity>
-      </View>
+      {lyricText ? (
+        <Animated.View
+          style={[
+            shakeAnimatedStyle,
+            {position: 'absolute', bottom: 50, alignSelf: 'center'},
+          ]}
+          entering={FadeInDown}
+          exiting={FadeOutDown}>
+          <TouchableOpacity
+            style={{justifyContent: 'center', alignItems: 'center'}}
+            onPress={clickedPlayLyric}>
+            <View
+              style={{
+                width: 70,
+                height: 70,
+                backgroundColor: GeneralColor.black,
+                opacity: 0.3,
+                position: 'absolute',
+                borderRadius: 12,
+              }}
+            />
+            <View
+              style={{
+                width: 60,
+                height: 60,
+                backgroundColor: GeneralColor.app_theme,
+                position: 'absolute',
+                borderRadius: 12,
+                borderWidth: 3,
+                borderColor: 'white',
+              }}
+            />
+            <AntDesign
+              style={{
+                borderRadius: 12,
+                // padding: 5,
+                borderColor: 'white',
+              }}
+              name={'play'}
+              size={35}
+              color={GeneralColor.white}
+            />
+          </TouchableOpacity>
+        </Animated.View>
+      ) : (
+        <></>
+      )}
+
       <LoginDialog
         clickedLogin={() => {
           props.navigation.navigate('ProfileScreen');

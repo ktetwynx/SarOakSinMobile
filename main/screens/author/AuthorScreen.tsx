@@ -10,7 +10,12 @@ import {
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BackButton} from '../../components/BackButton';
-import {API_URL, BOOKS_TITLE, LYRICS_TITLE} from '../../config/Constant';
+import {
+  API_KEY_PRODUCION,
+  API_URL,
+  BOOKS_TITLE,
+  LYRICS_TITLE,
+} from '../../config/Constant';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
@@ -103,7 +108,7 @@ function AuthorScreen(props: Props) {
 
     await ApiFetchService(API_URL + url, formData, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       setTimeout(() => {
         setIsLoading(false);
@@ -117,6 +122,8 @@ function AuthorScreen(props: Props) {
             url: API_URL + data.imgPath,
             isSaved: data.saved,
             lyricsId: data.id,
+            lyricText: data.lyricText,
+            lyricTitle: data.name,
           });
         }
         setLyricsImages(images);

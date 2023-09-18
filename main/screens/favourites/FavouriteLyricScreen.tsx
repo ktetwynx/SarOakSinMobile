@@ -116,6 +116,8 @@ function FavouriteLyricScreen(props: Props) {
               url: API_URL + data.imgPath,
               isSaved: data.saved,
               lyricsId: data.id,
+              lyricText: data.lyricText,
+              lyricTitle: data.name,
             });
           }
           setLyricsImages(images);

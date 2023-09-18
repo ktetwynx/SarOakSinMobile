@@ -9,7 +9,7 @@ import {ThemeContext} from '../../utility/ThemeProvider';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TextInputView} from '../../components/TextInputView';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL} from '../../config/Constant';
+import {API_KEY_PRODUCION, API_URL} from '../../config/Constant';
 import {LoadingScreen} from '../../components/LoadingScreen';
 import {GeneralColor} from '../../utility/Themes';
 
@@ -76,7 +76,7 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
       formData,
       {
         'Content-Type': 'multipart/form-data',
-        Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+        Authorization: API_KEY_PRODUCION,
       },
     ).then((response: any) => {
       setTimeout(() => {

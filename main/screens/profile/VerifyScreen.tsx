@@ -12,7 +12,7 @@ import {BackButton} from '../../components/BackButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CountDown from 'react-native-countdown-component';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL} from '../../config/Constant';
+import {API_KEY_PRODUCION, API_URL} from '../../config/Constant';
 import i18n from '../../language/i18n';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
@@ -116,7 +116,7 @@ const VerifyScreen = (props: Props) => {
       formData,
       {
         'Content-Type': 'multipart/form-data',
-        Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+        Authorization: API_KEY_PRODUCION,
       },
     ).then((response: any) => {
       console.log(response);
@@ -149,7 +149,7 @@ const VerifyScreen = (props: Props) => {
     formData.append('otp', otpCode);
     await ApiFetchService(API_URL + `user/register-user/otp-verify`, formData, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       if (response.code == 200) {
         if (verifyType == 1) {

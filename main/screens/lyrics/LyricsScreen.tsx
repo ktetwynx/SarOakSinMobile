@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {RootTabScreenProps} from '../../route/StackParamsTypes';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_URL, dummyData} from '../../config/Constant';
+import {API_KEY_PRODUCION, API_URL, dummyData} from '../../config/Constant';
 import {ViewMoreButton} from '../../components/ViewMoreButton';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
@@ -98,7 +98,7 @@ function LyricsScreen(props: Props) {
     formData.append('userId', props.profile?.id ? props.profile?.id : 0);
     await ApiFetchService(API_URL + `user/lyric/home`, formData, {
       'Content-Type': 'multipart/form-data',
-      Authorization: 'ApiKey f90f76d2-f70d-11ed-b67e-0242ac120002',
+      Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       if (response.code == 200) {
         let data: any = [];
@@ -122,6 +122,8 @@ function LyricsScreen(props: Props) {
             url: API_URL + data.imgPath,
             isSaved: data.saved,
             lyricsId: data.id,
+            lyricText: data.lyricText,
+            lyricTitle: data.name,
           });
         }
         setLyricsImages(images);
@@ -328,7 +330,7 @@ function LyricsScreen(props: Props) {
       }
       return <></>;
     },
-    [label, lyricsImages, lyricHomeData],
+    [label, lyricsImages],
   );
 
   return (
