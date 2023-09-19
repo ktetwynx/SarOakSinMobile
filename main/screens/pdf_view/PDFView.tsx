@@ -101,7 +101,7 @@ function PDFView(props: Props) {
     if (isShowAds) {
       const adsThread = setTimeout(() => {
         try {
-          // interstitial.show();
+          console.log(isShowAds, 'isShowingAdsFromPDFView');
           showAd();
         } catch (error) {
           console.log('Ads Error', error);
@@ -110,7 +110,6 @@ function PDFView(props: Props) {
 
       const adsShowEvery20minThread = setInterval(() => {
         try {
-          // interstitial.show();
           showAd();
         } catch (error) {
           console.log('Ads Error', error);
@@ -462,6 +461,7 @@ function PDFView(props: Props) {
               text={label.page_number}
               textStyle={{
                 fontSize: 16,
+                width: 70,
                 color: GeneralColor.black,
               }}
             />
@@ -494,14 +494,17 @@ function PDFView(props: Props) {
           <View
             style={{
               backgroundColor: theme.backgroundColor,
-              width: '80%',
-              padding: 12,
+              width: '90%',
+              paddingVertical: 24,
+              paddingHorizontal: 12,
               borderRadius: 15,
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <TextView
                 text={`${label.page_number}:`}
-                textStyle={{fontSize: 16}}
+                textStyle={{
+                  fontSize: 16,
+                }}
               />
 
               <TextInput
@@ -533,7 +536,11 @@ function PDFView(props: Props) {
                 }}>
                 <TextView
                   text={label.go}
-                  textStyle={{fontSize: 14, color: theme.backgroundColor1}}
+                  textStyle={{
+                    fontSize: 14,
+                    color: theme.backgroundColor1,
+                    paddingVertical: 10,
+                  }}
                 />
               </TouchableOpacity>
             </View>

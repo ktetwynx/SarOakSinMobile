@@ -67,10 +67,11 @@ export function ChangeKeyDialog(props: AppProps) {
         style={{
           justifyContent: 'center',
           alignItems: 'center',
+          backgroundColor: theme.backgroundColor,
+          borderRadius: 15,
         }}>
         <View
           style={{
-            backgroundColor: theme.backgroundColor,
             width: '90%',
             padding: 10,
             borderRadius: 15,
@@ -84,13 +85,13 @@ export function ChangeKeyDialog(props: AppProps) {
               fontSize: 16,
               fontWeight: 'bold',
               marginBottom: 12,
-              marginTop: 12,
+              marginTop: 6,
               marginLeft: 6,
             }}
           />
 
           <TouchableOpacity
-            style={{position: 'absolute', right: 10, top: 10}}
+            style={{position: 'absolute', right: 0, top: 10}}
             onPress={() => props.clickedClosed()}>
             <MaterialCommunityIcons
               name="close-circle"
@@ -123,9 +124,14 @@ export function ChangeKeyDialog(props: AppProps) {
                       fontWeight: currentKey == _ ? 'bold' : 'normal',
                       paddingVertical: 5,
                       paddingHorizontal: 12,
-                      color: currentKey == _ ? GeneralColor.app_theme : 'grey',
+                      color:
+                        currentKey == _
+                          ? GeneralColor.app_theme
+                          : theme.textColor,
                       borderColor:
-                        currentKey == _ ? GeneralColor.app_theme : 'grey',
+                        currentKey == _
+                          ? GeneralColor.app_theme
+                          : theme.textColor,
                     }}
                     text={_}
                   />
@@ -162,9 +168,14 @@ export function ChangeKeyDialog(props: AppProps) {
                       fontWeight: shardOrFlat == _ ? 'bold' : 'normal',
                       paddingVertical: 5,
                       paddingHorizontal: 12,
-                      color: shardOrFlat == _ ? GeneralColor.app_theme : 'grey',
+                      color:
+                        shardOrFlat == _
+                          ? GeneralColor.app_theme
+                          : theme.textColor,
                       borderColor:
-                        shardOrFlat == _ ? GeneralColor.app_theme : 'grey',
+                        shardOrFlat == _
+                          ? GeneralColor.app_theme
+                          : theme.textColor,
                     }}
                     text={_}
                   />
@@ -184,99 +195,104 @@ export function ChangeKeyDialog(props: AppProps) {
 
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'center',
             }}>
             <TextView
               textStyle={{
-                color: GeneralColor.grey,
+                color: theme.textColor,
+                opacity: 0.5,
                 fontSize: 12,
-                marginRight: 12,
+                marginBottom: 12,
               }}
-              text={'Scroll Speed:'}
+              text={'Scroll Speed'}
             />
-            {scrollSpeed.map((_, index) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    props.clickedChangedScrollSpeed(_);
-                  }}
-                  key={index}
-                  style={{marginRight: 12}}>
-                  <TextView
-                    textStyle={{
-                      textAlign: 'center',
-                      borderWidth: props.currentScrollSpeed == _ ? 2 : 1,
-                      borderRadius: 8,
-                      fontSize: props.currentScrollSpeed == _ ? 16 : 14,
-                      fontWeight:
-                        props.currentScrollSpeed == _ ? 'bold' : 'normal',
-                      paddingVertical: 5,
-                      paddingHorizontal: 12,
-                      color:
-                        props.currentScrollSpeed == _
-                          ? GeneralColor.app_theme
-                          : 'grey',
-                      borderColor:
-                        props.currentScrollSpeed == _
-                          ? GeneralColor.app_theme
-                          : 'grey',
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {scrollSpeed.map((_, index) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      props.clickedChangedScrollSpeed(_);
                     }}
-                    text={_}
-                  />
-                </TouchableOpacity>
-              );
-            })}
+                    key={index}
+                    style={{marginRight: 12}}>
+                    <TextView
+                      textStyle={{
+                        textAlign: 'center',
+                        borderWidth: props.currentScrollSpeed == _ ? 2 : 1,
+                        borderRadius: 8,
+                        fontSize: props.currentScrollSpeed == _ ? 16 : 14,
+                        fontWeight:
+                          props.currentScrollSpeed == _ ? 'bold' : 'normal',
+                        paddingVertical: 5,
+                        paddingHorizontal: 12,
+                        color:
+                          props.currentScrollSpeed == _
+                            ? GeneralColor.app_theme
+                            : theme.textColor,
+                        borderColor:
+                          props.currentScrollSpeed == _
+                            ? GeneralColor.app_theme
+                            : theme.textColor,
+                      }}
+                      text={_}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
 
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'center',
               marginTop: 12,
               justifyContent: 'space-between',
             }}>
             <TextView
               textStyle={{
-                color: GeneralColor.grey,
+                color: theme.textColor,
+                opacity: 0.5,
                 fontSize: 12,
-                marginRight: 12,
+                marginBottom: 12,
               }}
-              text={'Font Size:'}
+              text={'Font Size'}
             />
-
-            {fontSize.map((_, index) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    props.clickedChangeFont(_);
-                  }}
-                  key={index}
-                  style={{marginRight: 12}}>
-                  <TextView
-                    textStyle={{
-                      textAlign: 'center',
-                      borderWidth: props.currentLyricFontSize == _ ? 2 : 1,
-                      borderRadius: 8,
-                      fontSize: props.currentLyricFontSize == _ ? 16 : 14,
-                      fontWeight:
-                        props.currentLyricFontSize == _ ? 'bold' : 'normal',
-                      paddingVertical: 5,
-                      paddingHorizontal: 12,
-                      color:
-                        props.currentLyricFontSize == _
-                          ? GeneralColor.app_theme
-                          : 'grey',
-                      borderColor:
-                        props.currentLyricFontSize == _
-                          ? GeneralColor.app_theme
-                          : 'grey',
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {fontSize.map((_, index) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      props.clickedChangeFont(_);
                     }}
-                    text={_}
-                  />
-                </TouchableOpacity>
-              );
-            })}
+                    key={index}
+                    style={{marginRight: 12}}>
+                    <TextView
+                      textStyle={{
+                        textAlign: 'center',
+                        borderWidth: props.currentLyricFontSize == _ ? 2 : 1,
+                        borderRadius: 8,
+                        fontSize: props.currentLyricFontSize == _ ? 16 : 14,
+                        fontWeight:
+                          props.currentLyricFontSize == _ ? 'bold' : 'normal',
+                        paddingVertical: 5,
+                        paddingHorizontal: 12,
+                        color:
+                          props.currentLyricFontSize == _
+                            ? GeneralColor.app_theme
+                            : theme.textColor,
+                        borderColor:
+                          props.currentLyricFontSize == _
+                            ? GeneralColor.app_theme
+                            : theme.textColor,
+                      }}
+                      text={_}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
         </View>
       </View>

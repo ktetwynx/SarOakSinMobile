@@ -32,6 +32,7 @@ import {GeneralColor} from '../../utility/Themes';
 import {TextView} from '../../components/TextView';
 import {ChangeKeyDialog} from '../../components/ChangeKeyDialog';
 import ImageView from '../image_view/ImageView';
+import {ThemeContext} from '../../utility/ThemeProvider';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -55,6 +56,9 @@ type Props = ConnectedProps<typeof connector> &
   RootStackScreenProps<'LyricTextScreen'>;
 
 function LyricTextScreen(props: Props) {
+  const context = useContext(ThemeContext);
+  const {theme} = context;
+
   const [song, setSong] = useState<Song>();
   const [formattedLyricText, setFormattedLyricText] = useState('');
   const [lyricKey, setLyricKey] = useState('');
@@ -168,7 +172,13 @@ function LyricTextScreen(props: Props) {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1, justifyContent: 'center'}} edges={['top']}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: theme.backgroundColor,
+      }}
+      edges={['top']}>
       <Image
         style={{
           width: 300,
@@ -195,12 +205,13 @@ function LyricTextScreen(props: Props) {
             marginTop: 12,
             marginHorizontal: 6,
             alignItems: 'center',
-            justifyContent: 'space-between',
           }}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
+              flex: 1.2,
+              marginRight: 12,
             }}>
             <TouchableOpacity
               style={{
@@ -211,7 +222,7 @@ function LyricTextScreen(props: Props) {
                 name="ios-arrow-back-circle-sharp"
                 size={38}
                 style={{marginLeft: 2}}
-                color={GeneralColor.black}
+                color={GeneralColor.app_theme}
               />
             </TouchableOpacity>
 
@@ -220,13 +231,20 @@ function LyricTextScreen(props: Props) {
               numberOfLines={2}
               textStyle={{
                 fontSize: 18,
-                width: 160,
+                // width: '100%',
+                // backgroundColor: 'red',
                 fontWeight: 'bold',
                 marginLeft: 10,
+                flex: 1,
               }}
             />
           </View>
-          <View style={{flexDirection: 'row'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              flex: 1,
+            }}>
             <TouchableOpacity
               style={{
                 justifyContent: 'center',
@@ -234,6 +252,15 @@ function LyricTextScreen(props: Props) {
                 marginRight: 10,
               }}
               onPress={() => clickedPlayAutoScroll()}>
+              <View
+                style={{
+                  backgroundColor: GeneralColor.white,
+                  width: 40,
+                  height: 40,
+                  borderRadius: 30,
+                  position: 'absolute',
+                }}
+              />
               <AntDesign
                 name={isPlaying ? 'pausecircle' : 'play'}
                 size={35}
@@ -274,7 +301,6 @@ function LyricTextScreen(props: Props) {
           <TextView
             text={formattedLyricText}
             textStyle={{
-              color: 'black',
               padding: 12,
               flex: 1,
               fontSize: parseInt(lyricFontSize),

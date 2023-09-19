@@ -78,26 +78,29 @@ function ImageView(props: Props) {
   }, [props.route.params]);
 
   useEffect(() => {
-    const adsThread = setTimeout(() => {
-      try {
-        showAd();
-      } catch (error) {
-        console.log('Ads Error', error);
-      }
-    }, 6000);
+    if (isShowAds) {
+      const adsThread = setTimeout(() => {
+        try {
+          console.log(isShowAds, 'isShowingAdsFromImageView');
+          showAd();
+        } catch (error) {
+          console.log('Ads Error', error);
+        }
+      }, 6000);
 
-    const adsShowEvery20minThread = setInterval(() => {
-      try {
-        showAd();
-      } catch (error) {
-        console.log('Ads Error', error);
-      }
-    }, 900000);
-    return () => {
-      clearInterval(adsShowEvery20minThread);
-      clearTimeout(adsThread);
-      setIsShowAds(false);
-    };
+      const adsShowEvery20minThread = setInterval(() => {
+        try {
+          showAd();
+        } catch (error) {
+          console.log('Ads Error', error);
+        }
+      }, 900000);
+      return () => {
+        clearInterval(adsShowEvery20minThread);
+        clearTimeout(adsThread);
+        setIsShowAds(false);
+      };
+    }
   }, [isShowAds]);
 
   const showAd = () => {
@@ -346,7 +349,7 @@ function ImageView(props: Props) {
             name="ios-arrow-back-circle-sharp"
             size={38}
             style={{marginLeft: 2}}
-            color={GeneralColor.white}
+            color={GeneralColor.app_theme}
           />
         </TouchableOpacity>
       </View>

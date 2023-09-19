@@ -54,7 +54,7 @@ export function LoginDialog(props: AppProps) {
           height: 280,
           alignSelf: 'center',
           padding: 10,
-          backgroundColor: GeneralColor.white,
+          backgroundColor: theme.backgroundColor,
         }}>
         <TouchableOpacity
           style={{position: 'absolute', right: 10, top: 10}}
@@ -93,8 +93,6 @@ export function LoginDialog(props: AppProps) {
             text={label.login}
             textStyle={{
               fontSize: 18,
-              //   fontWeight: 'bold',
-              color: GeneralColor.black,
             }}
           />
         </TouchableOpacity>
