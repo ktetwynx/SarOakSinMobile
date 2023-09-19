@@ -34,6 +34,7 @@ import Animated, {
   withSequence,
   withSpring,
 } from 'react-native-reanimated';
+import KeepAwake from 'react-native-keep-awake';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -74,6 +75,7 @@ function ImageView(props: Props) {
     initialCheckFav();
     setIsShowAds(true);
     startShake();
+    KeepAwake.activate();
     // startBigSmall();
   }, [props.route.params]);
 

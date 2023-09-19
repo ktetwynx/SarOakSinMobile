@@ -33,6 +33,7 @@ import {TextView} from '../../components/TextView';
 import {ChangeKeyDialog} from '../../components/ChangeKeyDialog';
 import ImageView from '../image_view/ImageView';
 import {ThemeContext} from '../../utility/ThemeProvider';
+import KeepAwake from 'react-native-keep-awake';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -84,6 +85,7 @@ function LyricTextScreen(props: Props) {
       const defaultKeySong = song.setKey('G');
       setSong(defaultKeySong);
     }
+    KeepAwake.activate();
   }, [props.route.params]);
 
   useEffect(() => {

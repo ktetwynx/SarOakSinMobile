@@ -24,6 +24,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
 import {SearchBar} from '../../components/SearchBar';
+import KeepAwake from 'react-native-keep-awake';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -78,6 +79,7 @@ function LyricsScreen(props: Props) {
 
   useEffect(() => {
     fetchHomeLyricsApi();
+    KeepAwake.deactivate();
   }, [label, props.fav_lyric_count]);
 
   useEffect(() => {

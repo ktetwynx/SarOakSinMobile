@@ -27,6 +27,7 @@ import {ApiFetchService} from '../../service/ApiFetchService';
 import i18n from '../../language/i18n';
 import Modal from 'react-native-modal';
 import {GeneralColor} from '../../utility/Themes';
+import KeepAwake from 'react-native-keep-awake';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -129,6 +130,7 @@ function PDFView(props: Props) {
     setTotalPage(props.route.params.totalPage);
     setIsFavourite(props.route.params.isFavourite);
     setReadPageAt(props.route.params.readPageAt);
+    KeepAwake.activate();
   }, [props.route.params]);
 
   useEffect(() => {

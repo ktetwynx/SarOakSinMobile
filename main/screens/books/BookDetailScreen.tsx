@@ -39,6 +39,7 @@ import Animated, {
 import {GeneralColor} from '../../utility/Themes';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import {LoginDialog} from '../../components/LoginDialog';
+import KeepAwake from 'react-native-keep-awake';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -120,6 +121,7 @@ function BookDetailScreen(props: Props) {
   useFocusEffect(
     useCallback(() => {
       fetchBookDetailApi();
+      KeepAwake.deactivate();
     }, [props.route.params.bookId]),
   );
 
