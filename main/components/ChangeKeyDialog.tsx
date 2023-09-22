@@ -12,18 +12,18 @@ import {BounceOut} from 'react-native-reanimated';
 import {ThemeContext} from '../utility/ThemeProvider';
 import {GeneralColor} from '../utility/Themes';
 import {TextView} from './TextView';
+import Slider from '@react-native-community/slider';
 
 export interface AppProps {
   isVisible: boolean;
-  clickedChangeKey: Function;
-  clickedChangedShardFlat: Function;
+
   clickedClosed: Function;
-  currentKey: string;
-  shardOrFlat: string;
+  orignalKey: string;
   clickedChangeFont: Function;
   clickedChangedScrollSpeed: Function;
   currentLyricFontSize: string;
   currentScrollSpeed: string;
+  sliderOnValueChange: Function;
 }
 
 export function ChangeKeyDialog(props: AppProps) {
@@ -31,24 +31,14 @@ export function ChangeKeyDialog(props: AppProps) {
   const {theme} = context;
 
   const {width, height} = Dimensions.get('screen');
-  const [currentKey, setCurrentKey] = useState('');
-  const [forShowKey, setForShowKey] = useState('');
-  const [shardOrFlat, setShardOrFlat] = useState('');
-  const [keyList, setKeyList] = useState(['C', 'D', 'E', 'F', 'G', 'A', 'B']);
-  const [shardFlatList, setShardFlatList] = useState(['#', 'b']);
+  const [originalKey, setOriginalKey] = useState('');
   const [scrollSpeed, setScrollSpeed] = useState(['Slow', 'Medium', 'Fast']);
   const [fontSize, setFontSize] = useState(['14', '16', '18', '20']);
+  const [transposeNumber, setTransposeNumber] = useState(0);
 
   useEffect(() => {
-    setCurrentKey(props.currentKey);
-    setShardOrFlat(props.shardOrFlat);
-  }, [props.currentKey]);
-
-  useEffect(() => {
-    if (shardOrFlat != '' || currentKey != '') {
-      setForShowKey(`${currentKey}${shardOrFlat}`);
-    }
-  }, [shardOrFlat, currentKey]);
+    setOriginalKey(props.orignalKey);
+  }, [props.orignalKey]);
 
   return (
     <Modal
@@ -80,11 +70,23 @@ export function ChangeKeyDialog(props: AppProps) {
             paddingVertical: 16,
           }}>
           <TextView
-            text={`Key ${forShowKey}`}
+            text={`Original Key ${props.orignalKey}`}
             textStyle={{
               fontSize: 16,
               fontWeight: 'bold',
               marginBottom: 12,
+              alignSelf: 'center',
+              marginTop: 6,
+              marginLeft: 6,
+            }}
+          />
+
+          <TextView
+            text={`Transpose ${transposeNumber}`}
+            textStyle={{
+              fontSize: 14,
+              alignSelf: 'center',
+              marginBottom: 6,
               marginTop: 6,
               marginLeft: 6,
             }}
@@ -100,97 +102,20 @@ export function ChangeKeyDialog(props: AppProps) {
               style={{alignSelf: 'center', opacity: 0.7}}
             />
           </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginBottom: 16,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            {keyList.map((_, index) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    props.clickedChangeKey(_);
-                    setCurrentKey(_);
-                  }}
-                  key={index}>
-                  <TextView
-                    textStyle={{
-                      textAlign: 'center',
-                      borderWidth: currentKey == _ ? 2 : 1,
-                      borderRadius: 8,
-                      fontSize: currentKey == _ ? 16 : 14,
-                      fontWeight: currentKey == _ ? 'bold' : 'normal',
-                      paddingVertical: 5,
-                      paddingHorizontal: 12,
-                      color:
-                        currentKey == _
-                          ? GeneralColor.app_theme
-                          : theme.textColor,
-                      borderColor:
-                        currentKey == _
-                          ? GeneralColor.app_theme
-                          : theme.textColor,
-                    }}
-                    text={_}
-                  />
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginBottom: 16,
-              alignSelf: 'center',
-            }}>
-            {shardFlatList.map((_, index) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    if (shardOrFlat != _) {
-                      setShardOrFlat(_);
-                      props.clickedChangedShardFlat(_);
-                    } else {
-                      setShardOrFlat('');
-                      props.clickedChangedShardFlat('');
-                    }
-                  }}
-                  key={index}
-                  style={{marginRight: 12}}>
-                  <TextView
-                    textStyle={{
-                      textAlign: 'center',
-                      borderWidth: shardOrFlat == _ ? 2 : 1,
-                      borderRadius: 8,
-                      fontSize: shardOrFlat == _ ? 16 : 14,
-                      fontWeight: shardOrFlat == _ ? 'bold' : 'normal',
-                      paddingVertical: 5,
-                      paddingHorizontal: 12,
-                      color:
-                        shardOrFlat == _
-                          ? GeneralColor.app_theme
-                          : theme.textColor,
-                      borderColor:
-                        shardOrFlat == _
-                          ? GeneralColor.app_theme
-                          : theme.textColor,
-                    }}
-                    text={_}
-                  />
-                </TouchableOpacity>
-              );
-            })}
-          </View>
 
-          <View
-            style={{
-              height: 0.5,
-              backgroundColor: GeneralColor.grey,
-              width: '100%',
-              marginBottom: 16,
+          <Slider
+            step={1}
+            style={{width: '100%', height: 40, marginBottom: 12}}
+            minimumValue={-5}
+            maximumValue={5}
+            value={0}
+            onValueChange={(value: number) => {
+              setTransposeNumber(value);
+              props.sliderOnValueChange(value);
             }}
+            thumbTintColor={GeneralColor.app_dark_theme}
+            minimumTrackTintColor={GeneralColor.app_dark_theme}
+            maximumTrackTintColor="#000000"
           />
 
           <View

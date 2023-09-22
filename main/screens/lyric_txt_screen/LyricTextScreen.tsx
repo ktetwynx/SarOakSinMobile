@@ -8,11 +8,13 @@ import React, {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
   Animated,
+  Dimensions,
   Image,
   Platform,
   ScrollView,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
@@ -31,9 +33,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {GeneralColor} from '../../utility/Themes';
 import {TextView} from '../../components/TextView';
 import {ChangeKeyDialog} from '../../components/ChangeKeyDialog';
-import ImageView from '../image_view/ImageView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import KeepAwake from 'react-native-keep-awake';
+import WebView from 'react-native-webview';
+import SongTransformer from './SongTransformer';
+import SongRender, {SongRenderRef} from './SongRender';
+import CustomHtmlDivFormatter from './CustomHtmlDivFormatter';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -60,92 +65,43 @@ function LyricTextScreen(props: Props) {
   const context = useContext(ThemeContext);
   const {theme} = context;
 
-  const [song, setSong] = useState<Song>();
-  const [formattedLyricText, setFormattedLyricText] = useState('');
-  const [lyricKey, setLyricKey] = useState('');
+  const [chordSheet, setChordSheet] = useState<any>();
+  const [orginalKey, setOrginalKey] = useState('');
   const [lyricTitle, setLyricTitle] = useState('');
-  const [currentKey, setCurrentKey] = useState('');
-  const [shardOrFlat, setShardOrFlat] = useState('');
+  const [transposeKey, setTransposeKey] = useState(0);
   const [isShowChangeKeyDialog, setIsShowChangeKeyDialog] = useState(false);
+
+  const songRenderRef = useRef<SongRenderRef>(null);
+  const [scrollSpeedNumber, setScrollSpeedNumber] = useState<number>(0);
   const [lyricFontSize, setLyricFontSize] = useState('16');
   const [scrollSpeed, setScrollSpeed] = useState('Medium');
   const [isPlaying, setIsPlaying] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
-  const [scrollSpeedRate, setScrollSpeedRate] = useState({
-    plusOffSet: 0,
-    duration: 0,
-  });
 
   useEffect(() => {
     setLyricTitle(props.route.params.lyricTitle);
-    const song = parseSong(props.route.params.lyricText);
-    if (song.metadata?.key) {
-      setSong(song);
-    } else {
-      const defaultKeySong = song.setKey('G');
-      setSong(defaultKeySong);
-    }
-    KeepAwake.activate();
+    setChordSheet(props.route.params.lyricText);
+    const song = new ChordSheetJS.ChordProParser().parse(
+      props.route.params.lyricText,
+    );
+    setOrginalKey(song.metadata.key);
   }, [props.route.params]);
 
   useEffect(() => {
-    setCurrentKey(
-      song?.metadata.key.split('', 2)[0]
-        ? song.metadata.key.split('', 2)[0]
-        : '',
-    );
-    setShardOrFlat(
-      song?.metadata.key.split('', 2)[1]
-        ? song.metadata.key.split('', 2)[1]
-        : '',
-    );
-  }, [song]);
-
-  useEffect(() => {
-    if (lyricKey != '') {
-      const changedKeySong = song?.changeKey(lyricKey);
-      setFormattedLyricText(changedKeySong ? formatSong(changedKeySong) : '');
-    }
-  }, [lyricKey, song]);
-
-  useEffect(() => {
-    if (scrollSpeed == 'Slow') {
-      setScrollSpeedRate({plusOffSet: 1, duration: 2000});
-    } else if (scrollSpeed == 'Medium') {
-      setScrollSpeedRate({plusOffSet: 1, duration: 1000});
-    } else if (scrollSpeed == 'Fast') {
-      setScrollSpeedRate({plusOffSet: 2, duration: 500});
-    }
-  }, [scrollSpeed]);
-
-  useEffect(() => {
-    if (shardOrFlat != '' || currentKey != '') {
-      setLyricKey(`${currentKey}${shardOrFlat}`);
-    }
-  }, [shardOrFlat, currentKey]);
-
-  useEffect(() => {
     if (isPlaying) {
-      let offset = 0;
-      const autoScrolling = setInterval(() => {
-        offset += scrollSpeedRate.plusOffSet;
-        scrollViewRef.current?.scrollTo({x: 0, y: offset, animated: true});
-      }, scrollSpeedRate.duration);
-      return () => clearInterval(autoScrolling);
+      if (scrollSpeed == 'Slow') {
+        setScrollSpeedNumber(0.05);
+      } else if (scrollSpeed == 'Medium') {
+        setScrollSpeedNumber(0.4);
+      } else if (scrollSpeed == 'Fast') {
+        setScrollSpeedNumber(0.9);
+      }
+    } else {
+      setScrollSpeedNumber(0);
+      console.log('stop');
     }
-  }, [isPlaying]);
+  }, [isPlaying, scrollSpeed]);
 
-  function parseSong(text: string) {
-    const parser = new ChordSheetJS.ChordProParser();
-    const song = parser.parse(text);
-    return song;
-  }
-
-  function formatSong(song: Song) {
-    const formatter = new ChordSheetJS.TextFormatter();
-    const disp = formatter.format(song);
-    return disp;
-  }
   const clickedChangeKey = useCallback(() => {
     setIsPlaying(false);
     setIsShowChangeKeyDialog(true);
@@ -193,12 +149,10 @@ function LyricTextScreen(props: Props) {
         }}
         source={require('../../assets/images/sar_oak_sin_logo.jpg')}
       />
+
       <ScrollView
-        onScroll={({nativeEvent}) => {
-          if (isReachToScrollEnd(nativeEvent)) {
-            setIsPlaying(false);
-          }
-        }}
+        scrollEnabled={false}
+        contentContainerStyle={{flexGrow: 1}}
         ref={scrollViewRef}
         style={{flexDirection: 'column'}}>
         <View
@@ -295,20 +249,23 @@ function LyricTextScreen(props: Props) {
           </View>
         </View>
 
-        <View
-          onTouchStart={event => {
-            setIsPlaying(false);
-          }}
-          style={{flex: 1}}>
-          <TextView
-            text={formattedLyricText}
-            textStyle={{
-              padding: 12,
-              flex: 1,
-              fontSize: parseInt(lyricFontSize),
-            }}
-          />
-        </View>
+        <SongTransformer
+          chordProSong={chordSheet}
+          transposeDelta={transposeKey}
+          showTabs={false}
+          fontSize={parseInt(lyricFontSize)}>
+          {songProps => (
+            <View style={{flex: 1}}>
+              <SongRender
+                ref={songRenderRef}
+                onPressArtist={() => {}}
+                onPressChord={chordString => {}}
+                chordProContent={songProps.htmlSong}
+                scrollSpeed={scrollSpeedNumber}
+              />
+            </View>
+          )}
+        </SongTransformer>
       </ScrollView>
       <ChangeKeyDialog
         clickedChangeFont={(_: any) => {
@@ -317,20 +274,16 @@ function LyricTextScreen(props: Props) {
         clickedChangedScrollSpeed={(_: any) => {
           setScrollSpeed(_);
         }}
+        sliderOnValueChange={(value: number) => {
+          setTransposeKey(value);
+        }}
         currentScrollSpeed={scrollSpeed}
         currentLyricFontSize={lyricFontSize}
-        currentKey={currentKey}
-        shardOrFlat={shardOrFlat}
+        orignalKey={orginalKey}
         clickedClosed={() => {
           setIsShowChangeKeyDialog(false);
         }}
         isVisible={isShowChangeKeyDialog}
-        clickedChangeKey={(_: any) => {
-          setCurrentKey(_);
-        }}
-        clickedChangedShardFlat={(_: any) => {
-          setShardOrFlat(_);
-        }}
       />
     </SafeAreaView>
   );

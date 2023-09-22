@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-community/checkbox": "^0.5.15",
+    "@react-native-community/slider": "^4.4.3",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
@@ -42,6 +43,7 @@
     "react-native-screens": "^3.20.0",
     "react-native-splash-screen": "^3.3.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-webview": "^13.6.0",
     "react-redux": "^8.0.5",
     "redux-persist": "^6.0.0",
     "toggle-switch-react-native": "^3.3.0"
@@ -52,6 +54,7 @@
     "@babel/runtime": "^7.20.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@tsconfig/react-native": "^2.0.3",
+    "@types/chordsheetjs": "^2.8.1",
     "@types/jest": "^29.4.0",
     "@types/react": "^18.0.28",
     "@types/react-native-keep-awake": "^2.0.3",
