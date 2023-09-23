@@ -4,6 +4,7 @@ import React, {
   useImperativeHandle,
   forwardRef,
   ForwardRefRenderFunction,
+  useContext,
 } from 'react';
 import WebView from 'react-native-webview';
 import {
@@ -12,6 +13,8 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import {WebViewMessage} from 'react-native-webview/lib/WebViewTypes';
+import {GeneralColor} from '../../utility/Themes';
+import {ThemeContext} from '../../utility/ThemeProvider';
 
 interface Props {
   chordProContent: string;
@@ -31,6 +34,8 @@ const SongRender: ForwardRefRenderFunction<SongRenderRef, Props> = (
   ref: any,
 ) => {
   const webRef = useRef<WebView>(null);
+  const context = useContext(ThemeContext);
+  const {theme} = context;
   //   let {scrollSpeed = 0} = props;
   let dimensionsData = useWindowDimensions();
   let height = dimensionsData.height;
@@ -85,11 +90,16 @@ const SongRender: ForwardRefRenderFunction<SongRenderRef, Props> = (
     }
   }
 
-  let htmlStyles = props.scrollSpeed >= 0 ? styles : smoothScrollStyle + styles;
+  let htmlStyles =
+    props.scrollSpeed >= 0
+      ? styles(theme.textColor)
+      : smoothScrollStyle + styles;
   return (
     <WebView
       ref={webRef}
       startInLoadingState={true}
+      showsVerticalScrollIndicator={false}
+      style={{backgroundColor: undefined}}
       overScrollMode={'never'}
       source={{html: renderHtml(props.chordProContent, htmlStyles)}}
       injectedJavaScript={onClickChordPostMessage}
@@ -139,8 +149,10 @@ const smoothScrollStyle = `
     scroll-behavior: smooth;
   }
   `;
-const styles = `
+
+const styles = (textColor: any) => `
   body {
+    background-color:none;
     font-family: monospace;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -164,6 +176,7 @@ const styles = `
   }
   .line {
     margin-top: 0px;
+    color:${textColor};
     margin-bottom: 0px;
     margin-right: 10px;
     margin-left: 0px;
@@ -184,9 +197,14 @@ const styles = `
   .line-size-23 { font-size: 23px; }
   .line-size-24 { font-size: 24px; }
   .chord {
-    color: red;
+    color: ${
+      textColor == '#000000'
+        ? GeneralColor.app_dark_theme
+        : GeneralColor.app_theme
+    } ;
     position: relative;
     display: inline-block;
+    font-weight:bold;
     padding-top: 20px;
     width: 0px;
     top: -17px;

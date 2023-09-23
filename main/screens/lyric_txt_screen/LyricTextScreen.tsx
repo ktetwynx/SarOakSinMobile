@@ -255,7 +255,7 @@ function LyricTextScreen(props: Props) {
           showTabs={false}
           fontSize={parseInt(lyricFontSize)}>
           {songProps => (
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, marginTop: 10}}>
               <SongRender
                 ref={songRenderRef}
                 onPressArtist={() => {}}
@@ -280,6 +280,7 @@ function LyricTextScreen(props: Props) {
         currentScrollSpeed={scrollSpeed}
         currentLyricFontSize={lyricFontSize}
         orignalKey={orginalKey}
+        currentTransposeKey={transposeKey}
         clickedClosed={() => {
           setIsShowChangeKeyDialog(false);
         }}

@@ -12,11 +12,11 @@ import {BounceOut} from 'react-native-reanimated';
 import {ThemeContext} from '../utility/ThemeProvider';
 import {GeneralColor} from '../utility/Themes';
 import {TextView} from './TextView';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Slider from '@react-native-community/slider';
 
 export interface AppProps {
   isVisible: boolean;
-
   clickedClosed: Function;
   orignalKey: string;
   clickedChangeFont: Function;
@@ -24,6 +24,7 @@ export interface AppProps {
   currentLyricFontSize: string;
   currentScrollSpeed: string;
   sliderOnValueChange: Function;
+  currentTransposeKey: number;
 }
 
 export function ChangeKeyDialog(props: AppProps) {
@@ -34,10 +35,11 @@ export function ChangeKeyDialog(props: AppProps) {
   const [originalKey, setOriginalKey] = useState('');
   const [scrollSpeed, setScrollSpeed] = useState(['Slow', 'Medium', 'Fast']);
   const [fontSize, setFontSize] = useState(['14', '16', '18', '20']);
-  const [transposeNumber, setTransposeNumber] = useState(0);
+  const [transposeNumber, setTransposeNumber] = useState<number>(0);
 
   useEffect(() => {
     setOriginalKey(props.orignalKey);
+    setTransposeNumber(props.currentTransposeKey);
   }, [props.orignalKey]);
 
   return (
@@ -103,20 +105,55 @@ export function ChangeKeyDialog(props: AppProps) {
             />
           </TouchableOpacity>
 
-          <Slider
-            step={1}
-            style={{width: '100%', height: 40, marginBottom: 12}}
-            minimumValue={-5}
-            maximumValue={5}
-            value={0}
-            onValueChange={(value: number) => {
-              setTransposeNumber(value);
-              props.sliderOnValueChange(value);
-            }}
-            thumbTintColor={GeneralColor.app_dark_theme}
-            minimumTrackTintColor={GeneralColor.app_dark_theme}
-            maximumTrackTintColor="#000000"
-          />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 12,
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                if (transposeNumber > -5) {
+                  setTransposeNumber(transposeNumber - 1);
+                  props.sliderOnValueChange(transposeNumber - 1);
+                }
+              }}>
+              <AntDesign
+                name={'minuscircle'}
+                size={30}
+                color={GeneralColor.app_dark_theme}
+              />
+            </TouchableOpacity>
+
+            <Slider
+              step={1}
+              style={{width: '100%', height: 40, flex: 1}}
+              minimumValue={-5}
+              maximumValue={5}
+              value={transposeNumber}
+              onValueChange={(value: number) => {
+                setTransposeNumber(value);
+                props.sliderOnValueChange(value);
+              }}
+              thumbTintColor={GeneralColor.app_dark_theme}
+              minimumTrackTintColor={GeneralColor.app_dark_theme}
+              maximumTrackTintColor="#000000"
+            />
+
+            <TouchableOpacity
+              onPress={() => {
+                if (transposeNumber < 5) {
+                  setTransposeNumber(transposeNumber + 1);
+                  props.sliderOnValueChange(transposeNumber + 1);
+                }
+              }}>
+              <AntDesign
+                name={'pluscircle'}
+                size={30}
+                color={GeneralColor.app_dark_theme}
+              />
+            </TouchableOpacity>
+          </View>
 
           <View
             style={{
