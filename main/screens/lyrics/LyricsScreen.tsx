@@ -58,7 +58,7 @@ function LyricsScreen(props: Props) {
     singers: i18n.t('singers'),
     search_lyric_text: i18n.t('search_lyric_text'),
   });
-
+  const dummyData1 = [{id: 1}, {id: 2}, {id: 3}, {id: 4}];
   const [lyricHomeData, setLyricHomeData] = useState([
     {id: 1, title: label.singers, data: []},
     {id: 2, title: label.albums, data: []},
@@ -222,7 +222,7 @@ function LyricsScreen(props: Props) {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={item.index == 1 ? {} : {paddingLeft: 12}}
             horizontal={item.index == 1 ? false : true}
-            data={item.item.data.length != 0 ? item.item.data : dummyData}
+            data={item.item.data.length != 0 ? item.item.data : dummyData1}
             numColumns={item.index == 1 ? 2 : undefined}
             renderItem={(data: any) =>
               renderLyricsHomeDetailItem(data, item.item.title)

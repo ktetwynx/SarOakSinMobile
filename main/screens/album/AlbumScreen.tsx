@@ -4,7 +4,12 @@ import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BackButton} from '../../components/BackButton';
 import {FlatList} from 'react-native-gesture-handler';
-import {API_KEY_PRODUCION, API_URL, LYRICS_TITLE} from '../../config/Constant';
+import {
+  API_KEY_PRODUCION,
+  API_URL,
+  LYRICS_TITLE,
+  ROW_COUNT,
+} from '../../config/Constant';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import i18n from '../../language/i18n';
@@ -44,10 +49,12 @@ function AlbumScreen(props: Props) {
   const [albumId, setAlbumId] = useState<number>(0);
   const [albumName, setAlbumName] = useState<string>('');
   const [albumImg, setAlbumImg] = useState<string>('-');
-  const [lyricsList, setLyricsList] = useState([]);
+  const [lyricsList, setLyricsList] = useState<any>([]);
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
+  const [pageAt, setPageAt] = useState<number>(0);
+  const [totalPage, setTotalPage] = useState<number>(0);
 
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),
@@ -70,50 +77,72 @@ function AlbumScreen(props: Props) {
 
   useEffect(() => {
     if (screenRefresh) {
-      fetchAblumApi();
+      fetchAblumApi(0);
     }
   }, [screenRefresh]);
 
   useEffect(() => {
     if (albumId != 0) {
-      fetchAblumApi();
+      fetchAblumApi(0);
     }
   }, [albumId]);
 
-  const fetchAblumApi = useCallback(async () => {
-    let formData = new FormData();
-    formData.append('id', albumId);
-    formData.append('userId', props.profile?.id ? props.profile?.id : 0);
-    console.log(formData);
-    await ApiFetchService(API_URL + `user/lyric/album/get-by-id`, formData, {
-      'Content-Type': 'multipart/form-data',
-      Authorization: API_KEY_PRODUCION,
-    }).then((response: any) => {
-      console.log(response);
-      setTimeout(() => {
-        setIsLoading(false);
-        setScreenRefresh(false);
-      }, 1000);
-      if (response.code == 200) {
-        setLyricsList(response.data.content);
-        let images = [];
-        for (let data of response.data.content) {
-          images.push({
-            url: API_URL + data.imgPath,
-            isSaved: data.saved,
-            lyricsId: data.id,
-            lyricText: data.lyricText,
-            lyricTitle: data.name,
-          });
+  useEffect(() => {
+    let images = [];
+    for (let data of lyricsList) {
+      images.push({
+        url: API_URL + data.imgPath,
+        isSaved: data.saved,
+        lyricsId: data.id,
+        lyricText: data.lyricText,
+        lyricTitle: data.name,
+      });
+    }
+    setLyricsImages(images);
+  }, [lyricsList]);
+
+  const fetchAblumApi = useCallback(
+    async (pageAt: number) => {
+      let formData = new FormData();
+      formData.append('id', albumId);
+      formData.append('userId', props.profile?.id ? props.profile?.id : 0);
+      formData.append('page', pageAt);
+      formData.append('size', '100');
+      console.log(formData);
+      await ApiFetchService(API_URL + `user/lyric/album/get-by-id`, formData, {
+        'Content-Type': 'multipart/form-data',
+        Authorization: API_KEY_PRODUCION,
+      }).then((response: any) => {
+        console.log(response);
+        setTimeout(() => {
+          setIsLoading(false);
+          setScreenRefresh(false);
+        }, 1000);
+        if (response.code == 200) {
+          setLyricsList((prev: any) =>
+            pageAt === 0
+              ? response.data.content
+              : [...prev, ...response.data.content],
+          );
+          setTotalPage(response.data.totalPages);
         }
-        setLyricsImages(images);
-      }
-    });
-  }, [albumId, props.profile?.id]);
+      });
+    },
+    [albumId, props.profile?.id],
+  );
 
   const onRefreshScreen = useCallback(() => {
     setScreenRefresh(true);
   }, []);
+
+  const onEndListReached = () => {
+    if (totalPage != pageAt) {
+      const currentPage = pageAt + 1;
+      setPageAt(currentPage);
+      setIsLoading(true);
+      fetchAblumApi(currentPage);
+    }
+  };
 
   const goBack = useCallback(() => {
     props.navigation.goBack();
@@ -222,6 +251,8 @@ function AlbumScreen(props: Props) {
               numColumns={2}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
+              // onEndReachedThreshold={0}
+              // onEndReached={onEndListReached}
               contentContainerStyle={{paddingBottom: 50}}
               refreshControl={
                 <RefreshControl

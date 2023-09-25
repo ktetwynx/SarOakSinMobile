@@ -15,6 +15,7 @@ import {
   API_URL,
   BOOKS_TITLE,
   LYRICS_TITLE,
+  ROW_COUNT,
 } from '../../config/Constant';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {TextView} from '../../components/TextView';
@@ -53,12 +54,14 @@ function AuthorScreen(props: Props) {
   const {theme} = context;
   const [authorId, setAuthorId] = useState<number>(0);
   const [authorName, setAuthorName] = useState<string>('');
-  const [authorData, setAuthorData] = useState([]);
+  const [authorData, setAuthorData] = useState<any>([]);
   const [authorImage, setAuthorImage] = useState<string>('-');
   const [authorType, setAuthorType] = useState<number>(0);
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
+  const [pageAt, setPageAt] = useState<number>(0);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),
     books: i18n.t('books'),
@@ -83,53 +86,68 @@ function AuthorScreen(props: Props) {
 
   useEffect(() => {
     if (authorId != 0) {
-      fetchAuthorApi();
+      fetchAuthorApi(0);
     }
   }, [authorId]);
 
   useEffect(() => {
     if (screenRefresh) {
-      fetchAuthorApi();
+      fetchAuthorApi(0);
     }
   }, [screenRefresh]);
 
-  const fetchAuthorApi = useCallback(async () => {
-    let formData = new FormData();
-    let url;
-    if (authorType == 1) {
-      url = `user/book/author/get-by-id`;
-    } else if (authorType == 2) {
-      url = `user/lyric/author/get-by-id`;
-      formData.append('userId', props.profile?.id ? props.profile?.id : 0);
-    } else {
-      url = '';
-    }
-    formData.append('id', authorId);
-
-    await ApiFetchService(API_URL + url, formData, {
-      'Content-Type': 'multipart/form-data',
-      Authorization: API_KEY_PRODUCION,
-    }).then((response: any) => {
-      setTimeout(() => {
-        setIsLoading(false);
-        setScreenRefresh(false);
-      }, 1000);
-      if (response.code == 200) {
-        setAuthorData(response.data.content);
-        let images = [];
-        for (let data of response.data.content) {
-          images.push({
-            url: API_URL + data.imgPath,
-            isSaved: data.saved,
-            lyricsId: data.id,
-            lyricText: data.lyricText,
-            lyricTitle: data.name,
-          });
-        }
-        setLyricsImages(images);
+  useEffect(() => {
+    if (authorType == 2) {
+      let images = [];
+      for (let data of authorData) {
+        images.push({
+          url: API_URL + data.imgPath,
+          isSaved: data.saved,
+          lyricsId: data.id,
+          lyricText: data.lyricText,
+          lyricTitle: data.name,
+        });
       }
-    });
-  }, [authorId, authorType, props.profile?.id]);
+      setLyricsImages(images);
+    }
+  }, [authorData]);
+
+  const fetchAuthorApi = useCallback(
+    async (pageAt: number) => {
+      let formData = new FormData();
+      let url;
+      if (authorType == 1) {
+        url = `user/book/author/get-by-id`;
+      } else if (authorType == 2) {
+        url = `user/lyric/author/get-by-id`;
+        formData.append('userId', props.profile?.id ? props.profile?.id : 0);
+      } else {
+        url = '';
+      }
+      formData.append('id', authorId);
+      formData.append('page', pageAt);
+      formData.append('size', ROW_COUNT);
+
+      await ApiFetchService(API_URL + url, formData, {
+        'Content-Type': 'multipart/form-data',
+        Authorization: API_KEY_PRODUCION,
+      }).then((response: any) => {
+        setTimeout(() => {
+          setIsLoading(false);
+          setScreenRefresh(false);
+        }, 1000);
+        if (response.code == 200) {
+          setAuthorData((prev: any) =>
+            pageAt === 0
+              ? response.data.content
+              : [...prev, ...response.data.content],
+          );
+          setTotalPage(response.data.totalPages);
+        }
+      });
+    },
+    [authorId, authorType, props.profile?.id],
+  );
 
   const goBack = useCallback(() => {
     props.navigation.goBack();
@@ -152,6 +170,16 @@ function AuthorScreen(props: Props) {
   const onRefreshScreen = useCallback(() => {
     setScreenRefresh(true);
   }, []);
+
+  const onEndListReached = () => {
+    console.log(totalPage, pageAt);
+    if (totalPage != pageAt) {
+      const currentPage = pageAt + 1;
+      setPageAt(currentPage);
+      setIsLoading(true);
+      fetchAuthorApi(currentPage);
+    }
+  };
 
   const renderByAuthorItem = useCallback(
     (item: any) => {
@@ -290,6 +318,8 @@ function AuthorScreen(props: Props) {
           <FlatList
             data={authorData}
             numColumns={2}
+            onEndReachedThreshold={0}
+            onEndReached={onEndListReached}
             refreshControl={
               <RefreshControl
                 refreshing={screenRefresh}

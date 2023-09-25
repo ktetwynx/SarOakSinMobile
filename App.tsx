@@ -8,7 +8,7 @@ import store from './main/redux';
 import Route from './main/route/Route';
 import ThemeProvider from './main/utility/ThemeProvider';
 import SplashScreen from 'react-native-splash-screen';
-import mobileAds from 'react-native-google-mobile-ads';
+import mobileAds, {MaxAdContentRating} from 'react-native-google-mobile-ads';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -25,10 +25,19 @@ function App(): JSX.Element {
   }, []);
 
   const initApp = async () => {
-    await mobileAds()
-      .initialize()
+    mobileAds()
+      .setRequestConfiguration({
+        maxAdContentRating: MaxAdContentRating.PG,
+        // Indicates that you want your content treated as child-directed for purposes of COPPA.
+        tagForChildDirectedTreatment: true,
+        // Indicates that you want the ad request to be handled in a
+        // manner suitable for users under the age of consent.
+        tagForUnderAgeOfConsent: true,
+        // An array of test device IDs to allow.
+        testDeviceIdentifiers: ['EMULATOR'],
+      })
       .then(adapterStatuses => {
-        console.log('Initialization complete!', adapterStatuses);
+        console.log('Ads Initialization complete!', adapterStatuses);
       });
   };
 
