@@ -17,9 +17,9 @@ import {ThemeContext} from '../../utility/ThemeProvider';
 import i18n from '../../language/i18n';
 import {TextView} from '../../components/TextView';
 import {useFocusEffect} from '@react-navigation/native';
-import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
 import {LoadingScreen} from '../../components/LoadingScreen';
 import {GeneralColor} from '../../utility/Themes';
+import * as Animatable from 'react-native-animatable';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -46,6 +46,7 @@ function FavouriteLyricScreen(props: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     fav_lyric_list: i18n.t('fav_lyric_list'),
   });
@@ -140,7 +141,7 @@ function FavouriteLyricScreen(props: Props) {
   const renderFavItem = useCallback(
     (item: any) => {
       return (
-        <Animated.View
+        <Animatable.View
           style={{
             marginBottom: 12,
             flex: 0.5,
@@ -148,8 +149,8 @@ function FavouriteLyricScreen(props: Props) {
             justifyContent: 'space-between',
             flexDirection: 'column',
           }}
-          entering={FadeInDown}
-          exiting={FadeOut}>
+          useNativeDriver={true}
+          animation={animationForScreen}>
           <TouchableOpacity onPress={() => clickedLyric(item)}>
             <Image
               style={{
@@ -176,7 +177,7 @@ function FavouriteLyricScreen(props: Props) {
               textStyle={{alignSelf: 'center', marginTop: 2, opacity: 0.5}}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [favList, props.token, lyricsImages],
@@ -194,12 +195,14 @@ function FavouriteLyricScreen(props: Props) {
         <View
           style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
           <BackButton style={{marginLeft: 12}} clickedGoBack={goBack} />
-          <Animated.View entering={FadeInDown.duration(600)} exiting={FadeOut}>
+          <Animatable.View
+            useNativeDriver={true}
+            animation={animationForScreen}>
             <TextView
               text={label.fav_lyric_list}
               textStyle={{fontSize: 18, fontWeight: 'bold', marginLeft: 12}}
             />
-          </Animated.View>
+          </Animatable.View>
         </View>
         <FlatList
           data={favList}

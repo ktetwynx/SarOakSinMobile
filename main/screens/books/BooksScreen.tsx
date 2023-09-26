@@ -14,13 +14,7 @@ import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import i18n from '../../language/i18n';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Animated, {
-  FadeOut,
-  FadeInDown,
-  FadeOutDown,
-  SlideInRight,
-  SlideOutRight,
-} from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
 import {ScrollView} from 'react-native-gesture-handler';
 import {GeneralColor} from '../../utility/Themes';
 import {SearchBar} from '../../components/SearchBar';
@@ -31,6 +25,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   const [bookListData, setBookListData] = useState(dummyData);
   const [authorListData, setAuthorListData] = useState(dummyData);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
+  const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     authors: i18n.t('authors'),
     search_book_text: i18n.t('search_book_text'),
@@ -97,18 +92,20 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Animated.View
-              entering={FadeInDown.delay(item.index * 300)}
-              exiting={FadeOut}>
+            <Animatable.View
+              useNativeDriver={true}
+              animation={animationForScreen}>
               <TextView
                 text={item.item.categoryName}
                 textStyle={{fontSize: 20, fontWeight: 'bold'}}
               />
-            </Animated.View>
+            </Animatable.View>
 
-            <Animated.View entering={SlideInRight.delay(item.index * 300)}>
+            <Animatable.View
+              useNativeDriver={true}
+              animation={animationForScreen}>
               <ViewMoreButton clickedViewMore={() => clickedViewmore(item)} />
-            </Animated.View>
+            </Animatable.View>
           </View>
 
           <FlatList
@@ -163,9 +160,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   const renderAuthorItem = useCallback(
     (item: any) => {
       return (
-        <Animated.View
-          entering={FadeInDown.delay(item.index * 300)}
-          exiting={FadeOutDown.delay(item.index * 300)}>
+        <Animatable.View useNativeDriver={true} animation={animationForScreen}>
           <TouchableOpacity
             onPress={() => clickedAuthor(item)}
             style={{flexDirection: 'column', marginRight: 12}}>
@@ -185,7 +180,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
               textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [authorListData],
@@ -194,9 +189,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   const renderBookListItem = useCallback(
     (item: any) => {
       return (
-        <Animated.View
-          entering={FadeInDown.delay(item.index * 300)}
-          exiting={FadeOutDown.delay(item.index * 300)}>
+        <Animatable.View useNativeDriver={true} animation={animationForScreen}>
           <TouchableOpacity
             onPress={() => clickedBookDetail(item.item.id)}
             style={{
@@ -230,7 +223,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
               textStyle={{alignSelf: 'center', marginTop: 2, opacity: 0.5}}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [bookListData],

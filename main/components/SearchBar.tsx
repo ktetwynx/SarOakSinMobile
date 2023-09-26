@@ -1,11 +1,11 @@
 import React, {useContext} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Animated, {FadeInUp} from 'react-native-reanimated';
+
 import {ThemeContext} from '../utility/ThemeProvider';
 import {TextView} from './TextView';
 import {GeneralColor} from '../utility/Themes';
-
+import * as Animatable from 'react-native-animatable';
 export interface AppProps {
   clickedSearch: any;
   text: string;
@@ -19,8 +19,9 @@ export function SearchBar(props: AppProps) {
     <TouchableOpacity
       style={{paddingTop: props.paddingTop}}
       onPress={props.clickedSearch}>
-      <Animated.View
-        entering={FadeInUp.duration(400)}
+      <Animatable.View
+        useNativeDriver={true}
+        animation={'fadeInUp'}
         style={{
           width: '90%',
           height: 45,
@@ -43,7 +44,7 @@ export function SearchBar(props: AppProps) {
           color={GeneralColor.app_theme}
           style={{alignSelf: 'center', marginRight: 16}}
         />
-      </Animated.View>
+      </Animatable.View>
     </TouchableOpacity>
   );
 }

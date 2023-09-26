@@ -16,12 +16,7 @@ import i18n from '../../language/i18n';
 import {TextView} from '../../components/TextView';
 import {ConnectedProps, connect} from 'react-redux';
 import {LoadingScreen} from '../../components/LoadingScreen';
-import Animated, {
-  FadeOut,
-  FadeInDown,
-  SlideInUp,
-  FadeIn,
-} from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {
@@ -55,7 +50,7 @@ function AlbumScreen(props: Props) {
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
-
+  const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),
   });
@@ -151,15 +146,15 @@ function AlbumScreen(props: Props) {
   const renderLyricsItem = useCallback(
     (item: any) => {
       return (
-        <Animated.View
+        <Animatable.View
           style={{
             flexDirection: 'column',
             flex: 1,
             marginRight: 12,
             marginBottom: 16,
           }}
-          entering={FadeInDown}
-          exiting={FadeOut}>
+          useNativeDriver={true}
+          animation={animationForScreen}>
           <TouchableOpacity onPress={() => clickedLyric(item)}>
             <Image
               source={{
@@ -177,7 +172,7 @@ function AlbumScreen(props: Props) {
               textStyle={{fontSize: 16, alignSelf: 'center', marginTop: 10}}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [lyricsList, lyricsImages],
@@ -215,8 +210,9 @@ function AlbumScreen(props: Props) {
               alignItems: 'center',
               alignSelf: 'center',
             }}>
-            <Animated.Image
-              entering={SlideInUp.duration(400)}
+            <Animatable.Image
+              animation={animationForScreen}
+              useNativeDriver={true}
               source={{uri: API_URL + albumImg}}
               style={{
                 width: 150,
@@ -226,25 +222,33 @@ function AlbumScreen(props: Props) {
                 borderRadius: 20,
               }}
             />
-            <Animated.View entering={FadeIn.delay(500).duration(400)}>
+            <Animatable.View
+              useNativeDriver={true}
+              animation={animationForScreen}>
               <TextView
                 text={albumName}
-                numberOfLines={1}
-                textStyle={{fontSize: 22, fontWeight: 'bold', maxWidth: 200}}
+                numberOfLines={3}
+                textStyle={{
+                  fontSize: 22,
+                  fontWeight: 'bold',
+                  maxWidth: 200,
+                }}
               />
-            </Animated.View>
+            </Animatable.View>
           </View>
           <View
             style={{
               flexDirection: 'column',
               flex: 1,
             }}>
-            <Animated.View entering={FadeIn.delay(200).duration(600)}>
+            <Animatable.View
+              useNativeDriver={true}
+              animation={animationForScreen}>
               <TextView
                 text={label.lyrics}
                 textStyle={{fontSize: 18, marginTop: 12, marginLeft: 16}}
               />
-            </Animated.View>
+            </Animatable.View>
 
             <FlatList
               data={lyricsList}

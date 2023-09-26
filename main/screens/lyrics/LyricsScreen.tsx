@@ -16,12 +16,7 @@ import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import {ConnectedProps, connect} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Animated, {
-  FadeInDown,
-  FadeOutDown,
-  SlideInLeft,
-  SlideInRight,
-} from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
 import {SearchBar} from '../../components/SearchBar';
 import KeepAwake from 'react-native-keep-awake';
@@ -58,6 +53,7 @@ function LyricsScreen(props: Props) {
     singers: i18n.t('singers'),
     search_lyric_text: i18n.t('search_lyric_text'),
   });
+  const animationForScreen = 'fadeInUp';
   const dummyData1 = [{id: 1}, {id: 2}, {id: 3}, {id: 4}];
   const [lyricHomeData, setLyricHomeData] = useState([
     {id: 1, title: label.singers, data: []},
@@ -196,14 +192,18 @@ function LyricsScreen(props: Props) {
               alignItems: 'center',
               marginBottom: 12,
             }}>
-            <Animated.View entering={FadeInDown.delay(item.index * 300)}>
+            <Animatable.View
+              useNativeDriver={true}
+              animation={animationForScreen}>
               <TextView
                 text={item.item.title}
                 textStyle={{fontSize: 20, fontWeight: 'bold'}}
               />
-            </Animated.View>
+            </Animatable.View>
 
-            <Animated.View entering={SlideInRight.delay(item.index * 300)}>
+            <Animatable.View
+              useNativeDriver={true}
+              animation={animationForScreen}>
               <ViewMoreButton
                 clickedViewMore={() => {
                   if (item.index == 0) {
@@ -215,7 +215,7 @@ function LyricsScreen(props: Props) {
                   }
                 }}
               />
-            </Animated.View>
+            </Animatable.View>
           </View>
           <FlatList
             style={{marginTop: 10, marginBottom: 12}}
@@ -239,7 +239,7 @@ function LyricsScreen(props: Props) {
     (item: any, title: string) => {
       if (title == label.albums) {
         return (
-          <Animated.View
+          <Animatable.View
             style={{
               flexDirection: 'column',
               marginRight: 6,
@@ -247,8 +247,8 @@ function LyricsScreen(props: Props) {
               marginBottom: 6,
               flex: 0.5,
             }}
-            entering={FadeInDown.delay(item.index * 300)}
-            exiting={FadeOutDown.delay(item.index * 300)}>
+            useNativeDriver={true}
+            animation={animationForScreen}>
             <TouchableOpacity onPress={() => clickedAlbum(item)}>
               <Image
                 style={{
@@ -266,13 +266,13 @@ function LyricsScreen(props: Props) {
                 textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
               />
             </TouchableOpacity>
-          </Animated.View>
+          </Animatable.View>
         );
       } else if (title == label.lyrics) {
         return (
-          <Animated.View
-            entering={FadeInDown.delay(item.index * 300)}
-            exiting={FadeOutDown.delay(item.index * 300)}>
+          <Animatable.View
+            useNativeDriver={true}
+            animation={animationForScreen}>
             <TouchableOpacity
               onPress={() => clickedLyric(item)}
               style={{flexDirection: 'column', marginRight: 12}}>
@@ -297,16 +297,16 @@ function LyricsScreen(props: Props) {
                 }}
               />
             </TouchableOpacity>
-          </Animated.View>
+          </Animatable.View>
         );
       } else if (title == label.singers) {
         return (
-          <Animated.View
+          <Animatable.View
             style={{
               flexDirection: 'column',
             }}
-            entering={FadeInDown.delay(item.index * 300)}
-            exiting={FadeOutDown.delay(item.index * 300)}>
+            useNativeDriver={true}
+            animation={animationForScreen}>
             <TouchableOpacity
               onPress={() => clickedSinger(item)}
               style={{flexDirection: 'column', marginRight: 12}}>
@@ -327,7 +327,7 @@ function LyricsScreen(props: Props) {
                 textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
               />
             </TouchableOpacity>
-          </Animated.View>
+          </Animatable.View>
         );
       }
       return <></>;

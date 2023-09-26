@@ -38,12 +38,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';
 import {GeneralColor} from '../../utility/Themes';
-import Animated, {
-  FadeOut,
-  FadeIn,
-  FadeInDown,
-  FadeOutDown,
-} from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
+
 const {width, height} = Dimensions.get('screen');
 
 interface LoginData {
@@ -101,6 +97,7 @@ const ProfileScreen = (props: Props) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isLightMode, setIsLightMode] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const animationForScreen = 'fadeInUp';
   const [isCheckKeepLoggedIn, setIsCheckKeepLoggedIn] =
     useState<boolean>(false);
   const [isVisibleChangeLanguageModal, setIsVisibleChangeLanguageModal] =
@@ -357,10 +354,10 @@ const ProfileScreen = (props: Props) => {
           }}
           showsVerticalScrollIndicator={false}>
           {props.token != null ? (
-            <Animated.View
+            <Animatable.View
               key={props.token}
-              entering={FadeIn}
-              exiting={FadeOut}
+              animation={animationForScreen}
+              useNativeDriver={true}
               style={{width: '100%', height: '100%', flexDirection: 'column'}}>
               {/* <TouchableOpacity> */}
               <View
@@ -710,12 +707,12 @@ const ProfileScreen = (props: Props) => {
                   </View>
                 </View>
               </Modal>
-            </Animated.View>
+            </Animatable.View>
           ) : (
-            <Animated.View
+            <Animatable.View
               key={props.token}
-              entering={FadeInDown}
-              exiting={FadeOutDown}
+              useNativeDriver={true}
+              animation={animationForScreen}
               style={{
                 flexDirection: 'column',
                 width: '100%',
@@ -855,7 +852,7 @@ const ProfileScreen = (props: Props) => {
                   />
                 </View>
               </TouchableOpacity>
-            </Animated.View>
+            </Animatable.View>
           )}
         </KeyboardAwareScrollView>
       </SafeAreaView>

@@ -20,7 +20,7 @@ import i18n from '../../language/i18n';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {LoadingScreen} from '../../components/LoadingScreen';
-import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
 
 export function AlbumListViewmoreScreen(
@@ -33,6 +33,7 @@ export function AlbumListViewmoreScreen(
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
+  const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     albums: i18n.t('albums'),
   });
@@ -109,15 +110,15 @@ export function AlbumListViewmoreScreen(
   const renderViewMoreItem = useCallback(
     (item: any) => {
       return (
-        <Animated.View
+        <Animatable.View
+          useNativeDriver={true}
           style={{
             flexDirection: 'column',
             marginRight: 12,
             marginBottom: 12,
             flex: 0.5,
           }}
-          entering={FadeInDown}
-          exiting={FadeOut}>
+          animation={animationForScreen}>
           <TouchableOpacity onPress={() => clickedAlbum(item)}>
             <Image
               style={{
@@ -135,7 +136,7 @@ export function AlbumListViewmoreScreen(
               textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [viewMoreData],
@@ -163,12 +164,14 @@ export function AlbumListViewmoreScreen(
               goBack();
             }}
           />
-          <Animated.View entering={FadeInDown.duration(600)} exiting={FadeOut}>
+          <Animatable.View
+            useNativeDriver={true}
+            animation={animationForScreen}>
             <TextView
               text={label.albums}
               textStyle={{fontSize: 20, fontWeight: 'bold', marginLeft: 16}}
             />
-          </Animated.View>
+          </Animatable.View>
         </View>
         <FlatList
           numColumns={2}

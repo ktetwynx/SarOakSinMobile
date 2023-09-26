@@ -23,12 +23,7 @@ import {ThemeContext} from '../../utility/ThemeProvider';
 import i18n from '../../language/i18n';
 import {ConnectedProps, connect} from 'react-redux';
 import {LoadingScreen} from '../../components/LoadingScreen';
-import Animated, {
-  FadeOut,
-  FadeInDown,
-  SlideInUp,
-  FadeIn,
-} from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
 
 const mapstateToProps = (state: {
@@ -62,6 +57,7 @@ function AuthorScreen(props: Props) {
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),
     books: i18n.t('books'),
@@ -172,7 +168,6 @@ function AuthorScreen(props: Props) {
   }, []);
 
   const onEndListReached = () => {
-    console.log(totalPage, pageAt);
     if (totalPage != pageAt) {
       const currentPage = pageAt + 1;
       setPageAt(currentPage);
@@ -184,14 +179,14 @@ function AuthorScreen(props: Props) {
   const renderByAuthorItem = useCallback(
     (item: any) => {
       return authorType == 1 ? (
-        <Animated.View
+        <Animatable.View
           style={{
             flexDirection: 'column',
             marginTop: 12,
             flex: 0.5,
           }}
-          entering={FadeInDown}
-          exiting={FadeOut}>
+          animation={animationForScreen}
+          useNativeDriver={true}>
           <TouchableOpacity onPress={() => clickedAuthorItem(item)}>
             <Image
               style={{
@@ -224,17 +219,17 @@ function AuthorScreen(props: Props) {
               />
             )}
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       ) : (
-        <Animated.View
+        <Animatable.View
           style={{
             flexDirection: 'column',
             marginTop: 12,
             flex: 0.5,
             margin: 6,
           }}
-          entering={FadeInDown}
-          exiting={FadeOut}>
+          useNativeDriver={true}
+          animation={animationForScreen}>
           <TouchableOpacity onPress={() => clickedAuthorItem(item)}>
             <Image
               style={{
@@ -256,7 +251,7 @@ function AuthorScreen(props: Props) {
               }}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [authorData, authorType, lyricsImages],
@@ -283,8 +278,9 @@ function AuthorScreen(props: Props) {
             alignItems: 'center',
             alignSelf: 'center',
           }}>
-          <Animated.Image
-            entering={SlideInUp.duration(400)}
+          <Animatable.Image
+            useNativeDriver={true}
+            animation={animationForScreen}
             source={{uri: API_URL + authorImage}}
             style={{
               width: 100,
@@ -294,13 +290,15 @@ function AuthorScreen(props: Props) {
               borderRadius: 100,
             }}
           />
-          <Animated.View entering={FadeIn.delay(500).duration(400)}>
+          <Animatable.View
+            useNativeDriver={true}
+            animation={animationForScreen}>
             <TextView
               text={authorName}
               numberOfLines={1}
               textStyle={{fontSize: 22, fontWeight: 'bold', marginTop: 12}}
             />
-          </Animated.View>
+          </Animatable.View>
         </View>
         <View
           style={{
@@ -308,12 +306,14 @@ function AuthorScreen(props: Props) {
             paddingHorizontal: 16,
             flex: 1,
           }}>
-          <Animated.View entering={FadeIn.delay(200).duration(600)}>
+          <Animatable.View
+            useNativeDriver={true}
+            animation={animationForScreen}>
             <TextView
               text={authorType == 1 ? label.books : label.lyrics}
               textStyle={{fontSize: 18, marginVertical: 6}}
             />
-          </Animated.View>
+          </Animatable.View>
 
           <FlatList
             data={authorData}

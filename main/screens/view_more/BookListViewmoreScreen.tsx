@@ -15,7 +15,7 @@ import {API_KEY_PRODUCION, API_URL, ROW_COUNT} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {LoadingScreen} from '../../components/LoadingScreen';
-import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
 
 export function BookListViewmoreScreen(
@@ -30,6 +30,7 @@ export function BookListViewmoreScreen(
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const animationForScreen = 'fadeInUp';
 
   useEffect(() => {
     setCategoryName(props.route.params.categoryName);
@@ -107,7 +108,7 @@ export function BookListViewmoreScreen(
   const renderViewMoreItem = useCallback(
     (item: any) => {
       return (
-        <Animated.View
+        <Animatable.View
           // style={{
           //   flexDirection: 'column',
           //   marginTop: 12,
@@ -118,8 +119,8 @@ export function BookListViewmoreScreen(
             marginTop: 22,
             flex: 0.333,
           }}
-          entering={FadeInDown}
-          exiting={FadeOut}>
+          useNativeDriver={true}
+          animation={animationForScreen}>
           <TouchableOpacity
             style={{alignItems: 'center', marginHorizontal: 6}}
             onPress={() => clickedBookDetail(item.item.id)}>
@@ -151,7 +152,7 @@ export function BookListViewmoreScreen(
               textStyle={{alignSelf: 'center', marginTop: 2, opacity: 0.5}}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [viewMoreData],
@@ -179,12 +180,14 @@ export function BookListViewmoreScreen(
               goBack();
             }}
           />
-          <Animated.View entering={FadeInDown.duration(600)} exiting={FadeOut}>
+          <Animatable.View
+            animation={animationForScreen}
+            useNativeDriver={true}>
             <TextView
               text={categoryName}
               textStyle={{fontSize: 20, fontWeight: 'bold', marginLeft: 16}}
             />
-          </Animated.View>
+          </Animatable.View>
         </View>
 
         <View style={{flex: 1}}>

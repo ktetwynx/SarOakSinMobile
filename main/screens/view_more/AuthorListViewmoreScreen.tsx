@@ -21,8 +21,8 @@ import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
 import i18n from '../../language/i18n';
 import {LoadingScreen} from '../../components/LoadingScreen';
-import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
+import * as Animatable from 'react-native-animatable';
 
 export function AuthorListViewmoreScreen(
   props: RootStackScreenProps<'AuthorListViewmoreScreen'>,
@@ -34,6 +34,7 @@ export function AuthorListViewmoreScreen(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     authors: i18n.t('authors'),
     singers: i18n.t('singers'),
@@ -124,14 +125,14 @@ export function AuthorListViewmoreScreen(
   const renderAuthorItem = useCallback(
     (item: any) => {
       return (
-        <Animated.View
+        <Animatable.View
           style={{
             flexDirection: 'column',
             flex: 0.3333,
             marginTop: 22,
           }}
-          entering={FadeInDown}
-          exiting={FadeOut}>
+          useNativeDriver={true}
+          animation={animationForScreen}>
           <TouchableOpacity
             style={{alignItems: 'center'}}
             onPress={() => clickedSinger(item)}>
@@ -155,7 +156,7 @@ export function AuthorListViewmoreScreen(
               }}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [viewMoreAuthorData],
@@ -182,7 +183,9 @@ export function AuthorListViewmoreScreen(
               goBack();
             }}
           />
-          <Animated.View entering={FadeInDown.duration(600)} exiting={FadeOut}>
+          <Animatable.View
+            useNativeDriver={true}
+            animation={animationForScreen}>
             <TextView
               text={
                 props.route.params.authorType == 1
@@ -191,7 +194,7 @@ export function AuthorListViewmoreScreen(
               }
               textStyle={{fontSize: 20, fontWeight: 'bold', marginLeft: 16}}
             />
-          </Animated.View>
+          </Animatable.View>
         </View>
         <FlatList
           data={viewMoreAuthorData}

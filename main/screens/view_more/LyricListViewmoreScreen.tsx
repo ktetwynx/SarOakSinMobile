@@ -21,8 +21,8 @@ import i18n from '../../language/i18n';
 import {TextView} from '../../components/TextView';
 import {ConnectedProps, connect} from 'react-redux';
 import {LoadingScreen} from '../../components/LoadingScreen';
-import Animated, {FadeOut, FadeInDown} from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
+import * as Animatable from 'react-native-animatable';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -49,6 +49,7 @@ function LyricListViewmoreScreen(props: Props) {
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
+  const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),
   });
@@ -145,15 +146,15 @@ function LyricListViewmoreScreen(props: Props) {
   const renderViewMoreItem = useCallback(
     (item: any) => {
       return (
-        <Animated.View
+        <Animatable.View
           style={{
             flexDirection: 'column',
             marginTop: 16,
             flex: 0.5,
             marginRight: 12,
           }}
-          entering={FadeInDown}
-          exiting={FadeOut}>
+          animation={animationForScreen}
+          useNativeDriver={true}>
           <TouchableOpacity onPress={() => clickedLyric(item)}>
             <Image
               style={{
@@ -176,7 +177,7 @@ function LyricListViewmoreScreen(props: Props) {
               }}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       );
     },
     [lyricsImages],
@@ -203,12 +204,14 @@ function LyricListViewmoreScreen(props: Props) {
               goBack();
             }}
           />
-          <Animated.View entering={FadeInDown.duration(600)} exiting={FadeOut}>
+          <Animatable.View
+            animation={animationForScreen}
+            useNativeDriver={true}>
             <TextView
               text={label.lyrics}
               textStyle={{fontSize: 20, fontWeight: 'bold', marginLeft: 16}}
             />
-          </Animated.View>
+          </Animatable.View>
         </View>
         <FlatList
           numColumns={2}

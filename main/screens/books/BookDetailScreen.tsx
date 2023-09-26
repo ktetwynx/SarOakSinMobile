@@ -29,17 +29,11 @@ import i18n from '../../language/i18n';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {useFocusEffect} from '@react-navigation/native';
 import {LoadingScreen} from '../../components/LoadingScreen';
-import Animated, {
-  FadeInDown,
-  FadeInUp,
-  FadeIn,
-  FadeInLeft,
-  BounceIn,
-} from 'react-native-reanimated';
 import {GeneralColor} from '../../utility/Themes';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import {LoginDialog} from '../../components/LoginDialog';
 import KeepAwake from 'react-native-keep-awake';
+import * as Animatable from 'react-native-animatable';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -100,6 +94,7 @@ function BookDetailScreen(props: Props) {
     bookPath: '-',
     totalPage: 0,
   });
+  const animationForScreen = 'fadeInUp';
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
   const [label, setLabel] = React.useState({
     author: i18n.t('author'),
@@ -248,8 +243,9 @@ function BookDetailScreen(props: Props) {
               clickedGoBack={goBack}
             />
 
-            <Animated.Image
-              entering={FadeInUp.duration(600)}
+            <Animatable.Image
+              useNativeDriver={true}
+              animation={animationForScreen}
               source={{uri: API_URL + bookDetailData.bookImage}}
               style={{
                 width: '75%',
@@ -259,9 +255,10 @@ function BookDetailScreen(props: Props) {
                 alignSelf: 'center',
               }}
             />
-            <Animated.View
+            <Animatable.View
               style={{marginTop: 16}}
-              entering={FadeIn.delay(600).duration(600)}>
+              useNativeDriver={true}
+              animation={animationForScreen}>
               <TextView
                 text={bookDetailData?.bookName}
                 textStyle={{
@@ -272,7 +269,7 @@ function BookDetailScreen(props: Props) {
                   alignSelf: 'center',
                 }}
               />
-            </Animated.View>
+            </Animatable.View>
             <View
               style={{
                 width: '90%',
@@ -297,8 +294,9 @@ function BookDetailScreen(props: Props) {
                       flexDirection: 'row',
                       alignItems: 'center',
                     }}>
-                    <Animated.View
-                      entering={FadeInLeft.delay(800).duration(600)}>
+                    <Animatable.View
+                      useNativeDriver={true}
+                      animation={animationForScreen}>
                       <TextView
                         text={label.author}
                         textStyle={{
@@ -307,10 +305,11 @@ function BookDetailScreen(props: Props) {
                           marginRight: 12,
                         }}
                       />
-                    </Animated.View>
+                    </Animatable.View>
 
-                    <Animated.Image
-                      entering={FadeIn.delay(1000).duration(600)}
+                    <Animatable.Image
+                      animation={animationForScreen}
+                      useNativeDriver={true}
                       source={{uri: API_URL + bookDetailData.authorImage}}
                       style={{
                         width: 40,
@@ -321,7 +320,9 @@ function BookDetailScreen(props: Props) {
                       }}
                     />
 
-                    <Animated.View entering={FadeIn.delay(1400).duration(600)}>
+                    <Animatable.View
+                      useNativeDriver={true}
+                      animation={animationForScreen}>
                       <TextView
                         text={bookDetailData.authorName}
                         textStyle={{
@@ -329,11 +330,14 @@ function BookDetailScreen(props: Props) {
                           textDecorationLine: 'underline',
                         }}
                       />
-                    </Animated.View>
+                    </Animatable.View>
                   </View>
                 </TouchableOpacity>
 
-                <Animated.View entering={BounceIn.duration(600).delay(1600)}>
+                <Animatable.View
+                  delay={1700}
+                  animation={'bounceIn'}
+                  useNativeDriver={true}>
                   <TouchableOpacity
                     onPress={clickedFavourite}
                     style={{justifyContent: 'center'}}>
@@ -343,13 +347,14 @@ function BookDetailScreen(props: Props) {
                       color={isFavourite ? 'red' : theme.backgroundColor2}
                     />
                   </TouchableOpacity>
-                </Animated.View>
+                </Animatable.View>
               </View>
               {bookDetailData?.readPageAt == -1 ? (
                 <View style={{height: 60}} />
               ) : (
-                <Animated.View
-                  entering={FadeIn.duration(600).delay(1000)}
+                <Animatable.View
+                  useNativeDriver={true}
+                  animation={animationForScreen}
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -370,12 +375,13 @@ function BookDetailScreen(props: Props) {
                     textStyle={{fontSize: 22, fontWeight: 'bold'}}
                     text={bookDetailData?.readPageAt.toString()}
                   />
-                </Animated.View>
+                </Animatable.View>
               )}
 
-              <Animated.View
+              <Animatable.View
                 style={{marginBottom: 30}}
-                entering={FadeInDown.delay(2000).duration(300)}>
+                useNativeDriver={true}
+                animation={animationForScreen}>
                 <TouchableOpacity
                   onPress={clickedReadNow}
                   style={{
@@ -396,7 +402,7 @@ function BookDetailScreen(props: Props) {
                     }}
                   />
                 </TouchableOpacity>
-              </Animated.View>
+              </Animatable.View>
             </View>
             <View
               style={{
