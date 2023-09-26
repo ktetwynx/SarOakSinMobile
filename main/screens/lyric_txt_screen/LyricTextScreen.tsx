@@ -73,7 +73,7 @@ function LyricTextScreen(props: Props) {
 
   const songRenderRef = useRef<SongRenderRef>(null);
   const [scrollSpeedNumber, setScrollSpeedNumber] = useState<number>(0);
-  const [lyricFontSize, setLyricFontSize] = useState('16');
+  const [lyricFontSize, setLyricFontSize] = useState('14');
   const [scrollSpeed, setScrollSpeed] = useState('Medium');
   const [isPlaying, setIsPlaying] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
