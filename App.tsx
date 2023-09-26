@@ -20,12 +20,12 @@ function App(): JSX.Element {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
+      initApp();
     }, 1000);
-    initApp();
   }, []);
 
   const initApp = async () => {
-    mobileAds()
+    await mobileAds()
       .setRequestConfiguration({
         maxAdContentRating: MaxAdContentRating.PG,
         // Indicates that you want your content treated as child-directed for purposes of COPPA.
@@ -36,9 +36,11 @@ function App(): JSX.Element {
         // An array of test device IDs to allow.
         testDeviceIdentifiers: ['EMULATOR'],
       })
-      .then(adapterStatuses => {
-        console.log('Ads Initialization complete!', adapterStatuses);
+      .then(() => {
+        console.log('Request config successfully set!');
       });
+    const adapterStatuses = await mobileAds().initialize();
+    console.log(adapterStatuses);
   };
 
   return (
