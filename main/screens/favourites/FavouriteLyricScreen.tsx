@@ -41,7 +41,7 @@ function FavouriteLyricScreen(props: Props) {
   const context = useContext(ThemeContext);
   const {theme} = context;
   const [lyricsImages, setLyricsImages] = useState<any>();
-  const [favList, setFavList] = useState([]);
+  const [favList, setFavList] = useState<any>([]);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
@@ -60,11 +60,15 @@ function FavouriteLyricScreen(props: Props) {
     return unsubscribe;
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchFavouriteList(0);
-    }, [props.profile.id]),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     fetchFavouriteList(pageAt);
+  //   }, [props.profile.id, pageAt]),
+  // );
+
+  useEffect(() => {
+    fetchFavouriteList(0);
+  }, [props.profile.id]);
 
   useEffect(() => {
     if (screenRefresh) {
@@ -72,6 +76,21 @@ function FavouriteLyricScreen(props: Props) {
       fetchFavouriteList(0);
     }
   }, [screenRefresh]);
+
+  useEffect(() => {
+    let images = [];
+    for (let data of favList) {
+      images.push({
+        url: API_URL + data.imgPath,
+        isSaved: data.saved,
+        lyricsId: data.id,
+        lyricText: data.lyricText,
+        lyricTitle: data.name,
+        lyricAuthor: data.authors,
+      });
+    }
+    setLyricsImages(images);
+  }, [favList]);
 
   const onRefreshScreen = useCallback(() => {
     setScreenRefresh(true);
@@ -105,23 +124,12 @@ function FavouriteLyricScreen(props: Props) {
           setScreenRefresh(false);
         }, 1000);
         if (response.code == 200) {
-          setFavList(prev =>
+          setFavList((prev: any) =>
             pageAt === 0
               ? response.data.content
               : [...prev, ...response.data.content],
           );
           setTotalPage(response.data.totalPages);
-          let images = [];
-          for (let data of response.data.content) {
-            images.push({
-              url: API_URL + data.imgPath,
-              isSaved: data.saved,
-              lyricsId: data.id,
-              lyricText: data.lyricText,
-              lyricTitle: data.name,
-            });
-          }
-          setLyricsImages(images);
         }
       });
     },

@@ -68,19 +68,22 @@ function LyricTextScreen(props: Props) {
   const [chordSheet, setChordSheet] = useState<any>();
   const [orginalKey, setOrginalKey] = useState('');
   const [lyricTitle, setLyricTitle] = useState('');
+  const [lyricAuthor, setLyricAuthor] = useState<any>([]);
   const [transposeKey, setTransposeKey] = useState(0);
   const [isShowChangeKeyDialog, setIsShowChangeKeyDialog] = useState(false);
 
   const songRenderRef = useRef<SongRenderRef>(null);
   const [scrollSpeedNumber, setScrollSpeedNumber] = useState<number>(0);
-  const [lyricFontSize, setLyricFontSize] = useState('14');
-  const [scrollSpeed, setScrollSpeed] = useState('Medium');
+  const [lyricFontSize, setLyricFontSize] = useState('12');
+  const [scrollSpeed, setScrollSpeed] = useState<number>(0.3);
   const [isPlaying, setIsPlaying] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     setLyricTitle(props.route.params.lyricTitle);
     setChordSheet(props.route.params.lyricText);
+    setLyricAuthor(props.route.params.lyricAuthor);
+    console.log(props.route.params.lyricAuthor);
     const song = new ChordSheetJS.ChordProParser().parse(
       props.route.params.lyricText,
     );
@@ -89,16 +92,9 @@ function LyricTextScreen(props: Props) {
 
   useEffect(() => {
     if (isPlaying) {
-      if (scrollSpeed == 'Slow') {
-        setScrollSpeedNumber(0.05);
-      } else if (scrollSpeed == 'Medium') {
-        setScrollSpeedNumber(0.4);
-      } else if (scrollSpeed == 'Fast') {
-        setScrollSpeedNumber(0.9);
-      }
+      setScrollSpeedNumber(scrollSpeed);
     } else {
       setScrollSpeedNumber(0);
-      console.log('stop');
     }
   }, [isPlaying, scrollSpeed]);
 
@@ -181,19 +177,36 @@ function LyricTextScreen(props: Props) {
                 color={GeneralColor.app_theme}
               />
             </TouchableOpacity>
+            <View style={{flexDirection: 'column'}}>
+              <TextView
+                text={lyricTitle}
+                numberOfLines={2}
+                textStyle={{
+                  fontSize: 18,
+                  // width: '100%',
+                  // backgroundColor: 'red',
+                  fontWeight: 'bold',
+                  marginLeft: 10,
+                  flex: 1,
+                }}
+              />
 
-            <TextView
-              text={lyricTitle}
-              numberOfLines={2}
-              textStyle={{
-                fontSize: 18,
-                // width: '100%',
-                // backgroundColor: 'red',
-                fontWeight: 'bold',
-                marginLeft: 10,
-                flex: 1,
-              }}
-            />
+              {lyricAuthor.map((_: any, index: number) => {
+                return (
+                  <TextView
+                    key={index}
+                    textStyle={{
+                      fontSize: 11,
+                      color: theme.textColor,
+                      opacity: 0.7,
+                      marginRight: 3,
+                      marginTop: 3,
+                    }}
+                    text={_.name}
+                  />
+                );
+              })}
+            </View>
           </View>
           <View
             style={{
@@ -277,7 +290,9 @@ function LyricTextScreen(props: Props) {
         sliderOnValueChange={(value: number) => {
           setTransposeKey(value);
         }}
-        currentScrollSpeed={scrollSpeed}
+        sliderScrollSpeedOnValueChange={(value: number) => {
+          setScrollSpeed(value);
+        }}
         currentLyricFontSize={lyricFontSize}
         orignalKey={orginalKey}
         currentTransposeKey={transposeKey}

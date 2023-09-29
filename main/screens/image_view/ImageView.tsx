@@ -18,22 +18,9 @@ import {setFavBookCount, setFavLyricCount} from '../../redux/actions';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {GeneralColor} from '../../utility/Themes';
 import {Platform, TouchableOpacity, View} from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
 import {LoginDialog} from '../../components/LoginDialog';
-import Animated, {
-  BounceIn,
-  BounceInDown,
-  BounceOut,
-  BounceOutDown,
-  FadeInDown,
-  FadeOutDown,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withRepeat,
-  withSequence,
-  withSpring,
-} from 'react-native-reanimated';
 import KeepAwake from 'react-native-keep-awake';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
@@ -63,18 +50,19 @@ function ImageView(props: Props) {
   const [lyricText, setLyricText] = useState('');
   const [lyricTitle, setLyricTitle] = useState('');
   const [lyricsImages, setLyricsImages] = useState<any>([]);
+  const [lyricAuthor, setLyricAuthor] = useState<any>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [isShowAds, setIsShowAds] = useState<boolean>(false);
   const [isShowLoginDialog, setIsShowLoginDialog] = useState<boolean>(false);
-  const rotation = useSharedValue(0);
-  const scale = useSharedValue(0.8);
+  // const rotation = useSharedValue(0);
+  // const scale = useSharedValue(0.8);
 
   useEffect(() => {
     setLyricsImages(props.route.params.lyricsImages);
     setCurrentImageIndex(props.route.params.currentImageIndex);
     initialCheckFav();
     setIsShowAds(true);
-    startShake();
+    // startShake();
     KeepAwake.activate();
     // startBigSmall();
   }, [props.route.params]);
@@ -138,6 +126,7 @@ function ImageView(props: Props) {
     }
     setLyricText(data?.lyricText);
     setLyricTitle(data?.lyricTitle);
+    setLyricAuthor(data?.lyricAuthor);
   }, []);
 
   const fetchSaveLyricsApi = useCallback(async () => {
@@ -216,59 +205,60 @@ function ImageView(props: Props) {
     props.navigation.navigate('LyricTextScreen', {
       lyricText: lyricText,
       lyricTitle: lyricTitle,
+      lyricAuthor: lyricAuthor,
     });
   }, [lyricText, lyricTitle]);
 
-  const shakeAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{rotateZ: `${rotation.value}deg`}],
-    };
-  });
+  // const shakeAnimatedStyle = useAnimatedStyle(() => {
+  //   return {
+  //     transform: [{rotateZ: `${rotation.value}deg`}],
+  //   };
+  // });
 
-  const stopShake = () => {
-    rotation.value = 0;
-  };
+  // const stopShake = () => {
+  //   rotation.value = 0;
+  // };
 
-  const startShake = () => {
-    rotation.value = withRepeat(
-      withSequence(
-        withSpring(10, {
-          damping: 50,
-          mass: 0.1,
-          stiffness: 200,
-          restDisplacementThreshold: 0.1,
-        }),
+  // const startShake = () => {
+  //   rotation.value = withRepeat(
+  //     withSequence(
+  //       withSpring(10, {
+  //         damping: 50,
+  //         mass: 0.1,
+  //         stiffness: 200,
+  //         restDisplacementThreshold: 0.1,
+  //       }),
 
-        withSpring(-10, {
-          damping: 50,
-          mass: 0.1,
-          stiffness: 200,
-          restDisplacementThreshold: 0.1,
-        }),
+  //       withSpring(-10, {
+  //         damping: 50,
+  //         mass: 0.1,
+  //         stiffness: 200,
+  //         restDisplacementThreshold: 0.1,
+  //       }),
 
-        withSpring(0, {
-          damping: 200,
-          mass: 1,
-          stiffness: 70,
-          restDisplacementThreshold: 1,
-        }),
-        withSpring(-10, {
-          damping: 50,
-          mass: 0.1,
-          stiffness: 200,
-          restDisplacementThreshold: 0.1,
-        }),
-        withSpring(10, {
-          damping: 50,
-          mass: 0.1,
-          stiffness: 200,
-          restDisplacementThreshold: 0.1,
-        }),
-      ),
-      -1,
-      true,
-    );
-  };
+  //       withSpring(0, {
+  //         damping: 200,
+  //         mass: 1,
+  //         stiffness: 70,
+  //         restDisplacementThreshold: 1,
+  //       }),
+  //       withSpring(-10, {
+  //         damping: 50,
+  //         mass: 0.1,
+  //         stiffness: 200,
+  //         restDisplacementThreshold: 0.1,
+  //       }),
+  //       withSpring(10, {
+  //         damping: 50,
+  //         mass: 0.1,
+  //         stiffness: 200,
+  //         restDisplacementThreshold: 0.1,
+  //       }),
+  //     ),
+  //     -1,
+  //     true,
+  //   );
+  // };
 
   return (
     <View style={{flex: 1}}>
@@ -384,13 +374,11 @@ function ImageView(props: Props) {
       </View>
 
       {lyricText ? (
-        <Animated.View
-          style={[
-            shakeAnimatedStyle,
-            {position: 'absolute', bottom: 50, alignSelf: 'center'},
-          ]}
-          entering={FadeInDown}
-          exiting={FadeOutDown}>
+        <Animatable.View
+          iterationCount="infinite"
+          animation="swing"
+          useNativeDriver={true}
+          style={{position: 'absolute', bottom: 50, alignSelf: 'center'}}>
           <TouchableOpacity
             style={{justifyContent: 'center', alignItems: 'center'}}
             onPress={clickedPlayLyric}>
@@ -426,7 +414,7 @@ function ImageView(props: Props) {
               color={GeneralColor.white}
             />
           </TouchableOpacity>
-        </Animated.View>
+        </Animatable.View>
       ) : (
         <></>
       )}

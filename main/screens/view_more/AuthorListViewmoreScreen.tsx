@@ -76,7 +76,7 @@ export function AuthorListViewmoreScreen(
         formData.append('name', 'author');
       }
       formData.append('page', pageAt);
-      formData.append('size', ROW_COUNT);
+      formData.append('size', 15);
       console.log(formData);
       await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
         'Content-Type': 'multipart/form-data',

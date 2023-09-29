@@ -22,9 +22,9 @@ export interface AppProps {
   clickedChangeFont: Function;
   clickedChangedScrollSpeed: Function;
   currentLyricFontSize: string;
-  currentScrollSpeed: string;
   sliderOnValueChange: Function;
   currentTransposeKey: number;
+  sliderScrollSpeedOnValueChange: Function;
 }
 
 export function ChangeKeyDialog(props: AppProps) {
@@ -33,9 +33,9 @@ export function ChangeKeyDialog(props: AppProps) {
 
   const {width, height} = Dimensions.get('screen');
   const [originalKey, setOriginalKey] = useState('');
-  const [scrollSpeed, setScrollSpeed] = useState(['Slow', 'Medium', 'Fast']);
-  const [fontSize, setFontSize] = useState(['14', '16', '18', '20']);
+  const [fontSize, setFontSize] = useState(['12', '14', '16', '18']);
   const [transposeNumber, setTransposeNumber] = useState<number>(0);
+  const [scrollSpeedValue, setScrollSpeedValue] = useState<number>(0.3);
 
   useEffect(() => {
     setOriginalKey(props.orignalKey);
@@ -71,17 +71,21 @@ export function ChangeKeyDialog(props: AppProps) {
             flexDirection: 'column',
             paddingVertical: 16,
           }}>
-          <TextView
-            text={`Original Key ${props.orignalKey}`}
-            textStyle={{
-              fontSize: 16,
-              fontWeight: 'bold',
-              marginBottom: 12,
-              alignSelf: 'center',
-              marginTop: 6,
-              marginLeft: 6,
-            }}
-          />
+          {props.orignalKey ? (
+            <TextView
+              text={`Original Key ${props.orignalKey}`}
+              textStyle={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                marginBottom: 12,
+                alignSelf: 'center',
+                marginTop: 6,
+                marginLeft: 6,
+              }}
+            />
+          ) : (
+            <View style={{height: 20}} />
+          )}
 
           <TextView
             text={`Transpose ${transposeNumber}`}
@@ -113,7 +117,7 @@ export function ChangeKeyDialog(props: AppProps) {
             }}>
             <TouchableOpacity
               onPress={() => {
-                if (transposeNumber > -5) {
+                if (transposeNumber > -10) {
                   setTransposeNumber(transposeNumber - 1);
                   props.sliderOnValueChange(transposeNumber - 1);
                 }
@@ -128,8 +132,8 @@ export function ChangeKeyDialog(props: AppProps) {
             <Slider
               step={1}
               style={{width: '100%', height: 40, flex: 1}}
-              minimumValue={-5}
-              maximumValue={5}
+              minimumValue={-10}
+              maximumValue={10}
               value={transposeNumber}
               onValueChange={(value: number) => {
                 setTransposeNumber(value);
@@ -142,7 +146,7 @@ export function ChangeKeyDialog(props: AppProps) {
 
             <TouchableOpacity
               onPress={() => {
-                if (transposeNumber < 5) {
+                if (transposeNumber < 10) {
                   setTransposeNumber(transposeNumber + 1);
                   props.sliderOnValueChange(transposeNumber + 1);
                 }
@@ -159,49 +163,50 @@ export function ChangeKeyDialog(props: AppProps) {
             style={{
               flexDirection: 'column',
               alignItems: 'center',
+              marginTop: 6,
             }}>
             <TextView
               textStyle={{
                 color: theme.textColor,
-                opacity: 0.5,
-                fontSize: 12,
-                marginBottom: 12,
+                opacity: 0.9,
+                fontSize: 14,
+                marginBottom: 6,
               }}
               text={'Scroll Speed'}
             />
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {scrollSpeed.map((_, index) => {
-                return (
-                  <TouchableOpacity
-                    onPress={() => {
-                      props.clickedChangedScrollSpeed(_);
-                    }}
-                    key={index}
-                    style={{marginRight: 12}}>
-                    <TextView
-                      textStyle={{
-                        textAlign: 'center',
-                        borderWidth: props.currentScrollSpeed == _ ? 2 : 1,
-                        borderRadius: 8,
-                        fontSize: props.currentScrollSpeed == _ ? 16 : 14,
-                        fontWeight:
-                          props.currentScrollSpeed == _ ? 'bold' : 'normal',
-                        paddingVertical: 5,
-                        paddingHorizontal: 12,
-                        color:
-                          props.currentScrollSpeed == _
-                            ? GeneralColor.app_theme
-                            : theme.textColor,
-                        borderColor:
-                          props.currentScrollSpeed == _
-                            ? GeneralColor.app_theme
-                            : theme.textColor,
-                      }}
-                      text={_}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
+
+            <TextView
+              textStyle={{
+                color: theme.textColor,
+                opacity: 0.5,
+                fontSize: 14,
+                marginBottom: 6,
+              }}
+              text={scrollSpeedValue.toString()}
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: 12,
+              }}>
+              <Slider
+                style={{
+                  width: '100%',
+                  height: 40,
+                  flex: 1,
+                }}
+                minimumValue={0.05}
+                maximumValue={2}
+                value={scrollSpeedValue}
+                onValueChange={(value: number) => {
+                  setScrollSpeedValue(parseFloat(value.toFixed(2)));
+                  props.sliderScrollSpeedOnValueChange(value);
+                }}
+                thumbTintColor={GeneralColor.app_dark_theme}
+                minimumTrackTintColor={GeneralColor.app_dark_theme}
+                maximumTrackTintColor="#000000"
+              />
             </View>
           </View>
 
@@ -209,7 +214,7 @@ export function ChangeKeyDialog(props: AppProps) {
             style={{
               flexDirection: 'column',
               alignItems: 'center',
-              marginTop: 12,
+              marginTop: 6,
               justifyContent: 'space-between',
             }}>
             <TextView

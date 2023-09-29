@@ -91,6 +91,7 @@ function AlbumScreen(props: Props) {
         lyricsId: data.id,
         lyricText: data.lyricText,
         lyricTitle: data.name,
+        lyricAuthor: data.authors,
       });
     }
     setLyricsImages(images);
