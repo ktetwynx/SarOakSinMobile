@@ -33,9 +33,9 @@ export function ChangeKeyDialog(props: AppProps) {
 
   const {width, height} = Dimensions.get('screen');
   const [originalKey, setOriginalKey] = useState('');
-  const [fontSize, setFontSize] = useState(['12', '14', '16', '18']);
+  const [fontSize, setFontSize] = useState(['12', '14', '16', '18', '20']);
   const [transposeNumber, setTransposeNumber] = useState<number>(0);
-  const [scrollSpeedValue, setScrollSpeedValue] = useState<number>(0.3);
+  const [scrollSpeedValue, setScrollSpeedValue] = useState<number>(0.6);
 
   useEffect(() => {
     setOriginalKey(props.orignalKey);

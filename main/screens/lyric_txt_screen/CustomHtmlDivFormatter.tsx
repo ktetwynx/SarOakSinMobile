@@ -52,9 +52,9 @@ export default class CustomHtmlDivFormatter {
     return transposedArray;
   }
 
-  format(song: Song, fontSize = 14) {
-    let CHORD_SIZE_CLASS = fontSize != 14 ? ` chord-size-${fontSize}` : '';
-    let LYRICS_SIZE_CLASS = fontSize != 14 ? ` line-size-${fontSize}` : '';
+  format(song: Song, fontSize = 12) {
+    let CHORD_SIZE_CLASS = fontSize != 12 ? ` chord-size-${fontSize}` : '';
+    let LYRICS_SIZE_CLASS = fontSize != 12 ? ` line-size-${fontSize}` : '';
     let html = '';
     let waitEndOfTabs = false;
     song.lines.forEach((l, index) => {

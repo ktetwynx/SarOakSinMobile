@@ -74,8 +74,8 @@ function LyricTextScreen(props: Props) {
 
   const songRenderRef = useRef<SongRenderRef>(null);
   const [scrollSpeedNumber, setScrollSpeedNumber] = useState<number>(0);
-  const [lyricFontSize, setLyricFontSize] = useState('12');
-  const [scrollSpeed, setScrollSpeed] = useState<number>(0.3);
+  const [lyricFontSize, setLyricFontSize] = useState('14');
+  const [scrollSpeed, setScrollSpeed] = useState<number>(0.6);
   const [isPlaying, setIsPlaying] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -156,41 +156,36 @@ function LyricTextScreen(props: Props) {
             flexDirection: 'row',
             marginTop: 12,
             marginHorizontal: 6,
-            alignItems: 'center',
+
+            alignItems: 'flex-start',
           }}>
+          <TouchableOpacity
+            style={{
+              justifyContent: 'center',
+            }}
+            onPress={goBack}>
+            <Ionicons
+              name="ios-arrow-back-circle-sharp"
+              size={38}
+              style={{marginLeft: 2}}
+              color={GeneralColor.app_theme}
+            />
+          </TouchableOpacity>
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              flex: 1.2,
-              marginRight: 12,
+              flexDirection: 'column',
+              marginLeft: 4,
+              flex: 1,
             }}>
-            <TouchableOpacity
-              style={{
-                justifyContent: 'center',
+            <TextView
+              text={lyricTitle}
+              numberOfLines={2}
+              textStyle={{
+                fontSize: 18,
+                fontWeight: 'bold',
               }}
-              onPress={goBack}>
-              <Ionicons
-                name="ios-arrow-back-circle-sharp"
-                size={38}
-                style={{marginLeft: 2}}
-                color={GeneralColor.app_theme}
-              />
-            </TouchableOpacity>
-            <View style={{flexDirection: 'column'}}>
-              <TextView
-                text={lyricTitle}
-                numberOfLines={2}
-                textStyle={{
-                  fontSize: 18,
-                  // width: '100%',
-                  // backgroundColor: 'red',
-                  fontWeight: 'bold',
-                  marginLeft: 10,
-                  flex: 1,
-                }}
-              />
-
+            />
+            <View style={{flexDirection: 'row'}}>
               {lyricAuthor.map((_: any, index: number) => {
                 return (
                   <TextView

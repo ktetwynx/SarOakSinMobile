@@ -181,10 +181,11 @@ const styles = (textColor: any) => `
     margin-right: 10px;
     margin-left: 0px;
     position: relative;
-    font-size: 14px;
+    font-size: 12px;
     font-family: monospace;
     white-space: pre-wrap;
   }
+  .line-size-12 { font-size: 12px; }
   .line-size-14 { font-size: 14px; }
   .line-size-15 { font-size: 15px; }
   .line-size-16 { font-size: 16px; }
@@ -217,6 +218,7 @@ const styles = (textColor: any) => `
     width: auto;
     top: auto;
   }
+  .chord-size-12 { top: -12px; }
   .chord-size-14 { top: -14px; }
   .chord-size-15 { top: -15px; }
   .chord-size-16 { top: -16px; }
