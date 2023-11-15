@@ -76,8 +76,7 @@ export function AuthorListViewmoreScreen(
         formData.append('name', 'author');
       }
       formData.append('page', pageAt);
-      formData.append('size', 15);
-      console.log(formData);
+      formData.append('size', 20);
       await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
         'Content-Type': 'multipart/form-data',
         Authorization: API_KEY_PRODUCION,
@@ -200,7 +199,9 @@ export function AuthorListViewmoreScreen(
           data={viewMoreAuthorData}
           numColumns={3}
           renderItem={renderAuthorItem}
-          contentContainerStyle={{paddingBottom: 100}}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: 50}}
           refreshControl={
             <RefreshControl
               refreshing={screenRefresh}
@@ -210,7 +211,7 @@ export function AuthorListViewmoreScreen(
               // title="Pull to refresh"
             />
           }
-          onEndReachedThreshold={0}
+          onEndReachedThreshold={20}
           onEndReached={onEndListReached}
           keyExtractor={(item: any, index: number) => index.toString()}
         />

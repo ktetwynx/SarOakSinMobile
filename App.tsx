@@ -9,6 +9,28 @@ import Route from './main/route/Route';
 import ThemeProvider from './main/utility/ThemeProvider';
 import SplashScreen from 'react-native-splash-screen';
 import mobileAds, {MaxAdContentRating} from 'react-native-google-mobile-ads';
+import {LoadingScreen} from './main/components/LoadingScreen';
+
+const linking: any = {
+  prefixes: ['saroaksin://'],
+  config: {
+    initialRouteName: 'LandingScreen',
+    screens: {
+      LandingScreen: {
+        path: 'landingScreen',
+      },
+      BookDetailScreen: {
+        path: 'bookDetailScreen/:bookId',
+      },
+      AlbumScreen: {
+        path: 'albumScreen/:albumId',
+      },
+      AuthorScreen: {
+        path: 'authorScreen/:authorType/:authorId',
+      },
+    },
+  },
+};
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -46,7 +68,8 @@ function App(): JSX.Element {
   return (
     <Provider store={store}>
       <ThemeProvider>
-        <NavigationContainer>
+        {/* fallback={<LoadingScreen />} */}
+        <NavigationContainer linking={linking}>
           <Route />
         </NavigationContainer>
       </ThemeProvider>

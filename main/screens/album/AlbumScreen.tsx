@@ -1,5 +1,14 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {View, Image, TouchableOpacity, RefreshControl} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  RefreshControl,
+  Animated,
+  ImageBackground,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BackButton} from '../../components/BackButton';
@@ -18,6 +27,7 @@ import {ConnectedProps, connect} from 'react-redux';
 import {LoadingScreen} from '../../components/LoadingScreen';
 import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
+import LinearGradient from 'react-native-linear-gradient';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -51,6 +61,8 @@ function AlbumScreen(props: Props) {
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
   const animationForScreen = 'fadeInUp';
+  const [scrollView] = useState(new Animated.Value(0));
+  const {width, height} = Dimensions.get('screen');
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),
   });
@@ -109,7 +121,7 @@ function AlbumScreen(props: Props) {
         'Content-Type': 'multipart/form-data',
         Authorization: API_KEY_PRODUCION,
       }).then((response: any) => {
-        console.log(response);
+        console.log(response.data);
         setTimeout(() => {
           setIsLoading(false);
           setScreenRefresh(false);
@@ -148,28 +160,32 @@ function AlbumScreen(props: Props) {
     (item: any) => {
       return (
         <Animatable.View
+          key={item.id}
           style={{
-            flexDirection: 'column',
-            flex: 1,
-            marginRight: 12,
-            marginBottom: 16,
+            width: '50%',
+            marginTop: 12,
+            // flexDirection: 'column',
+            // flex: 1,
+            // marginRight: 12,
+            // marginBottom: 16,
           }}
           useNativeDriver={true}
           animation={animationForScreen}>
           <TouchableOpacity onPress={() => clickedLyric(item)}>
             <Image
               source={{
-                uri: API_URL + item.item.imgPath,
+                uri: API_URL + item.imgPath,
               }}
               style={{
-                height: 250,
+                width: 180,
+                height: 220,
                 borderRadius: 20,
                 backgroundColor: GeneralColor.light_grey,
-                width: '100%',
+                alignSelf: 'center',
               }}
             />
             <TextView
-              text={item.item.name}
+              text={item.name}
               textStyle={{fontSize: 16, alignSelf: 'center', marginTop: 10}}
             />
           </TouchableOpacity>
@@ -189,6 +205,15 @@ function AlbumScreen(props: Props) {
     [lyricsImages],
   );
 
+  const isCloseToBottom = (e: any) => {
+    const paddingToBottom = 20;
+
+    return (
+      e.nativeEvent.layoutMeasurement.height + e.nativeEvent.contentOffset.y >=
+      e.nativeEvent.contentSize.height - paddingToBottom
+    );
+  };
+
   return (
     <View>
       <SafeAreaView
@@ -199,31 +224,99 @@ function AlbumScreen(props: Props) {
           flexDirection: 'column',
           backgroundColor: theme.backgroundColor,
         }}>
-        <View style={{flex: 1}}>
-          <BackButton
-            style={{alignSelf: 'flex-start', marginLeft: 16, marginTop: 10}}
-            clickedGoBack={goBack}
+        <Animated.View
+          style={{
+            position: 'absolute',
+            top: 0,
+            flexDirection: 'column',
+            width: '100%',
+            overflow: 'hidden',
+            height: scrollView.interpolate({
+              inputRange: [0, 220],
+              outputRange: [260, 120],
+              extrapolate: 'clamp',
+            }),
+          }}>
+          <ImageBackground
+            source={{uri: API_URL + albumImg}}
+            blurRadius={10}
+            style={{height: 260, width: '100%'}}
           />
-          <View
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 1}}
+            colors={['transparent', theme.backgroundColor]}
             style={{
-              flexDirection: 'row',
-              marginTop: 10,
-              alignItems: 'center',
-              alignSelf: 'center',
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              bottom: 0,
+            }}
+          />
+        </Animated.View>
+        <BackButton
+          style={{position: 'absolute', left: 16, top: 12}}
+          clickedGoBack={() => {
+            goBack();
+          }}
+        />
+        <Animated.View
+          style={{
+            height: scrollView.interpolate({
+              inputRange: [0, 220],
+              outputRange: [170, 100],
+              extrapolate: 'clamp',
+            }),
+            flexDirection: 'row',
+            overflow: 'hidden',
+            marginLeft: 45,
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+          }}>
+          <Animated.View
+            style={{
+              marginRight: 12,
+
+              width: scrollView.interpolate({
+                inputRange: [0, 220],
+                outputRange: [150, 80],
+                extrapolate: 'clamp',
+              }),
+              height: scrollView.interpolate({
+                inputRange: [0, 220],
+                outputRange: [100, 60],
+                extrapolate: 'clamp',
+              }),
             }}>
             <Animatable.Image
-              animation={animationForScreen}
               useNativeDriver={true}
+              animation={animationForScreen}
               source={{uri: API_URL + albumImg}}
               style={{
-                width: 150,
-                height: 100,
+                width: '100%',
+                height: '100%',
                 backgroundColor: GeneralColor.light_grey,
-                marginRight: 16,
-                borderRadius: 20,
+                alignSelf: 'center',
+                borderRadius: 10,
               }}
             />
+          </Animated.View>
+
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  scale: scrollView.interpolate({
+                    inputRange: [0, 200],
+                    outputRange: [1, 0.8],
+                    extrapolate: 'clamp',
+                  }),
+                },
+              ],
+            }}>
             <Animatable.View
+              style={{alignSelf: 'center'}}
               useNativeDriver={true}
               animation={animationForScreen}>
               <TextView
@@ -232,48 +325,38 @@ function AlbumScreen(props: Props) {
                 textStyle={{
                   fontSize: 22,
                   fontWeight: 'bold',
-                  maxWidth: 200,
+                  width: width / 2.5,
                 }}
               />
             </Animatable.View>
-          </View>
+          </Animated.View>
+        </Animated.View>
+        <ScrollView
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          style={{flex: 1}}
+          scrollEventThrottle={16}
+          onScroll={(e: any) => {
+            scrollView.setValue(e.nativeEvent.contentOffset.y);
+            // if (isCloseToBottom(e) && !isLoading) {
+            //   onEndListReached();
+            // }
+          }}>
           <View
             style={{
-              flexDirection: 'column',
               flex: 1,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              marginBottom: 20,
+              // marginHorizontal: 12,
+              alignItems: 'flex-start',
             }}>
-            <Animatable.View
-              useNativeDriver={true}
-              animation={animationForScreen}>
-              <TextView
-                text={label.lyrics}
-                textStyle={{fontSize: 18, marginTop: 12, marginLeft: 16}}
-              />
-            </Animatable.View>
-
-            <FlatList
-              data={lyricsList}
-              numColumns={2}
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-              // onEndReachedThreshold={0}
-              // onEndReached={onEndListReached}
-              contentContainerStyle={{paddingBottom: 50}}
-              refreshControl={
-                <RefreshControl
-                  refreshing={screenRefresh}
-                  onRefresh={onRefreshScreen}
-                  tintColor={theme.backgroundColor2}
-                  // titleColor={theme.backgroundColor2}
-                  // title="Pull to refresh"
-                />
-              }
-              style={{paddingLeft: 12, paddingTop: 10}}
-              renderItem={renderLyricsItem}
-              keyExtractor={(item: any, index: number) => index.toString()}
-            />
+            {lyricsList.map((_: any, index: any) => {
+              return renderLyricsItem(_);
+            })}
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
       {isLoading ? <LoadingScreen /> : <></>}
     </View>
