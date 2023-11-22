@@ -4,6 +4,8 @@ import {
   BEARER_TOKEN,
   FAV_BOOK_COUNT,
   FAV_LYRIC_COUNT,
+  PLAYMODE_FONTSIZE,
+  PLAYMODE_SCROLLSPEED,
   PROFILE,
 } from './actions';
 
@@ -11,6 +13,8 @@ const initialState = {
   token: null,
   app_language: 'en',
   app_theme: 'light',
+  playmode_fontsize: '14',
+  playmode_scrollSpeed: 0.6,
 };
 
 export function App(state = initialState, action: any) {
@@ -27,6 +31,14 @@ export function App(state = initialState, action: any) {
       return Object.assign({}, state, {app_language: action.app_language});
     case APP_THEME:
       return Object.assign({}, state, {app_theme: action.app_theme});
+    case PLAYMODE_FONTSIZE:
+      return Object.assign({}, state, {
+        playmode_fontsize: action.playmode_fontsize,
+      });
+    case PLAYMODE_SCROLLSPEED:
+      return Object.assign({}, state, {
+        playmode_scrollSpeed: action.playmode_scrollSpeed,
+      });
     default:
       return state;
   }

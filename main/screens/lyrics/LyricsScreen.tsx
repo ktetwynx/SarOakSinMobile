@@ -114,8 +114,6 @@ function LyricsScreen(props: Props) {
           {data: response.data.authorList},
         );
 
-        console.log(response.data);
-
         let images = [];
         for (let data of response.data.lyricList) {
           images.push({
@@ -127,6 +125,7 @@ function LyricsScreen(props: Props) {
             lyricAuthor: data.authors,
           });
         }
+
         setLyricsImages(images);
         data.push(authors, ablums, lyrics);
         setLyricHomeData(data);

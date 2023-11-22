@@ -20,10 +20,10 @@ export interface AppProps {
   clickedClosed: Function;
   orignalKey: string;
   clickedChangeFont: Function;
-  clickedChangedScrollSpeed: Function;
   currentLyricFontSize: string;
   sliderOnValueChange: Function;
   currentTransposeKey: number;
+  currentScrollSpeed: number;
   sliderScrollSpeedOnValueChange: Function;
 }
 
@@ -35,11 +35,12 @@ export function ChangeKeyDialog(props: AppProps) {
   const [originalKey, setOriginalKey] = useState('');
   const [fontSize, setFontSize] = useState(['12', '14', '16', '18', '20']);
   const [transposeNumber, setTransposeNumber] = useState<number>(0);
-  const [scrollSpeedValue, setScrollSpeedValue] = useState<number>(0.6);
+  const [scrollSpeedValue, setScrollSpeedValue] = useState<number>(0);
 
   useEffect(() => {
     setOriginalKey(props.orignalKey);
     setTransposeNumber(props.currentTransposeKey);
+    setScrollSpeedValue(props.currentScrollSpeed);
   }, [props.orignalKey]);
 
   return (
@@ -190,6 +191,21 @@ export function ChangeKeyDialog(props: AppProps) {
                 alignItems: 'center',
                 marginBottom: 12,
               }}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (scrollSpeedValue > 0.05) {
+                    let value = scrollSpeedValue - 0.05;
+                    setScrollSpeedValue(parseFloat(value.toFixed(2)));
+                    props.sliderScrollSpeedOnValueChange(value);
+                  }
+                }}>
+                <AntDesign
+                  name={'minuscircle'}
+                  size={30}
+                  color={GeneralColor.app_dark_theme}
+                />
+              </TouchableOpacity>
+
               <Slider
                 style={{
                   width: '100%',
@@ -207,6 +223,20 @@ export function ChangeKeyDialog(props: AppProps) {
                 minimumTrackTintColor={GeneralColor.app_dark_theme}
                 maximumTrackTintColor="#000000"
               />
+              <TouchableOpacity
+                onPress={() => {
+                  if (scrollSpeedValue < 2) {
+                    let value = scrollSpeedValue + 0.05;
+                    setScrollSpeedValue(parseFloat(value.toFixed(2)));
+                    props.sliderScrollSpeedOnValueChange(value);
+                  }
+                }}>
+                <AntDesign
+                  name={'pluscircle'}
+                  size={30}
+                  color={GeneralColor.app_dark_theme}
+                />
+              </TouchableOpacity>
             </View>
           </View>
 

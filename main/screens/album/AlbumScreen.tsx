@@ -116,12 +116,10 @@ function AlbumScreen(props: Props) {
       formData.append('userId', props.profile?.id ? props.profile?.id : 0);
       formData.append('page', pageAt);
       formData.append('size', '100');
-      console.log(formData);
       await ApiFetchService(API_URL + `user/lyric/album/get-by-id`, formData, {
         'Content-Type': 'multipart/form-data',
         Authorization: API_KEY_PRODUCION,
       }).then((response: any) => {
-        console.log(response.data);
         setTimeout(() => {
           setIsLoading(false);
           setScreenRefresh(false);

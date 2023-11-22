@@ -187,6 +187,7 @@ function LyricListViewmoreScreen(props: Props) {
   return (
     <View>
       <SafeAreaView
+        edges={['top']}
         style={{
           flexDirection: 'column',
           width: '100%',

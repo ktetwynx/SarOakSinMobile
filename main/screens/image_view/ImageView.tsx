@@ -207,7 +207,7 @@ function ImageView(props: Props) {
       lyricTitle: lyricTitle,
       lyricAuthor: lyricAuthor,
     });
-  }, [lyricText, lyricTitle]);
+  }, [lyricText, lyricTitle, lyricAuthor]);
 
   // const shakeAnimatedStyle = useAnimatedStyle(() => {
   //   return {
@@ -282,7 +282,8 @@ function ImageView(props: Props) {
                 alignSelf: 'center',
                 position: 'absolute',
                 zIndex: 1,
-                marginTop: 16,
+                marginTop: Platform.OS == 'ios' ? 44 : 4,
+                justifyContent: 'center',
               }}>
               <View
                 style={{
@@ -302,7 +303,6 @@ function ImageView(props: Props) {
                   alignContent: 'center',
                   fontWeight: 'bold',
                   fontSize: 14,
-                  marginTop: 4,
                 }}
                 text={`${number + 1}/${lyricsImages.length}`}
               />

@@ -39,21 +39,33 @@ import WebView from 'react-native-webview';
 import SongTransformer from './SongTransformer';
 import SongRender, {SongRenderRef} from './SongRender';
 import CustomHtmlDivFormatter from './CustomHtmlDivFormatter';
+import {setPlayModeFontSize, setPlayModeScrolSpeed} from '../../redux/actions';
 
 const mapstateToProps = (state: {
   profile: any;
   token: any;
   fav_lyric_count: number;
+  playmode_fontsize: string;
+  playmode_scrollSpeed: number;
 }) => {
   return {
     profile: state.profile,
     token: state.token,
     fav_lyric_count: state.fav_lyric_count,
+    playmode_fontsize: state.playmode_fontsize,
+    playmode_scrollSpeed: state.playmode_scrollSpeed,
   };
 };
 
 const mapDispatchToProps = (dispatch: (arg0: any) => void) => {
-  return {};
+  return {
+    setPlayModeFontSize: (playmode_fontsize: string) => {
+      dispatch(setPlayModeFontSize(playmode_fontsize));
+    },
+    setPlayModeScrolSpeed: (playmode_scrollSpeed: number) => {
+      dispatch(setPlayModeScrolSpeed(playmode_scrollSpeed));
+    },
+  };
 };
 
 const connector = connect(mapstateToProps, mapDispatchToProps);
@@ -74,8 +86,8 @@ function LyricTextScreen(props: Props) {
 
   const songRenderRef = useRef<SongRenderRef>(null);
   const [scrollSpeedNumber, setScrollSpeedNumber] = useState<number>(0);
-  const [lyricFontSize, setLyricFontSize] = useState('14');
-  const [scrollSpeed, setScrollSpeed] = useState<number>(0.6);
+  const [lyricFontSize, setLyricFontSize] = useState('0');
+  const [scrollSpeed, setScrollSpeed] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -83,7 +95,8 @@ function LyricTextScreen(props: Props) {
     setLyricTitle(props.route.params.lyricTitle);
     setChordSheet(props.route.params.lyricText);
     setLyricAuthor(props.route.params.lyricAuthor);
-    console.log(props.route.params.lyricAuthor);
+    setLyricFontSize(props.playmode_fontsize);
+    setScrollSpeed(props.playmode_scrollSpeed);
     const song = new ChordSheetJS.ChordProParser().parse(
       props.route.params.lyricText,
     );
@@ -186,7 +199,7 @@ function LyricTextScreen(props: Props) {
               }}
             />
             <View style={{flexDirection: 'row'}}>
-              {lyricAuthor.map((_: any, index: number) => {
+              {lyricAuthor?.map((_: any, index: number) => {
                 return (
                   <TextView
                     key={index}
@@ -247,7 +260,7 @@ function LyricTextScreen(props: Props) {
                 textStyle={{
                   color: GeneralColor.white,
                   fontSize: 14,
-                  marginBottom: 2,
+                  marginBottom: Platform.OS == 'ios' ? 0 : 2,
                   marginRight: 5,
                   fontWeight: 'bold',
                 }}
@@ -276,19 +289,20 @@ function LyricTextScreen(props: Props) {
         </SongTransformer>
       </ScrollView>
       <ChangeKeyDialog
-        clickedChangeFont={(_: any) => {
+        clickedChangeFont={(_: string) => {
           setLyricFontSize(_);
-        }}
-        clickedChangedScrollSpeed={(_: any) => {
-          setScrollSpeed(_);
+          props.setPlayModeFontSize(_);
         }}
         sliderOnValueChange={(value: number) => {
           setTransposeKey(value);
         }}
         sliderScrollSpeedOnValueChange={(value: number) => {
           setScrollSpeed(value);
+
+          props.setPlayModeScrolSpeed(parseFloat(value.toFixed(2)));
         }}
         currentLyricFontSize={lyricFontSize}
+        currentScrollSpeed={scrollSpeed}
         orignalKey={orginalKey}
         currentTransposeKey={transposeKey}
         clickedClosed={() => {
