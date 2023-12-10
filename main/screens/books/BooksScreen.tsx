@@ -162,7 +162,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
       return (
         <Animatable.View useNativeDriver={true} animation={animationForScreen}>
           <TouchableOpacity
-            onPress={() => clickedAuthor(item)}
+            onPress={() => (item.item.name ? clickedAuthor(item) : {})}
             style={{flexDirection: 'column', marginRight: 12}}>
             <Image
               style={{
@@ -191,7 +191,9 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
       return (
         <Animatable.View useNativeDriver={true} animation={animationForScreen}>
           <TouchableOpacity
-            onPress={() => clickedBookDetail(item.item.id)}
+            onPress={() =>
+              item.item.name ? clickedBookDetail(item.item.id) : {}
+            }
             style={{
               flexDirection: 'column',
               marginRight: 12,

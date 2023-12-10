@@ -125,12 +125,13 @@ function AlbumScreen(props: Props) {
           setScreenRefresh(false);
         }, 1000);
         if (response.code == 200) {
+          console.log(response.data.lyricDetails.content);
           setLyricsList((prev: any) =>
             pageAt === 0
-              ? response.data.content
-              : [...prev, ...response.data.content],
+              ? response.data.lyricDetails.content
+              : [...prev, ...response.data.lyricDetails.content],
           );
-          setTotalPage(response.data.totalPages);
+          // setTotalPage(response.data.totalPages);
         }
       });
     },
@@ -155,7 +156,7 @@ function AlbumScreen(props: Props) {
   }, []);
 
   const renderLyricsItem = useCallback(
-    (item: any) => {
+    (item: any, index: number) => {
       return (
         <Animatable.View
           key={item.id}
@@ -169,7 +170,7 @@ function AlbumScreen(props: Props) {
           }}
           useNativeDriver={true}
           animation={animationForScreen}>
-          <TouchableOpacity onPress={() => clickedLyric(item)}>
+          <TouchableOpacity onPress={() => clickedLyric(item, index)}>
             <Image
               source={{
                 uri: API_URL + item.imgPath,
@@ -184,7 +185,12 @@ function AlbumScreen(props: Props) {
             />
             <TextView
               text={item.name}
-              textStyle={{fontSize: 16, alignSelf: 'center', marginTop: 10}}
+              textStyle={{
+                fontSize: 16,
+                alignSelf: 'center',
+                marginTop: 10,
+                marginHorizontal: 12,
+              }}
             />
           </TouchableOpacity>
         </Animatable.View>
@@ -194,9 +200,9 @@ function AlbumScreen(props: Props) {
   );
 
   const clickedLyric = useCallback(
-    (item: any) => {
+    (item: any, index: number) => {
       props.navigation.navigate('ImageView', {
-        currentImageIndex: item.index,
+        currentImageIndex: index,
         lyricsImages: lyricsImages,
       });
     },
@@ -275,10 +281,9 @@ function AlbumScreen(props: Props) {
           <Animated.View
             style={{
               marginRight: 12,
-
               width: scrollView.interpolate({
                 inputRange: [0, 220],
-                outputRange: [150, 80],
+                outputRange: [120, 80],
                 extrapolate: 'clamp',
               }),
               height: scrollView.interpolate({
@@ -350,8 +355,8 @@ function AlbumScreen(props: Props) {
               // marginHorizontal: 12,
               alignItems: 'flex-start',
             }}>
-            {lyricsList.map((_: any, index: any) => {
-              return renderLyricsItem(_);
+            {lyricsList?.map((_: any, index: any) => {
+              return renderLyricsItem(_, index);
             })}
           </View>
         </ScrollView>

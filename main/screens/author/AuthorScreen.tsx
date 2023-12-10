@@ -149,12 +149,13 @@ function AuthorScreen(props: Props) {
           setScreenRefresh(false);
         }, 1000);
         if (response.code == 200) {
-          setAuthorData((prev: any) =>
-            pageAt === 0
-              ? response.data.content
-              : [...prev, ...response.data.content],
-          );
-          setTotalPage(response.data.totalPages);
+          // console.log(response.data);
+          // setAuthorData((prev: any) =>
+          //   pageAt === 0
+          //     ? response.data.lyricDetail.content
+          //     : [...prev, ...response.data.lyricDetail.content],
+          // );
+          // setTotalPage(response.data.lyricDetail.totalPages);
         }
       });
     },
@@ -166,12 +167,12 @@ function AuthorScreen(props: Props) {
   }, []);
 
   const clickedAuthorItem = useCallback(
-    (item: any) => {
+    (item: any, index: number) => {
       if (authorType == 1) {
         props.navigation.push('BookDetailScreen', {bookId: item.id});
       } else if (authorType == 2) {
         props.navigation.navigate('ImageView', {
-          currentImageIndex: item.index,
+          currentImageIndex: index,
           lyricsImages: lyricsImages,
         });
       }
@@ -193,7 +194,7 @@ function AuthorScreen(props: Props) {
   };
 
   const renderByAuthorItem = useCallback(
-    (item: any) => {
+    (item: any, index: number) => {
       return authorType == 1 ? (
         <Animatable.View
           key={item.id}
@@ -209,7 +210,7 @@ function AuthorScreen(props: Props) {
           }}
           animation={animationForScreen}
           useNativeDriver={true}>
-          <TouchableOpacity onPress={() => clickedAuthorItem(item)}>
+          <TouchableOpacity onPress={() => clickedAuthorItem(item, index)}>
             <Image
               style={{
                 backgroundColor: GeneralColor.light_grey,
@@ -259,7 +260,7 @@ function AuthorScreen(props: Props) {
           }}
           useNativeDriver={true}
           animation={animationForScreen}>
-          <TouchableOpacity onPress={() => clickedAuthorItem(item)}>
+          <TouchableOpacity onPress={() => clickedAuthorItem(item, index)}>
             <Image
               style={{
                 backgroundColor: GeneralColor.light_grey,
@@ -437,7 +438,7 @@ function AuthorScreen(props: Props) {
               alignItems: 'flex-start',
             }}>
             {authorData.map((_: any, index: any) => {
-              return renderByAuthorItem(_);
+              return renderByAuthorItem(_, index);
             })}
           </View>
         </ScrollView>
