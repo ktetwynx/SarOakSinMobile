@@ -1,4 +1,10 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  useRef,
+} from 'react';
 import {
   View,
   FlatList,
@@ -6,10 +12,17 @@ import {
   Image,
   ScrollView,
   RefreshControl,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import {RootTabScreenProps} from '../../route/StackParamsTypes';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_KEY_PRODUCION, API_URL, dummyData} from '../../config/Constant';
+import {
+  API_KEY_PRODUCION,
+  API_URL,
+  PLAY_MODE_TITLE,
+  dummyData,
+} from '../../config/Constant';
 import {ViewMoreButton} from '../../components/ViewMoreButton';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {TextView} from '../../components/TextView';
@@ -20,6 +33,8 @@ import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
 import {SearchBar} from '../../components/SearchBar';
 import KeepAwake from 'react-native-keep-awake';
+import {PlayModeButton} from '../components/PlayModeButton';
+import {PlayModeView} from '../components/PlayModeView';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -53,12 +68,15 @@ function LyricsScreen(props: Props) {
     singers: i18n.t('singers'),
     search_lyric_text: i18n.t('search_lyric_text'),
   });
+  const {width, height} = Dimensions.get('screen');
+  const searchBarHeight = useRef(new Animated.Value(0)).current;
   const animationForScreen = 'fadeInUp';
   const dummyData1 = [{id: 1}, {id: 2}, {id: 3}, {id: 4}];
   const [lyricHomeData, setLyricHomeData] = useState([
-    {id: 1, title: label.singers, data: []},
-    {id: 2, title: label.albums, data: []},
-    {id: 3, title: label.lyrics, data: []},
+    {id: 1, title: PLAY_MODE_TITLE, data: []},
+    {id: 2, title: label.singers, data: []},
+    {id: 3, title: label.albums, data: []},
+    {id: 4, title: label.lyrics, data: []},
   ]);
 
   useEffect(() => {
@@ -114,6 +132,11 @@ function LyricsScreen(props: Props) {
           {data: response.data.authorList},
         );
 
+        let lyricsPlayMode = Object.assign(
+          {title: PLAY_MODE_TITLE},
+          {data: response.data.lyricListTXT},
+        );
+
         let images = [];
         for (let data of response.data.lyricList) {
           images.push({
@@ -127,7 +150,7 @@ function LyricsScreen(props: Props) {
         }
 
         setLyricsImages(images);
-        data.push(authors, ablums, lyrics);
+        data.push(lyricsPlayMode, authors, ablums, lyrics);
         setLyricHomeData(data);
       }
     });
@@ -143,6 +166,10 @@ function LyricsScreen(props: Props) {
 
   const clickedSingerViewmore = useCallback(() => {
     props.navigation.navigate('AuthorListViewmoreScreen', {authorType: 2});
+  }, []);
+
+  const clickedPlayModeViewmore = useCallback(() => {
+    props.navigation.navigate('PlayModeViewMoreScreen');
   }, []);
 
   const clickedAlbum = useCallback((item: any) => {
@@ -163,6 +190,12 @@ function LyricsScreen(props: Props) {
     [lyricsImages],
   );
 
+  const clickedPlayMode = useCallback((item: any) => {
+    props.navigation.navigate('LyricTextScreen', {
+      lyricTextId: item.item.id,
+    });
+  }, []);
+
   const clickedSinger = useCallback((item: any) => {
     props.navigation.navigate('AuthorScreen', {
       authorId: item.item.id,
@@ -175,12 +208,6 @@ function LyricsScreen(props: Props) {
   const clickedSearch = useCallback(() => {
     props.navigation.navigate('SearchScreen', {searchType: 2});
   }, []);
-
-  const renderHeaderLyricItem = useCallback(() => {
-    return (
-      <SearchBar text={label.search_lyric_text} clickedSearch={clickedSearch} />
-    );
-  }, [label]);
 
   const renderLyricsHomeItem = useCallback(
     (item: any) => {
@@ -195,12 +222,29 @@ function LyricsScreen(props: Props) {
               marginBottom: 12,
             }}>
             <Animatable.View
+              style={{flexDirection: 'row'}}
               useNativeDriver={true}
               animation={animationForScreen}>
               <TextView
                 text={item.item.title}
                 textStyle={{fontSize: 20, fontWeight: 'bold'}}
               />
+              {item.item.title == PLAY_MODE_TITLE ? (
+                <PlayModeButton
+                  borderWidth={1.5}
+                  borderRadius={5}
+                  iconSize={18}
+                  style={{
+                    alignSelf: 'center',
+                    width: 35,
+                    marginLeft: 6,
+                    height: 35,
+                  }}
+                  clickedPlayLyric={() => {}}
+                />
+              ) : (
+                <></>
+              )}
             </Animatable.View>
 
             <Animatable.View
@@ -209,10 +253,12 @@ function LyricsScreen(props: Props) {
               <ViewMoreButton
                 clickedViewMore={() => {
                   if (item.index == 0) {
-                    clickedSingerViewmore();
+                    clickedPlayModeViewmore();
                   } else if (item.index == 1) {
+                    clickedSingerViewmore();
+                  } else if (item.index == 2) {
                     clickedAlbumViewmore();
-                  } else {
+                  } else if (item.index == 3) {
                     clickedLyricsViewmore();
                   }
                 }}
@@ -222,10 +268,10 @@ function LyricsScreen(props: Props) {
           <FlatList
             style={{marginTop: 10, marginBottom: 12}}
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={item.index == 1 ? {} : {paddingLeft: 12}}
-            horizontal={item.index == 1 ? false : true}
+            contentContainerStyle={item.index == 2 ? {} : {paddingLeft: 12}}
+            horizontal={item.index == 2 ? false : true}
             data={item.item.data.length != 0 ? item.item.data : dummyData1}
-            numColumns={item.index == 1 ? 2 : undefined}
+            numColumns={item.index == 2 ? 2 : undefined}
             renderItem={(data: any) =>
               renderLyricsHomeDetailItem(data, item.item.title)
             }
@@ -239,7 +285,84 @@ function LyricsScreen(props: Props) {
 
   const renderLyricsHomeDetailItem = useCallback(
     (item: any, title: string) => {
-      if (title == label.albums) {
+      if (title == PLAY_MODE_TITLE) {
+        return (
+          <PlayModeView
+            viewStyle={{flexDirection: 'column', marginRight: 12}}
+            item={item}
+            imageStyle={{
+              width: 140,
+              height: 140,
+              backgroundColor: GeneralColor.light_grey,
+              borderRadius: 15,
+            }}
+            clickedPlayMode={() => clickedPlayMode(item)}
+          />
+        );
+      } else if (title == label.singers) {
+        return (
+          <Animatable.View
+            style={{
+              flexDirection: 'column',
+            }}
+            useNativeDriver={true}
+            animation={animationForScreen}>
+            <TouchableOpacity
+              disabled={item?.item?.name ? false : true}
+              onPress={() => clickedSinger(item)}
+              style={{flexDirection: 'column', marginRight: 12}}>
+              <Image
+                style={{
+                  width: 80,
+                  height: 80,
+                  alignSelf: 'center',
+                  backgroundColor: GeneralColor.light_grey,
+                  borderRadius: 50,
+                }}
+                source={{
+                  uri: API_URL + item.item.profile,
+                }}
+              />
+              <TextView
+                text={item.item.name}
+                textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
+              />
+            </TouchableOpacity>
+          </Animatable.View>
+        );
+      }
+      if (title == label.singers) {
+        return (
+          <Animatable.View
+            style={{
+              flexDirection: 'column',
+            }}
+            useNativeDriver={true}
+            animation={animationForScreen}>
+            <TouchableOpacity
+              disabled={item?.item?.name ? false : true}
+              onPress={() => clickedSinger(item)}
+              style={{flexDirection: 'column', marginRight: 12}}>
+              <Image
+                style={{
+                  width: 80,
+                  height: 80,
+                  alignSelf: 'center',
+                  backgroundColor: GeneralColor.light_grey,
+                  borderRadius: 50,
+                }}
+                source={{
+                  uri: API_URL + item.item.profile,
+                }}
+              />
+              <TextView
+                text={item.item.name}
+                textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
+              />
+            </TouchableOpacity>
+          </Animatable.View>
+        );
+      } else if (title == label.albums) {
         return (
           <Animatable.View
             style={{
@@ -251,7 +374,9 @@ function LyricsScreen(props: Props) {
             }}
             useNativeDriver={true}
             animation={animationForScreen}>
-            <TouchableOpacity onPress={() => clickedAlbum(item)}>
+            <TouchableOpacity
+              disabled={item?.item?.name ? false : true}
+              onPress={() => clickedAlbum(item)}>
               <Image
                 style={{
                   height: 100,
@@ -276,6 +401,7 @@ function LyricsScreen(props: Props) {
             useNativeDriver={true}
             animation={animationForScreen}>
             <TouchableOpacity
+              disabled={item?.item?.name ? false : true}
               onPress={() => clickedLyric(item)}
               style={{flexDirection: 'column', marginRight: 12}}>
               <Image
@@ -301,53 +427,44 @@ function LyricsScreen(props: Props) {
             </TouchableOpacity>
           </Animatable.View>
         );
-      } else if (title == label.singers) {
-        return (
-          <Animatable.View
-            style={{
-              flexDirection: 'column',
-            }}
-            useNativeDriver={true}
-            animation={animationForScreen}>
-            <TouchableOpacity
-              onPress={() => clickedSinger(item)}
-              style={{flexDirection: 'column', marginRight: 12}}>
-              <Image
-                style={{
-                  width: 80,
-                  height: 80,
-                  alignSelf: 'center',
-                  backgroundColor: GeneralColor.light_grey,
-                  borderRadius: 50,
-                }}
-                source={{
-                  uri: API_URL + item.item.profile,
-                }}
-              />
-              <TextView
-                text={item.item.name}
-                textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
-              />
-            </TouchableOpacity>
-          </Animatable.View>
-        );
       }
       return <></>;
     },
     [label, lyricsImages],
   );
 
+  const transfromHeight = searchBarHeight.interpolate({
+    inputRange: [0, height * 0.09],
+    outputRange: [0, -height * 0.09],
+    extrapolateRight: 'clamp',
+  });
+
   return (
     <SafeAreaView
       edges={['top']}
-      style={{flex: 1, backgroundColor: theme.backgroundColor}}>
-      <View
-        style={{
-          flexDirection: 'column',
-          flex: 1,
-          backgroundColor: theme.backgroundColor,
-        }}>
-        <FlatList
+      style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
+      <SearchBar
+        paddingTop={10}
+        text={label.search_lyric_text}
+        clickedSearch={clickedSearch}
+      />
+
+      <Animated.View
+        style={[
+          {
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            backgroundColor: theme.backgroundColor,
+            overflow: 'hidden',
+          },
+          {transform: [{translateY: transfromHeight}]},
+        ]}>
+        <Animated.FlatList
+          scrollEnabled={true}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: searchBarHeight}}}],
+            {useNativeDriver: true},
+          )}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           data={lyricHomeData}
@@ -360,13 +477,19 @@ function LyricsScreen(props: Props) {
               // title="Pull to refresh"
             />
           }
-          contentContainerStyle={{paddingBottom: 100}}
-          style={{paddingTop: 10}}
+          contentContainerStyle={{
+            paddingBottom: 100,
+            paddingTop: 4,
+          }}
+          style={[
+            {
+              paddingTop: 8,
+            },
+          ]}
           renderItem={renderLyricsHomeItem}
-          ListHeaderComponent={renderHeaderLyricItem}
           keyExtractor={(item: any, index: number) => index.toString()}
         />
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }

@@ -259,7 +259,7 @@ function AlbumScreen(props: Props) {
           />
         </Animated.View>
         <BackButton
-          style={{position: 'absolute', left: 16, top: 12}}
+          style={{marginLeft: 12, marginTop: 12}}
           clickedGoBack={() => {
             goBack();
           }}
@@ -271,9 +271,10 @@ function AlbumScreen(props: Props) {
               outputRange: [170, 100],
               extrapolate: 'clamp',
             }),
+            marginLeft: width * 0.08,
+            marginTop: -height * 0.05,
             flexDirection: 'row',
             overflow: 'hidden',
-            marginLeft: 45,
             justifyContent: 'center',
             alignItems: 'center',
             alignSelf: 'center',

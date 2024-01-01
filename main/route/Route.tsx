@@ -22,6 +22,7 @@ import {ForgotPassword} from '../screens/profile/ForgotPassword';
 import SearchScreen from '../screens/search/SearchScreen';
 import ResetPassword from '../screens/profile/ResetPassword';
 import LyricTextScreen from '../screens/lyric_txt_screen/LyricTextScreen';
+import PlayModeViewmoreScreen from '../screens/view_more/PlayModeViewmoreScreen';
 
 const mapstateToProps = (state: {app_language: string}) => {
   return {
@@ -146,6 +147,13 @@ const Route = (props: Props) => {
         name="AuthorListViewmoreScreen"
         component={AuthorListViewmoreScreen}
       />
+
+      <RootStack.Screen
+        options={option}
+        name="PlayModeViewMoreScreen"
+        component={PlayModeViewmoreScreen}
+      />
+
       <RootStack.Screen options={option} name="PDFView" component={PDFView} />
 
       <RootStack.Screen

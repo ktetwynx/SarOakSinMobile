@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
-import {TouchableOpacity} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import {TouchableOpacity, View} from 'react-native';
+import Octicons from 'react-native-vector-icons/Octicons';
 import {ThemeContext} from '../utility/ThemeProvider';
 import {GeneralColor} from '../utility/Themes';
 export interface AppProps {
@@ -13,13 +13,23 @@ export function BackButton(props: AppProps) {
   const {theme} = context;
   return (
     <TouchableOpacity
-      style={{alignSelf: 'flex-start'}}
+      style={{
+        backgroundColor: GeneralColor.app_theme,
+        width: 38,
+        height: 38,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignContent: 'center',
+        borderWidth: 3,
+        borderColor: GeneralColor.white,
+        ...props.style,
+      }}
       onPress={() => props.clickedGoBack()}>
-      <Ionicons
-        name="ios-arrow-back-circle-sharp"
-        size={40}
-        color={GeneralColor.app_theme}
-        style={props.style != null ? props.style : {alignSelf: 'center'}}
+      <Octicons
+        name="arrow-left"
+        size={25}
+        style={{alignSelf: 'center'}}
+        color={GeneralColor.white}
       />
     </TouchableOpacity>
   );

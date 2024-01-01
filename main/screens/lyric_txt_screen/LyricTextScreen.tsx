@@ -40,6 +40,9 @@ import SongTransformer from './SongTransformer';
 import SongRender, {SongRenderRef} from './SongRender';
 import CustomHtmlDivFormatter from './CustomHtmlDivFormatter';
 import {setPlayModeFontSize, setPlayModeScrolSpeed} from '../../redux/actions';
+import {ApiFetchService} from '../../service/ApiFetchService';
+import {API_KEY_PRODUCION, API_URL} from '../../config/Constant';
+import {BackButton} from '../../components/BackButton';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -77,11 +80,9 @@ function LyricTextScreen(props: Props) {
   const context = useContext(ThemeContext);
   const {theme} = context;
 
-  const [chordSheet, setChordSheet] = useState<any>();
   const [orginalKey, setOrginalKey] = useState('');
-  const [lyricTitle, setLyricTitle] = useState('');
-  const [lyricAuthor, setLyricAuthor] = useState<any>([]);
   const [transposeKey, setTransposeKey] = useState(0);
+  const [lyricTextResponse, setLyricTextResponse] = useState<any>();
   const [isShowChangeKeyDialog, setIsShowChangeKeyDialog] = useState(false);
 
   const songRenderRef = useRef<SongRenderRef>(null);
@@ -92,16 +93,28 @@ function LyricTextScreen(props: Props) {
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
-    setLyricTitle(props.route.params.lyricTitle);
-    setChordSheet(props.route.params.lyricText);
-    setLyricAuthor(props.route.params.lyricAuthor);
-    setLyricFontSize(props.playmode_fontsize);
-    setScrollSpeed(props.playmode_scrollSpeed);
-    const song = new ChordSheetJS.ChordProParser().parse(
-      props.route.params.lyricText,
-    );
-    setOrginalKey(song.metadata.key);
+    fetchLyricText();
   }, [props.route.params]);
+
+  const fetchLyricText = useCallback(async () => {
+    let formData = new FormData();
+    formData.append('id', props.route.params.lyricTextId);
+    console.log(formData);
+    await ApiFetchService(API_URL + `user/lyric/getLyricDetail`, formData, {
+      'Content-Type': 'multipart/form-data',
+      Authorization: API_KEY_PRODUCION,
+    }).then((response: any) => {
+      if (response.code == 200) {
+        setLyricTextResponse(response.data);
+        setLyricFontSize(props.playmode_fontsize);
+        setScrollSpeed(props.playmode_scrollSpeed);
+        const song = new ChordSheetJS.ChordProParser().parse(
+          response.data.lyricText,
+        );
+        setOrginalKey(song.metadata.key);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (isPlaying) {
@@ -172,18 +185,12 @@ function LyricTextScreen(props: Props) {
 
             alignItems: 'flex-start',
           }}>
-          <TouchableOpacity
-            style={{
-              justifyContent: 'center',
+          <BackButton
+            style={{marginHorizontal: 6}}
+            clickedGoBack={() => {
+              goBack();
             }}
-            onPress={goBack}>
-            <Ionicons
-              name="ios-arrow-back-circle-sharp"
-              size={38}
-              style={{marginLeft: 2}}
-              color={GeneralColor.app_theme}
-            />
-          </TouchableOpacity>
+          />
           <View
             style={{
               flexDirection: 'column',
@@ -191,7 +198,7 @@ function LyricTextScreen(props: Props) {
               flex: 1,
             }}>
             <TextView
-              text={lyricTitle}
+              text={lyricTextResponse?.name}
               numberOfLines={2}
               textStyle={{
                 fontSize: 18,
@@ -199,7 +206,7 @@ function LyricTextScreen(props: Props) {
               }}
             />
             <View style={{flexDirection: 'row'}}>
-              {lyricAuthor?.map((_: any, index: number) => {
+              {lyricTextResponse?.authors?.map((_: any, index: number) => {
                 return (
                   <TextView
                     key={index}
@@ -271,7 +278,7 @@ function LyricTextScreen(props: Props) {
         </View>
 
         <SongTransformer
-          chordProSong={chordSheet}
+          chordProSong={lyricTextResponse?.lyricText}
           transposeDelta={transposeKey}
           showTabs={false}
           fontSize={parseInt(lyricFontSize)}>

@@ -9,6 +9,7 @@ export const SINGER_TITLE = 'အဆိုတော်များ';
 export const BOOKS_TITLE = 'စာအုပ်များ';
 export const BOOKS_AUTHOR_TITLE = 'စာရေးဆရာများ';
 export const BOOK_AUTHOR_TITLE = 'စာရေးဆရာ';
+export const PLAY_MODE_TITLE = `PlayMode`;
 
 export const APP_NAME = 'Sar Oak Sin';
 

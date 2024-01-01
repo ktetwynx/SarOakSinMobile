@@ -22,6 +22,7 @@ import * as Animatable from 'react-native-animatable';
 import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
 import {LoginDialog} from '../../components/LoginDialog';
 import KeepAwake from 'react-native-keep-awake';
+import {PlayModeButton} from '../components/PlayModeButton';
 
 const mapstateToProps = (state: {profile: any; token: any}) => {
   return {
@@ -46,6 +47,7 @@ type Props = ConnectedProps<typeof connector> &
 function ImageView(props: Props) {
   const context = useContext(ThemeContext);
   const {theme} = context;
+  const [lyricTextId, setLyricTextId] = useState<number>(0);
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
   const [lyricText, setLyricText] = useState('');
   const [lyricTitle, setLyricTitle] = useState('');
@@ -124,9 +126,10 @@ function ImageView(props: Props) {
     } else {
       setIsFavourite(false);
     }
+    setLyricTextId(data?.lyricsId);
     setLyricText(data?.lyricText);
-    setLyricTitle(data?.lyricTitle);
-    setLyricAuthor(data?.lyricAuthor);
+    // setLyricTitle(data?.lyricTitle);
+    // setLyricAuthor(data?.lyricAuthor);
   }, []);
 
   const fetchSaveLyricsApi = useCallback(async () => {
@@ -184,7 +187,7 @@ function ImageView(props: Props) {
         setIsFavourite(false);
       }
       setLyricText(lyricsImages[index ? index : 0].lyricText);
-      setLyricTitle(lyricsImages[index ? index : 0].lyricTitle);
+      // setLyricTitle(lyricsImages[index ? index : 0].lyricTitle);
     },
     [lyricsImages],
   );
@@ -203,11 +206,9 @@ function ImageView(props: Props) {
 
   const clickedPlayLyric = useCallback(() => {
     props.navigation.navigate('LyricTextScreen', {
-      lyricText: lyricText,
-      lyricTitle: lyricTitle,
-      lyricAuthor: lyricAuthor,
+      lyricTextId: lyricTextId,
     });
-  }, [lyricText, lyricTitle, lyricAuthor]);
+  }, [lyricTextId]);
 
   // const shakeAnimatedStyle = useAnimatedStyle(() => {
   //   return {
@@ -324,26 +325,12 @@ function ImageView(props: Props) {
           top: Platform.OS == 'ios' ? 50 : 10,
           left: 12,
         }}>
-        <TouchableOpacity
-          style={{justifyContent: 'center', alignItems: 'center'}}
-          onPress={goBack}>
-          <View
-            style={{
-              width: 45,
-              height: 45,
-              backgroundColor: 'black',
-              opacity: 0.6,
-              position: 'absolute',
-              borderRadius: 45,
-            }}
-          />
-          <Ionicons
-            name="ios-arrow-back-circle-sharp"
-            size={38}
-            style={{marginLeft: 2}}
-            color={GeneralColor.app_theme}
-          />
-        </TouchableOpacity>
+        <BackButton
+          style={{marginHorizontal: 6}}
+          clickedGoBack={() => {
+            goBack();
+          }}
+        />
       </View>
 
       <View
@@ -374,47 +361,19 @@ function ImageView(props: Props) {
       </View>
 
       {lyricText ? (
-        <Animatable.View
-          iterationCount="infinite"
-          animation="swing"
-          useNativeDriver={true}
-          style={{position: 'absolute', bottom: 50, alignSelf: 'center'}}>
-          <TouchableOpacity
-            style={{justifyContent: 'center', alignItems: 'center'}}
-            onPress={clickedPlayLyric}>
-            <View
-              style={{
-                width: 70,
-                height: 70,
-                backgroundColor: GeneralColor.black,
-                opacity: 0.3,
-                position: 'absolute',
-                borderRadius: 12,
-              }}
-            />
-            <View
-              style={{
-                width: 60,
-                height: 60,
-                backgroundColor: GeneralColor.app_theme,
-                position: 'absolute',
-                borderRadius: 12,
-                borderWidth: 3,
-                borderColor: 'white',
-              }}
-            />
-            <AntDesign
-              style={{
-                borderRadius: 12,
-                // padding: 5,
-                borderColor: 'white',
-              }}
-              name={'play'}
-              size={35}
-              color={GeneralColor.white}
-            />
-          </TouchableOpacity>
-        </Animatable.View>
+        <PlayModeButton
+          borderWidth={3}
+          borderRadius={12}
+          style={{
+            position: 'absolute',
+            bottom: 50,
+            alignSelf: 'center',
+            width: 70,
+            height: 70,
+          }}
+          iconSize={30}
+          clickedPlayLyric={() => clickedPlayLyric()}
+        />
       ) : (
         <></>
       )}

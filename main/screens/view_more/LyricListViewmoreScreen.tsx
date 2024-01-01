@@ -172,9 +172,11 @@ function LyricListViewmoreScreen(props: Props) {
               text={item.item.name}
               numberOfLines={1}
               textStyle={{
+                textAlign: 'center',
                 alignSelf: 'center',
                 marginTop: 6,
                 fontSize: 16,
+                width: 140,
               }}
             />
           </TouchableOpacity>

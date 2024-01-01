@@ -155,7 +155,6 @@ const VerifyScreen = (props: Props) => {
         if (verifyType == 1) {
           setTimeout(() => {
             setIsLoading(false);
-            console.log(response.data, '<<<fromVerify');
             props.setToken(response.data.jwtToken);
             props.setProfile(response.data);
             props.setFavBookCount(response.data.bookCount);

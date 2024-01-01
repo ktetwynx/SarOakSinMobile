@@ -149,13 +149,21 @@ function AuthorScreen(props: Props) {
           setScreenRefresh(false);
         }, 1000);
         if (response.code == 200) {
-          // console.log(response.data);
-          // setAuthorData((prev: any) =>
-          //   pageAt === 0
-          //     ? response.data.lyricDetail.content
-          //     : [...prev, ...response.data.lyricDetail.content],
-          // );
-          // setTotalPage(response.data.lyricDetail.totalPages);
+          if (authorType == 1) {
+            setAuthorData((prev: any) =>
+              pageAt === 0
+                ? response.data.bookDetail.content
+                : [...prev, ...response.data.bookDetail.content],
+            );
+            setTotalPage(response.data.bookDetail.totalPages);
+          } else if (authorType == 2) {
+            setAuthorData((prev: any) =>
+              pageAt === 0
+                ? response.data.lyricDetail.content
+                : [...prev, ...response.data.lyricDetail.content],
+            );
+            setTotalPage(response.data.lyricDetail.totalPages);
+          }
         }
       });
     },
@@ -339,7 +347,7 @@ function AuthorScreen(props: Props) {
         </Animated.View>
 
         <BackButton
-          style={{position: 'absolute', left: 16, top: 12}}
+          style={{marginLeft: 12, marginTop: 12}}
           clickedGoBack={() => {
             goBack();
           }}
@@ -352,10 +360,11 @@ function AuthorScreen(props: Props) {
               outputRange: [170, 100],
               extrapolate: 'clamp',
             }),
-
-            marginLeft: 40,
+            marginLeft: width * 0.08,
+            marginTop: -height * 0.05,
             flexDirection: 'row',
             overflow: 'hidden',
+
             justifyContent: 'center',
             alignItems: 'center',
             alignSelf: 'center',

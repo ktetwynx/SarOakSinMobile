@@ -1,10 +1,18 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  useRef,
+} from 'react';
 import {
   View,
   FlatList,
   Image,
   TouchableOpacity,
   RefreshControl,
+  Dimensions,
+  Animated,
 } from 'react-native';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_KEY_PRODUCION, API_URL, dummyData} from '../../config/Constant';
@@ -26,6 +34,9 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   const [authorListData, setAuthorListData] = useState(dummyData);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const animationForScreen = 'fadeInUp';
+  const {width, height} = Dimensions.get('screen');
+  // const searchBarHeight = new Animated.Value(0);
+  const searchBarHeight = useRef(new Animated.Value(0)).current;
   const [label, setLabel] = React.useState({
     authors: i18n.t('authors'),
     search_book_text: i18n.t('search_book_text'),
@@ -84,13 +95,14 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   const renderBookCategoryItem = useCallback(
     (item: any) => {
       return (
-        <View style={{flexDirection: 'column', marginBottom: 20}}>
+        <View style={{flexDirection: 'column'}}>
           <View
             style={{
-              marginHorizontal: 16,
               flexDirection: 'row',
               justifyContent: 'space-between',
+              marginHorizontal: 16,
               alignItems: 'center',
+              marginBottom: 12,
             }}>
             <Animatable.View
               useNativeDriver={true}
@@ -111,7 +123,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
           <FlatList
             showsVerticalScrollIndicator={false}
             data={item.item.bookList ? item.item.bookList : dummyData}
-            style={{marginTop: 16}}
+            style={{marginTop: 10, marginBottom: 12}}
             contentContainerStyle={{paddingLeft: 12}}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -126,29 +138,29 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
 
   const renderBookAuthorItem = useCallback(() => {
     return (
-      <View style={{flexDirection: 'column', paddingBottom: 20}}>
+      <View
+        style={{
+          flexDirection: 'column',
+        }}>
         <View
           style={{
-            marginHorizontal: 16,
             flexDirection: 'row',
             justifyContent: 'space-between',
+            marginHorizontal: 16,
             alignItems: 'center',
             marginBottom: 12,
           }}>
           <TextView
             text={label.authors}
-            textStyle={{
-              fontSize: 20,
-              fontWeight: 'bold',
-              marginBottom: 6,
-            }}
+            textStyle={{fontSize: 20, fontWeight: 'bold'}}
           />
           <ViewMoreButton clickedViewMore={() => clickedAuthorViewmore()} />
         </View>
         <FlatList
+          style={{marginTop: 10, marginBottom: 12}}
           showsHorizontalScrollIndicator={false}
           horizontal={true}
-          contentContainerStyle={{paddingLeft: 16}}
+          contentContainerStyle={{paddingLeft: 12}}
           data={authorListData}
           renderItem={renderAuthorItem}
           keyExtractor={(item: any, index: number) => index.toString()}
@@ -162,7 +174,8 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
       return (
         <Animatable.View useNativeDriver={true} animation={animationForScreen}>
           <TouchableOpacity
-            onPress={() => (item.item.name ? clickedAuthor(item) : {})}
+            disabled={item?.item?.name ? false : true}
+            onPress={() => clickedAuthor(item)}
             style={{flexDirection: 'column', marginRight: 12}}>
             <Image
               style={{
@@ -191,9 +204,8 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
       return (
         <Animatable.View useNativeDriver={true} animation={animationForScreen}>
           <TouchableOpacity
-            onPress={() =>
-              item.item.name ? clickedBookDetail(item.item.id) : {}
-            }
+            disabled={item?.item?.name ? false : true}
+            onPress={() => clickedBookDetail(item.item.id)}
             style={{
               flexDirection: 'column',
               marginRight: 12,
@@ -248,44 +260,62 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
     setScreenRefresh(true);
   }, []);
 
+  const transfromHeight = searchBarHeight.interpolate({
+    inputRange: [0, height * 0.09],
+    outputRange: [0, -height * 0.09],
+    extrapolateRight: 'clamp',
+  });
+
   return (
     <SafeAreaView
       edges={['top']}
-      style={{flex: 1, backgroundColor: theme.backgroundColor}}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={screenRefresh}
-            onRefresh={onRefreshScreen}
-            tintColor={theme.backgroundColor2}
-            // titleColor={theme.backgroundColor2}
-            // title="Pull to refresh"
-          />
-        }
-        style={{
-          flexDirection: 'column',
-          flex: 1,
-          backgroundColor: theme.backgroundColor,
-        }}>
-        <SearchBar
-          paddingTop={10}
-          text={label.search_book_text}
-          clickedSearch={clickedSearch}
-        />
-        <FlatList
-          nestedScrollEnabled={true}
-          scrollEnabled={false}
+      style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
+      <SearchBar
+        paddingTop={10}
+        text={label.search_book_text}
+        clickedSearch={clickedSearch}
+      />
+      <Animated.View
+        style={[
+          {
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            backgroundColor: theme.backgroundColor,
+            overflow: 'hidden',
+          },
+          {transform: [{translateY: transfromHeight}]},
+        ]}>
+        <Animated.FlatList
+          scrollEnabled={true}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: searchBarHeight}}}],
+            {useNativeDriver: true},
+          )}
           showsVerticalScrollIndicator={false}
           data={bookListData}
-          contentContainerStyle={{paddingBottom: 100}}
-          style={{backgroundColor: theme.backgroundColor}}
+          refreshControl={
+            <RefreshControl
+              refreshing={screenRefresh}
+              onRefresh={onRefreshScreen}
+              tintColor={theme.backgroundColor2}
+              // titleColor={theme.backgroundColor2}
+              // title="Pull to refresh"
+            />
+          }
+          contentContainerStyle={{
+            paddingBottom: 100,
+            paddingTop: 4,
+          }}
+          style={[
+            {
+              paddingTop: 8,
+            },
+          ]}
           renderItem={renderBookCategoryItem}
           ListHeaderComponent={renderBookAuthorItem}
           keyExtractor={(item: any, index: number) => index.toString()}
         />
-      </ScrollView>
+      </Animated.View>
     </SafeAreaView>
   );
 }

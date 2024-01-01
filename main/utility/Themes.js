@@ -3,6 +3,7 @@ export const LightThemeColor = {
   backgroundColor1: '#FFFFFF',
   backgroundColor2: '#000000',
   backgroundColor3: '#c9c9c9',
+  backgroundColor4: 'white',
   textColor: '#000000',
 };
 
@@ -11,6 +12,7 @@ export const DarkThemeColor = {
   backgroundColor1: '#000000',
   backgroundColor2: '#FFFFFF',
   backgroundColor3: '#4d4c4c',
+  backgroundColor4: '#4d4c4c',
   textColor: '#FFFFFF',
 };
 

@@ -24,24 +24,41 @@ export function SearchBar(props: AppProps) {
         animation={'fadeInUp'}
         style={{
           width: '90%',
-          height: 45,
+          height: 50,
           alignSelf: 'center',
           alignItems: 'center',
-          backgroundColor: theme.backgroundColor3,
+          backgroundColor: GeneralColor.app_theme,
           flexDirection: 'row',
           borderRadius: 40,
           justifyContent: 'space-between',
-          marginBottom: 16,
-          marginTop: 6,
+          marginBottom: 20,
+          marginTop: 3,
+          borderWidth: 4,
+          borderColor: theme.backgroundColor4,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 3,
+          },
+          shadowOpacity: 0.29,
+          shadowRadius: 4.65,
+
+          elevation: 7,
         }}>
         <TextView
           text={props.text}
-          textStyle={{marginLeft: 16, fontSize: 18}}
+          textStyle={{
+            marginLeft: 16,
+            fontSize: 18,
+            marginTop: 2,
+            fontWeight: 'bold',
+            color: theme.backgroundColor4,
+          }}
         />
         <Ionicons
           name="search-circle"
           size={35}
-          color={GeneralColor.app_theme}
+          color={theme.backgroundColor4}
           style={{alignSelf: 'center', marginRight: 16}}
         />
       </Animatable.View>

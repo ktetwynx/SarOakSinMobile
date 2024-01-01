@@ -43,7 +43,8 @@ export type RootStackParamList = {
   };
   ImageView: {currentImageIndex: number; lyricsImages: []};
   AuthorListViewmoreScreen: {authorType: number};
-  LyricTextScreen: {lyricText: string; lyricTitle: string; lyricAuthor?: []};
+  LyricTextScreen: {lyricTextId: number};
+  PlayModeViewMoreScreen: undefined;
 };
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   CompositeScreenProps<
