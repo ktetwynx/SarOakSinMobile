@@ -43,6 +43,11 @@ import {setPlayModeFontSize, setPlayModeScrolSpeed} from '../../redux/actions';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {API_KEY_PRODUCION, API_URL} from '../../config/Constant';
 import {BackButton} from '../../components/BackButton';
+import {ImageModeButton} from '../components/ImageModeButton';
+import {IconButton} from '../components/IconButton';
+import {LoadingScreen} from '../../components/LoadingScreen';
+import * as Animatable from 'react-native-animatable';
+import {PlayModeButton} from '../components/PlayModeButton';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -84,22 +89,37 @@ function LyricTextScreen(props: Props) {
   const [transposeKey, setTransposeKey] = useState(0);
   const [lyricTextResponse, setLyricTextResponse] = useState<any>();
   const [isShowChangeKeyDialog, setIsShowChangeKeyDialog] = useState(false);
+  const [isFavourite, setIsFavourite] = useState<boolean>(false);
 
   const songRenderRef = useRef<SongRenderRef>(null);
   const [scrollSpeedNumber, setScrollSpeedNumber] = useState<number>(0);
   const [lyricFontSize, setLyricFontSize] = useState('0');
   const [scrollSpeed, setScrollSpeed] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  const {width, height} = Dimensions.get('screen');
+  const [playModeListId, setPlayModeListId] = useState<number>(0);
+  const [currentPlayModeIndex, setCurrentPlayModeIndex] = useState<number>(0);
 
   useEffect(() => {
-    fetchLyricText();
+    setCurrentPlayModeIndex(props.route.params.currentPlayModeIndex);
   }, [props.route.params]);
 
+  useEffect(() => {
+    setPlayModeListId(props.route.params.playModeIdList[currentPlayModeIndex]);
+  }, [currentPlayModeIndex]);
+
+  useEffect(() => {
+    if (playModeListId != 0) {
+      fetchLyricText();
+    }
+  }, [playModeListId]);
+
   const fetchLyricText = useCallback(async () => {
+    setIsLoading(true);
     let formData = new FormData();
-    formData.append('id', props.route.params.lyricTextId);
-    console.log(formData);
+    formData.append('id', playModeListId.toString());
     await ApiFetchService(API_URL + `user/lyric/getLyricDetail`, formData, {
       'Content-Type': 'multipart/form-data',
       Authorization: API_KEY_PRODUCION,
@@ -113,8 +133,9 @@ function LyricTextScreen(props: Props) {
         );
         setOrginalKey(song.metadata.key);
       }
+      // setIsLoading(false);
     });
-  }, []);
+  }, [playModeListId]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -151,38 +172,35 @@ function LyricTextScreen(props: Props) {
     props.navigation.goBack();
   }, []);
 
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: theme.backgroundColor,
-      }}
-      edges={['top']}>
-      <Image
-        style={{
-          width: 300,
-          height: 300,
-          opacity: 0.15,
-          alignSelf: 'center',
-          backgroundColor: GeneralColor.light_grey,
-          position: 'absolute',
-          borderRadius: 50,
-        }}
-        source={require('../../assets/images/sar_oak_sin_logo.jpg')}
-      />
+  const clickedPreviousSong = useCallback(() => {
+    console.log(currentPlayModeIndex);
+    if (currentPlayModeIndex != 0) {
+      setCurrentPlayModeIndex(prev => prev - 1);
+    }
+  }, [currentPlayModeIndex]);
 
-      <ScrollView
-        scrollEnabled={false}
-        contentContainerStyle={{flexGrow: 1}}
-        ref={scrollViewRef}
-        style={{flexDirection: 'column'}}>
+  const clickedNextSong = useCallback(() => {
+    if (props.route.params.playModeIdList.length != currentPlayModeIndex + 1) {
+      setCurrentPlayModeIndex(prev => prev + 1);
+    }
+  }, [currentPlayModeIndex, props.route.params.playModeIdList]);
+
+  return (
+    <>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          backgroundColor: GeneralColor.app_theme,
+          flexDirection: 'column',
+        }}
+        edges={['top']}>
         <View
           style={{
             flexDirection: 'row',
-            marginTop: 12,
-            marginHorizontal: 6,
-
+            paddingTop: 12,
+            paddingBottom: 10,
+            paddingHorizontal: 6,
             alignItems: 'flex-start',
           }}>
           <BackButton
@@ -229,28 +247,20 @@ function LyricTextScreen(props: Props) {
               justifyContent: 'flex-end',
               flex: 1,
             }}>
-            <TouchableOpacity
+            <PlayModeButton
+              isPlaying={isPlaying}
+              borderWidth={2.5}
+              borderRadius={8}
               style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginRight: 10,
+                // position: 'absolute',
+                // bottom: 50,
+                alignSelf: 'center',
+                width: 45,
+                height: 45,
               }}
-              onPress={() => clickedPlayAutoScroll()}>
-              <View
-                style={{
-                  backgroundColor: GeneralColor.white,
-                  width: 40,
-                  height: 40,
-                  borderRadius: 30,
-                  position: 'absolute',
-                }}
-              />
-              <AntDesign
-                name={isPlaying ? 'pausecircle' : 'play'}
-                size={35}
-                color={isPlaying ? 'grey' : 'green'}
-              />
-            </TouchableOpacity>
+              iconSize={23}
+              clickedPlayLyric={() => clickedPlayAutoScroll()}
+            />
 
             <TouchableOpacity
               style={{
@@ -258,12 +268,24 @@ function LyricTextScreen(props: Props) {
                 alignItems: 'center',
                 flexDirection: 'row',
                 paddingHorizontal: 10,
+                alignSelf: 'center',
+                marginHorizontal: 6,
                 borderRadius: 20,
+                borderWidth: 3,
+                borderColor: GeneralColor.white,
                 backgroundColor: GeneralColor.app_theme,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 3,
+                },
+                shadowOpacity: 0.29,
+                shadowRadius: 4.65,
+                elevation: 7,
               }}
               onPress={() => clickedChangeKey()}>
               <TextView
-                text={'Change Key'}
+                text={'Key'}
                 textStyle={{
                   color: GeneralColor.white,
                   fontSize: 14,
@@ -274,50 +296,165 @@ function LyricTextScreen(props: Props) {
               />
               <Ionicons name={'settings-sharp'} size={18} color={'white'} />
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                width: 38,
+                height: 38,
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+              }}
+              // onPress={clickedFavourite}
+            >
+              <View
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'black',
+                  opacity: 0.6,
+                  position: 'absolute',
+                  borderRadius: 45,
+                }}
+              />
+              <AntDesign
+                name={isFavourite ? 'heart' : 'hearto'}
+                size={25}
+                color={isFavourite ? 'red' : GeneralColor.white}
+              />
+            </TouchableOpacity>
           </View>
         </View>
-
-        <SongTransformer
-          chordProSong={lyricTextResponse?.lyricText}
-          transposeDelta={transposeKey}
-          showTabs={false}
-          fontSize={parseInt(lyricFontSize)}>
-          {songProps => (
-            <View style={{flex: 1, marginTop: 10}}>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: theme.background,
+            borderTopRightRadius: 30,
+            borderTopLeftRadius: 30,
+            overflow: 'hidden',
+            justifyContent: 'center',
+            flex: 1,
+          }}>
+          <SongTransformer
+            chordProSong={lyricTextResponse?.lyricText}
+            transposeDelta={transposeKey}
+            showTabs={false}
+            fontSize={parseInt(lyricFontSize)}>
+            {songProps => (
               <SongRender
+                isPlaying={isPlaying}
                 ref={songRenderRef}
                 onPressArtist={() => {}}
                 onPressChord={chordString => {}}
                 chordProContent={songProps.htmlSong}
                 scrollSpeed={scrollSpeedNumber}
+                onLoadEnd={onLoadEnd => {
+                  setIsLoading(!onLoadEnd);
+                }}
+                isScrollEnd={isScrollEnd => {
+                  if (isScrollEnd) {
+                    setIsPlaying(false);
+                  }
+                }}
               />
-            </View>
-          )}
-        </SongTransformer>
-      </ScrollView>
-      <ChangeKeyDialog
-        clickedChangeFont={(_: string) => {
-          setLyricFontSize(_);
-          props.setPlayModeFontSize(_);
-        }}
-        sliderOnValueChange={(value: number) => {
-          setTransposeKey(value);
-        }}
-        sliderScrollSpeedOnValueChange={(value: number) => {
-          setScrollSpeed(value);
+            )}
+          </SongTransformer>
+          <Image
+            style={{
+              width: 300,
+              height: 300,
+              opacity: 0.15,
+              alignSelf: 'center',
+              backgroundColor: GeneralColor.light_grey,
+              position: 'absolute',
+              borderRadius: 50,
+            }}
+            source={require('../../assets/images/sar_oak_sin_logo.jpg')}
+          />
+        </View>
 
-          props.setPlayModeScrolSpeed(parseFloat(value.toFixed(2)));
-        }}
-        currentLyricFontSize={lyricFontSize}
-        currentScrollSpeed={scrollSpeed}
-        orignalKey={orginalKey}
-        currentTransposeKey={transposeKey}
-        clickedClosed={() => {
-          setIsShowChangeKeyDialog(false);
-        }}
-        isVisible={isShowChangeKeyDialog}
-      />
-    </SafeAreaView>
+        <IconButton
+          animation={isPlaying ? 'fadeOutLeft' : 'fadeInLeft'}
+          iconMarginLeft={0}
+          iconMarginRight={4}
+          iconName="chevron-left"
+          borderRadius={50}
+          style={{
+            position: 'absolute',
+            bottom: height / 2.2,
+            left: 10,
+            width: 50,
+            height: 50,
+          }}
+          iconSize={22}
+          clickedIcon={() => {
+            clickedPreviousSong();
+          }}
+        />
+
+        <IconButton
+          animation={isPlaying ? 'fadeOutRight' : 'fadeInRight'}
+          iconMarginLeft={4}
+          iconMarginRight={0}
+          iconName="chevron-right"
+          borderRadius={50}
+          style={{
+            position: 'absolute',
+            bottom: height / 2.2,
+            right: 10,
+            width: 50,
+            height: 50,
+          }}
+          iconSize={22}
+          clickedIcon={() => {
+            clickedNextSong();
+          }}
+        />
+
+        <ImageModeButton
+          animationObject={{
+            animation: isPlaying ? 'fadeOutDown' : 'fadeInUp',
+            iterationCount: 1,
+          }}
+          borderWidth={3}
+          borderRadius={12}
+          style={{
+            position: 'absolute',
+            bottom: 50,
+            alignSelf: 'center',
+            width: 65,
+            height: 65,
+          }}
+          iconSize={28}
+          clickedImage={() => {}}
+        />
+
+        <ChangeKeyDialog
+          clickedChangeFont={(_: string) => {
+            setLyricFontSize(_);
+            props.setPlayModeFontSize(_);
+          }}
+          sliderOnValueChange={(value: number) => {
+            setTransposeKey(value);
+          }}
+          sliderScrollSpeedOnValueChange={(value: number) => {
+            setScrollSpeed(value);
+
+            props.setPlayModeScrolSpeed(parseFloat(value.toFixed(2)));
+          }}
+          currentLyricFontSize={lyricFontSize}
+          currentScrollSpeed={scrollSpeed}
+          orignalKey={orginalKey}
+          currentTransposeKey={transposeKey}
+          clickedClosed={() => {
+            setIsShowChangeKeyDialog(false);
+          }}
+          isVisible={isShowChangeKeyDialog}
+        />
+      </SafeAreaView>
+      {isLoading ? <LoadingScreen /> : <></>}
+    </>
   );
 }
 

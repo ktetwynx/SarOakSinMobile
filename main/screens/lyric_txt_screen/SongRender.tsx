@@ -5,6 +5,8 @@ import React, {
   forwardRef,
   ForwardRefRenderFunction,
   useContext,
+  useState,
+  useCallback,
 } from 'react';
 import WebView from 'react-native-webview';
 import {
@@ -21,6 +23,9 @@ interface Props {
   onPressChord?: (chord: string) => void;
   onPressArtist?: () => void;
   scrollSpeed?: number;
+  isScrollEnd?: (isScrollEnd: boolean) => void;
+  onLoadEnd?: (onLoadEnd: boolean) => void;
+  isPlaying: boolean;
 }
 
 export interface SongRenderRef {
@@ -36,6 +41,9 @@ const SongRender: ForwardRefRenderFunction<SongRenderRef, Props> = (
   const webRef = useRef<WebView>(null);
   const context = useContext(ThemeContext);
   const {theme} = context;
+  const minutes = 23000;
+  const [loadingFinish, setLoadingFinish] = useState<boolean>(false);
+  const [isSongFinish, setIsSongFinish] = useState<boolean>(false);
   //   let {scrollSpeed = 0} = props;
   let dimensionsData = useWindowDimensions();
   let height = dimensionsData.height;
@@ -52,6 +60,32 @@ const SongRender: ForwardRefRenderFunction<SongRenderRef, Props> = (
       }
     },
   }));
+
+  const onScrollHandler = useCallback(
+    ({nativeEvent}: any) => {
+      if (loadingFinish) {
+        if (isReachToScrollEnd(nativeEvent)) {
+          setIsSongFinish(true);
+        } else {
+          setIsSongFinish(false);
+        }
+      }
+    },
+    [props.scrollSpeed, props.isPlaying, loadingFinish],
+  );
+
+  useEffect(() => {
+    let timeoutVariable: any;
+    if (isSongFinish && props.isPlaying && props.scrollSpeed != 0) {
+      let gapTime = Math.floor(minutes / props.scrollSpeed);
+      timeoutVariable = setTimeout(() => {
+        props.isScrollEnd(true);
+      }, gapTime);
+    }
+    return () => {
+      clearTimeout(timeoutVariable);
+    };
+  }, [isSongFinish, props.isPlaying, props.scrollSpeed]);
 
   useEffect(() => {
     let run: string;
@@ -99,18 +133,35 @@ const SongRender: ForwardRefRenderFunction<SongRenderRef, Props> = (
       ref={webRef}
       startInLoadingState={true}
       showsVerticalScrollIndicator={false}
-      style={{backgroundColor: undefined}}
+      style={{paddingTop: 12}}
       overScrollMode={'never'}
-      source={{html: renderHtml(props.chordProContent, htmlStyles)}}
+      source={{html: renderHtml(props.chordProContent, htmlStyles, theme)}}
       injectedJavaScript={onClickChordPostMessage}
       onMessage={onReceiveMessage}
+      onLoadEnd={() => {
+        setLoadingFinish(true);
+        props.onLoadEnd(true);
+      }}
+      onScroll={nativeEvent => {
+        onScrollHandler(nativeEvent);
+      }}
     />
   );
 };
-function renderHtml(body: string, styles: string) {
+
+const isReachToScrollEnd = ({
+  layoutMeasurement,
+  contentOffset,
+  contentSize,
+}: any) => {
+  // const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y >= contentSize.height;
+};
+
+function renderHtml(body: string, styles: string, theme: any) {
   return `<html>
       <head><meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0"></head>
-      <body>${body}</body>
+      <body style="background-color: ${theme.background};padding-top: 16px;flex: 1;">${body}</body>
       <style>${styles}</style>
     </html>`;
 }

@@ -2,33 +2,38 @@ import * as React from 'react';
 import {View, Text, TouchableOpacity, ViewStyle} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 interface Props {
-  clickedPlayLyric: Function;
+  clickedIcon: Function;
   style: ViewStyle;
   iconSize: number;
   borderRadius: number;
-  borderWidth: number;
-  isPlaying?: boolean;
+  iconName: string;
+  iconMarginRight: number;
+  iconMarginLeft: number;
+  animation: string;
 }
 
-export function PlayModeButton(props: Props) {
+export function IconButton(props: Props) {
+  const [animationForInOut, setAnimationForInOut] = React.useState(
+    props.animation,
+  );
   return (
     <Animatable.View
-      iterationCount={'infinite'}
-      animation={props.isPlaying ? undefined : 'swing'}
+      animation={props.animation}
+      duration={800}
       useNativeDriver={true}
       style={props.style}>
       <TouchableOpacity
         style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
-        onPress={() => props.clickedPlayLyric()}>
+        onPress={() => props.clickedIcon()}>
         <View
           style={{
             width: '100%',
             height: '100%',
             backgroundColor: GeneralColor.black,
-            opacity: 0.3,
+            opacity: 0.7,
             position: 'absolute',
             borderRadius: props.borderRadius,
           }}
@@ -37,22 +42,17 @@ export function PlayModeButton(props: Props) {
           style={{
             width: '90%',
             height: '90%',
-            backgroundColor: props.isPlaying
-              ? GeneralColor.light_grey
-              : GeneralColor.app_theme,
             position: 'absolute',
             borderRadius: props.borderRadius,
-            borderWidth: props.borderWidth,
-            borderColor: 'white',
           }}
         />
-        <AntDesign
+        <FontAwesome
           style={{
             borderRadius: props.borderRadius,
-            // padding: 5,
-            borderColor: 'white',
+            marginRight: props.iconMarginRight,
+            marginLeft: props.iconMarginLeft,
           }}
-          name={'play'}
+          name={props.iconName}
           size={props.iconSize}
           color={GeneralColor.white}
         />

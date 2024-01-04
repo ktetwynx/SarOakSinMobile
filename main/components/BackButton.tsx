@@ -23,6 +23,14 @@ export function BackButton(props: AppProps) {
         borderWidth: 3,
         borderColor: GeneralColor.white,
         ...props.style,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+        elevation: 7,
       }}
       onPress={() => props.clickedGoBack()}>
       <Octicons

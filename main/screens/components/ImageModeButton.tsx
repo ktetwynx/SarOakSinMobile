@@ -2,27 +2,44 @@ import * as React from 'react';
 import {View, Text, TouchableOpacity, ViewStyle} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {GeneralColor} from '../../utility/Themes';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 interface Props {
-  clickedPlayLyric: Function;
+  clickedImage: Function;
   style: ViewStyle;
   iconSize: number;
   borderRadius: number;
   borderWidth: number;
-  isPlaying?: boolean;
+  animationObject: {iterationCount: number | 'infinite'; animation: string};
+  //   iterationCount: number | 'infinite';
+  //   animation: string;
 }
 
-export function PlayModeButton(props: Props) {
+export function ImageModeButton(props: Props) {
+  const [animationObjectForSwing, setAnimationObjectForSwing] = React.useState(
+    props.animationObject,
+  );
+
+  React.useEffect(() => {
+    setAnimationObjectForSwing(props.animationObject);
+  }, [props]);
+
   return (
     <Animatable.View
-      iterationCount={'infinite'}
-      animation={props.isPlaying ? undefined : 'swing'}
+      iterationCount={animationObjectForSwing.iterationCount}
+      // onAnimationEnd={() => {
+      //   animationObjectForSwing.animation == 'fadeInUp' &&
+      //     setAnimationObjectForSwing({
+      //       animation: 'swing',
+      //       iterationCount: 'infinite',
+      //     });
+      // }}
+      animation={animationObjectForSwing.animation}
       useNativeDriver={true}
       style={props.style}>
       <TouchableOpacity
         style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
-        onPress={() => props.clickedPlayLyric()}>
+        onPress={() => props.clickedImage()}>
         <View
           style={{
             width: '100%',
@@ -37,22 +54,20 @@ export function PlayModeButton(props: Props) {
           style={{
             width: '90%',
             height: '90%',
-            backgroundColor: props.isPlaying
-              ? GeneralColor.light_grey
-              : GeneralColor.app_theme,
+            backgroundColor: GeneralColor.app_theme,
             position: 'absolute',
             borderRadius: props.borderRadius,
             borderWidth: props.borderWidth,
             borderColor: 'white',
           }}
         />
-        <AntDesign
+        <FontAwesome
           style={{
             borderRadius: props.borderRadius,
             // padding: 5,
             borderColor: 'white',
           }}
-          name={'play'}
+          name={'image'}
           size={props.iconSize}
           color={GeneralColor.white}
         />

@@ -72,6 +72,7 @@ function LyricsScreen(props: Props) {
   const searchBarHeight = useRef(new Animated.Value(0)).current;
   const animationForScreen = 'fadeInUp';
   const dummyData1 = [{id: 1}, {id: 2}, {id: 3}, {id: 4}];
+  const [playModeIdList, setPlayModeIdList] = useState<any>([]);
   const [lyricHomeData, setLyricHomeData] = useState([
     {id: 1, title: PLAY_MODE_TITLE, data: []},
     {id: 2, title: label.singers, data: []},
@@ -137,6 +138,11 @@ function LyricsScreen(props: Props) {
           {data: response.data.lyricListTXT},
         );
 
+        let IdArrayPlayModeList = [];
+        for (let idArray of response.data.lyricListTXT) {
+          IdArrayPlayModeList.push(idArray.id);
+        }
+
         let images = [];
         for (let data of response.data.lyricList) {
           images.push({
@@ -148,7 +154,7 @@ function LyricsScreen(props: Props) {
             lyricAuthor: data.authors,
           });
         }
-
+        setPlayModeIdList(IdArrayPlayModeList);
         setLyricsImages(images);
         data.push(lyricsPlayMode, authors, ablums, lyrics);
         setLyricHomeData(data);
@@ -190,11 +196,16 @@ function LyricsScreen(props: Props) {
     [lyricsImages],
   );
 
-  const clickedPlayMode = useCallback((item: any) => {
-    props.navigation.navigate('LyricTextScreen', {
-      lyricTextId: item.item.id,
-    });
-  }, []);
+  const clickedPlayMode = useCallback(
+    (item: any) => {
+      props.navigation.navigate('LyricTextScreen', {
+        lyricTextId: item.item.id,
+        playModeIdList: playModeIdList,
+        currentPlayModeIndex: item.index,
+      });
+    },
+    [playModeIdList],
+  );
 
   const clickedSinger = useCallback((item: any) => {
     props.navigation.navigate('AuthorScreen', {
@@ -434,8 +445,8 @@ function LyricsScreen(props: Props) {
   );
 
   const transfromHeight = searchBarHeight.interpolate({
-    inputRange: [0, height * 0.09],
-    outputRange: [0, -height * 0.09],
+    inputRange: [0, height * 0.11],
+    outputRange: [0, -height * 0.11],
     extrapolateRight: 'clamp',
   });
 
@@ -444,7 +455,7 @@ function LyricsScreen(props: Props) {
       edges={['top']}
       style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
       <SearchBar
-        paddingTop={10}
+        paddingTop={height * 0.02}
         text={label.search_lyric_text}
         clickedSearch={clickedSearch}
       />

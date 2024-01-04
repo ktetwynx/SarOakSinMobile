@@ -201,7 +201,7 @@ export function AuthorListViewmoreScreen(
           renderItem={renderAuthorItem}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 50}}
+          contentContainerStyle={{paddingBottom: 100}}
           refreshControl={
             <RefreshControl
               refreshing={screenRefresh}

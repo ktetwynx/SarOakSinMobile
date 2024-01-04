@@ -207,6 +207,8 @@ function ImageView(props: Props) {
   const clickedPlayLyric = useCallback(() => {
     props.navigation.navigate('LyricTextScreen', {
       lyricTextId: lyricTextId,
+      currentPlayModeIndex: 0,
+      playModeIdList: [],
     });
   }, [lyricTextId]);
 

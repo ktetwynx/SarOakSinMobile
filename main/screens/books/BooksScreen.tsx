@@ -261,8 +261,8 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   }, []);
 
   const transfromHeight = searchBarHeight.interpolate({
-    inputRange: [0, height * 0.09],
-    outputRange: [0, -height * 0.09],
+    inputRange: [0, height * 0.11],
+    outputRange: [0, -height * 0.11],
     extrapolateRight: 'clamp',
   });
 
@@ -271,7 +271,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
       edges={['top']}
       style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
       <SearchBar
-        paddingTop={10}
+        paddingTop={height * 0.02}
         text={label.search_book_text}
         clickedSearch={clickedSearch}
       />

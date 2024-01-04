@@ -56,6 +56,7 @@ export function AlbumListViewmoreScreen(
     formData.append('name', 'album');
     formData.append('page', pageAt);
     formData.append('size', ROW_COUNT);
+    console.log(formData);
     await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
       'Content-Type': 'multipart/form-data',
       Authorization: API_KEY_PRODUCION,
