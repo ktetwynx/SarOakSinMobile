@@ -15,6 +15,7 @@ import {
   API_URL,
   LYRICS_TITLE,
   ROW_COUNT,
+  generateRandomNumber,
 } from '../../config/Constant';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import i18n from '../../language/i18n';
@@ -49,6 +50,7 @@ function LyricListViewmoreScreen(props: Props) {
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
+  const [randomValue, setRandomValue] = useState<number>(0);
   const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     lyrics: i18n.t('lyrics'),
@@ -64,15 +66,21 @@ function LyricListViewmoreScreen(props: Props) {
   }, []);
 
   useEffect(() => {
-    fetchLyricsViewMoreApi(0);
+    setRandomValue(generateRandomNumber());
   }, []);
 
   useEffect(() => {
     if (screenRefresh) {
       setPageAt(0);
-      fetchLyricsViewMoreApi(0);
+      setRandomValue(generateRandomNumber());
     }
   }, [screenRefresh]);
+
+  useEffect(() => {
+    if (randomValue != 0) {
+      fetchLyricsViewMoreApi(0);
+    }
+  }, [randomValue]);
 
   useEffect(() => {
     let images = [];
@@ -96,6 +104,7 @@ function LyricListViewmoreScreen(props: Props) {
       formData.append('userId', props.profile?.id ? props.profile.id : 0);
       formData.append('page', pageAt);
       formData.append('size', ROW_COUNT);
+      formData.append('randomValues', randomValue);
       await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
         'Content-Type': 'multipart/form-data',
         Authorization: API_KEY_PRODUCION,
@@ -114,7 +123,7 @@ function LyricListViewmoreScreen(props: Props) {
         }
       });
     },
-    [props.profile?.id],
+    [props.profile?.id, randomValue],
   );
 
   const onRefreshScreen = useCallback(() => {
@@ -222,7 +231,7 @@ function LyricListViewmoreScreen(props: Props) {
           data={viewMoreData}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
-          style={{paddingLeft: 12}}
+          style={{paddingLeft: 12, marginTop: 12}}
           renderItem={renderViewMoreItem}
           contentContainerStyle={{paddingBottom: 100}}
           onEndReachedThreshold={0}

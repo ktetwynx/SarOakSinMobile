@@ -37,3 +37,10 @@ export const ADS_INTERSTITIAL_UNIT_ID =
     : 'ca-app-pub-5673291811584669/8704140774'; //TestIds.INTERSTITIAL
 
 export const dummyData = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}];
+
+export const generateRandomNumber = () => {
+  const min = 1000;
+  const max = 9999;
+  const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+  return randomNumber;
+};

@@ -107,24 +107,36 @@ function LyricTextScreen(props: Props) {
   }, [props.route.params]);
 
   useEffect(() => {
-    setPlayModeListId(props.route.params.playModeIdList[currentPlayModeIndex]);
+    if (
+      props.route.params.playModeIdList.length == 0 &&
+      currentPlayModeIndex == -1
+    ) {
+      setPlayModeListId(props.route.params.lyricTextId);
+    } else {
+      setPlayModeListId(
+        props.route.params.playModeIdList[currentPlayModeIndex],
+      );
+    }
   }, [currentPlayModeIndex]);
 
   useEffect(() => {
-    if (playModeListId != 0) {
+    if (playModeListId && playModeListId != 0) {
       fetchLyricText();
     }
-  }, [playModeListId]);
+  }, [playModeListId, props.profile?.id]);
 
   const fetchLyricText = useCallback(async () => {
     setIsLoading(true);
     let formData = new FormData();
-    formData.append('id', playModeListId.toString());
+    formData.append('id', playModeListId);
+    formData.append('userId', props.profile?.id);
+    console.log(formData);
     await ApiFetchService(API_URL + `user/lyric/getLyricDetail`, formData, {
       'Content-Type': 'multipart/form-data',
       Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       if (response.code == 200) {
+        console.log(response);
         setLyricTextResponse(response.data);
         setLyricFontSize(props.playmode_fontsize);
         setScrollSpeed(props.playmode_scrollSpeed);
@@ -248,6 +260,7 @@ function LyricTextScreen(props: Props) {
               flex: 1,
             }}>
             <PlayModeButton
+              isLyricTextScreen={true}
               isPlaying={isPlaying}
               borderWidth={2.5}
               borderRadius={8}
@@ -374,61 +387,67 @@ function LyricTextScreen(props: Props) {
           />
         </View>
 
-        <IconButton
-          animation={isPlaying ? 'fadeOutLeft' : 'fadeInLeft'}
-          iconMarginLeft={0}
-          iconMarginRight={4}
-          iconName="chevron-left"
-          borderRadius={50}
-          style={{
-            position: 'absolute',
-            bottom: height / 2.2,
-            left: 10,
-            width: 50,
-            height: 50,
-          }}
-          iconSize={22}
-          clickedIcon={() => {
-            clickedPreviousSong();
-          }}
-        />
+        {currentPlayModeIndex == -1 ? (
+          <></>
+        ) : (
+          <>
+            <IconButton
+              animation={isPlaying ? 'fadeOutLeft' : 'fadeInLeft'}
+              iconMarginLeft={0}
+              iconMarginRight={4}
+              iconName="chevron-left"
+              borderRadius={50}
+              style={{
+                position: 'absolute',
+                bottom: height / 2.2,
+                left: 10,
+                width: 50,
+                height: 50,
+              }}
+              iconSize={22}
+              clickedIcon={() => {
+                clickedPreviousSong();
+              }}
+            />
 
-        <IconButton
-          animation={isPlaying ? 'fadeOutRight' : 'fadeInRight'}
-          iconMarginLeft={4}
-          iconMarginRight={0}
-          iconName="chevron-right"
-          borderRadius={50}
-          style={{
-            position: 'absolute',
-            bottom: height / 2.2,
-            right: 10,
-            width: 50,
-            height: 50,
-          }}
-          iconSize={22}
-          clickedIcon={() => {
-            clickedNextSong();
-          }}
-        />
+            <IconButton
+              animation={isPlaying ? 'fadeOutRight' : 'fadeInRight'}
+              iconMarginLeft={4}
+              iconMarginRight={0}
+              iconName="chevron-right"
+              borderRadius={50}
+              style={{
+                position: 'absolute',
+                bottom: height / 2.2,
+                right: 10,
+                width: 50,
+                height: 50,
+              }}
+              iconSize={22}
+              clickedIcon={() => {
+                clickedNextSong();
+              }}
+            />
 
-        <ImageModeButton
-          animationObject={{
-            animation: isPlaying ? 'fadeOutDown' : 'fadeInUp',
-            iterationCount: 1,
-          }}
-          borderWidth={3}
-          borderRadius={12}
-          style={{
-            position: 'absolute',
-            bottom: 50,
-            alignSelf: 'center',
-            width: 65,
-            height: 65,
-          }}
-          iconSize={28}
-          clickedImage={() => {}}
-        />
+            <ImageModeButton
+              animationObject={{
+                animation: isPlaying ? 'fadeOutDown' : 'fadeInUp',
+                iterationCount: 1,
+              }}
+              borderWidth={3}
+              borderRadius={12}
+              style={{
+                position: 'absolute',
+                bottom: 50,
+                alignSelf: 'center',
+                width: 65,
+                height: 65,
+              }}
+              iconSize={28}
+              clickedImage={() => {}}
+            />
+          </>
+        )}
 
         <ChangeKeyDialog
           clickedChangeFont={(_: string) => {

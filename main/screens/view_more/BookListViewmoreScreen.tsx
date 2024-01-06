@@ -11,7 +11,12 @@ import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BackButton} from '../../components/BackButton';
 import {ApiFetchService} from '../../service/ApiFetchService';
-import {API_KEY_PRODUCION, API_URL, ROW_COUNT} from '../../config/Constant';
+import {
+  API_KEY_PRODUCION,
+  API_URL,
+  ROW_COUNT,
+  generateRandomNumber,
+} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {LoadingScreen} from '../../components/LoadingScreen';
@@ -30,6 +35,7 @@ export function BookListViewmoreScreen(
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const [randomValue, setRandomValue] = useState<number>(0);
   const animationForScreen = 'fadeInUp';
 
   useEffect(() => {
@@ -38,15 +44,21 @@ export function BookListViewmoreScreen(
   }, [props.route.params]);
 
   useEffect(() => {
-    if (categoryId != 0) {
+    if (randomValue != 0) {
       fetchViewMoreApi(0);
+    }
+  }, [randomValue]);
+
+  useEffect(() => {
+    if (categoryId != 0) {
+      setRandomValue(generateRandomNumber());
     }
   }, [categoryId]);
 
   useEffect(() => {
     if (screenRefresh) {
       setPageAt(0);
-      fetchViewMoreApi(0);
+      setRandomValue(generateRandomNumber());
     }
   }, [screenRefresh]);
 
@@ -204,6 +216,7 @@ export function BookListViewmoreScreen(
               />
             }
             onEndReachedThreshold={0}
+            style={{marginTop: 12}}
             onEndReached={onEndListReached}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}

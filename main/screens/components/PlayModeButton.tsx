@@ -11,18 +11,27 @@ interface Props {
   borderRadius: number;
   borderWidth: number;
   isPlaying?: boolean;
+  isLyricTextScreen?: boolean;
 }
 
-export function PlayModeButton(props: Props) {
+export function PlayModeButton({
+  isLyricTextScreen = false,
+  isPlaying,
+  borderWidth,
+  borderRadius,
+  iconSize,
+  style,
+  clickedPlayLyric,
+}: Props) {
   return (
     <Animatable.View
       iterationCount={'infinite'}
-      animation={props.isPlaying ? undefined : 'swing'}
+      animation={isPlaying ? undefined : 'swing'}
       useNativeDriver={true}
-      style={props.style}>
+      style={style}>
       <TouchableOpacity
         style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
-        onPress={() => props.clickedPlayLyric()}>
+        onPress={() => clickedPlayLyric()}>
         <View
           style={{
             width: '100%',
@@ -30,30 +39,32 @@ export function PlayModeButton(props: Props) {
             backgroundColor: GeneralColor.black,
             opacity: 0.3,
             position: 'absolute',
-            borderRadius: props.borderRadius,
+            borderRadius: borderRadius,
           }}
         />
         <View
           style={{
             width: '90%',
             height: '90%',
-            backgroundColor: props.isPlaying
-              ? GeneralColor.light_grey
+            backgroundColor: isLyricTextScreen
+              ? isPlaying
+                ? GeneralColor.light_grey
+                : GeneralColor.green
               : GeneralColor.app_theme,
             position: 'absolute',
-            borderRadius: props.borderRadius,
-            borderWidth: props.borderWidth,
+            borderRadius: borderRadius,
+            borderWidth: borderWidth,
             borderColor: 'white',
           }}
         />
         <AntDesign
           style={{
-            borderRadius: props.borderRadius,
+            borderRadius: borderRadius,
             // padding: 5,
             borderColor: 'white',
           }}
           name={'play'}
-          size={props.iconSize}
+          size={iconSize}
           color={GeneralColor.white}
         />
       </TouchableOpacity>

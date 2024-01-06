@@ -15,6 +15,7 @@ import {
   API_KEY_PRODUCION,
   API_URL,
   ROW_COUNT,
+  generateRandomNumber,
 } from '../../config/Constant';
 import i18n from '../../language/i18n';
 import {TextView} from '../../components/TextView';
@@ -33,6 +34,7 @@ export function AlbumListViewmoreScreen(
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
+  const [randomValue, setRandomValue] = useState<number>(0);
   const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     albums: i18n.t('albums'),
@@ -48,38 +50,48 @@ export function AlbumListViewmoreScreen(
   }, []);
 
   useEffect(() => {
-    fetchAlbumViewMoreApi(0);
+    setRandomValue(generateRandomNumber());
   }, []);
 
-  const fetchAlbumViewMoreApi = useCallback(async (pageAt: number) => {
-    let formData = new FormData();
-    formData.append('name', 'album');
-    formData.append('page', pageAt);
-    formData.append('size', ROW_COUNT);
-    console.log(formData);
-    await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
-      'Content-Type': 'multipart/form-data',
-      Authorization: API_KEY_PRODUCION,
-    }).then((response: any) => {
-      setTimeout(() => {
-        setIsLoading(false);
-        setScreenRefresh(false);
-      }, 1000);
-      if (response.code == 200) {
-        setViewMoreData(prev =>
-          pageAt === 0
-            ? response.data.content
-            : [...prev, ...response.data.content],
-        );
-        setTotalPage(response.data.totalPages);
-      }
-    });
-  }, []);
+  useEffect(() => {
+    if (randomValue != 0) {
+      fetchAlbumViewMoreApi(0);
+    }
+  }, [randomValue]);
+
+  const fetchAlbumViewMoreApi = useCallback(
+    async (pageAt: number) => {
+      let formData = new FormData();
+      formData.append('name', 'album');
+      formData.append('page', pageAt);
+      formData.append('size', ROW_COUNT);
+      formData.append('randomValues', randomValue);
+      console.log(formData);
+      await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
+        'Content-Type': 'multipart/form-data',
+        Authorization: API_KEY_PRODUCION,
+      }).then((response: any) => {
+        setTimeout(() => {
+          setIsLoading(false);
+          setScreenRefresh(false);
+        }, 1000);
+        if (response.code == 200) {
+          setViewMoreData(prev =>
+            pageAt === 0
+              ? response.data.content
+              : [...prev, ...response.data.content],
+          );
+          setTotalPage(response.data.totalPages);
+        }
+      });
+    },
+    [randomValue],
+  );
 
   useEffect(() => {
     if (screenRefresh) {
       setPageAt(0);
-      fetchAlbumViewMoreApi(0);
+      setRandomValue(generateRandomNumber());
     }
   }, [screenRefresh]);
 
@@ -178,7 +190,7 @@ export function AlbumListViewmoreScreen(
           numColumns={2}
           showsVerticalScrollIndicator={false}
           data={viewMoreData}
-          style={{paddingLeft: 12, paddingTop: 12}}
+          style={{paddingLeft: 12, marginTop: 12}}
           contentContainerStyle={{paddingBottom: 100}}
           renderItem={renderViewMoreItem}
           refreshControl={

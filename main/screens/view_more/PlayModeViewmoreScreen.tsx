@@ -17,6 +17,7 @@ import {
   API_URL,
   PLAY_MODE_TITLE,
   ROW_COUNT,
+  generateRandomNumber,
 } from '../../config/Constant';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {GeneralColor} from '../../utility/Themes';
@@ -44,20 +45,28 @@ function PlayModeViewMoreScreen(props: Props) {
   const context = useContext(ThemeContext);
   const {theme} = context;
   const animationForScreen = 'fadeInUp';
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [screenRefresh, setScreenRefresh] = useState<boolean>(false);
   const [viewMoreData, setViewMoreData] = useState();
   const [totalPage, setTotalPage] = useState<number>(0);
   const [pageAt, setPageAt] = useState<number>(0);
+  const [playModeIdList, setPlayModeIdList] = useState<any>([]);
+  const [randomValue, setRandomValue] = useState<number>(0);
 
   useEffect(() => {
-    fetchLyricsViewMoreApi(0);
+    setRandomValue(generateRandomNumber());
   }, []);
+
+  useEffect(() => {
+    if (randomValue != 0) {
+      fetchLyricsViewMoreApi(0);
+    }
+  }, [randomValue]);
 
   useEffect(() => {
     if (screenRefresh) {
       setPageAt(0);
-      fetchLyricsViewMoreApi(0);
+      setRandomValue(generateRandomNumber());
     }
   }, [screenRefresh]);
 
@@ -71,11 +80,12 @@ function PlayModeViewMoreScreen(props: Props) {
     formData.append('userId', props.profile?.id ? props.profile.id : 0);
     formData.append('page', pageAt);
     formData.append('size', ROW_COUNT);
+    formData.append('randomValues', randomValue);
+    console.log(formData);
     await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
       'Content-Type': 'multipart/form-data',
       Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
-      console.log(response, '<Response');
       setTimeout(() => {
         setIsLoading(false);
         setScreenRefresh(false);
@@ -86,6 +96,12 @@ function PlayModeViewMoreScreen(props: Props) {
             ? response.data.content
             : [...prev, ...response.data.content],
         );
+
+        let IdArrayPlayModeList = [];
+        for (let idArray of response.data.content) {
+          IdArrayPlayModeList.push(idArray.id);
+        }
+        setPlayModeIdList(IdArrayPlayModeList);
         setTotalPage(response.data.totalPages);
       }
     });
@@ -104,11 +120,16 @@ function PlayModeViewMoreScreen(props: Props) {
     setScreenRefresh(true);
   }, []);
 
-  const clickedPlayMode = useCallback((item: any) => {
-    props.navigation.navigate('LyricTextScreen', {
-      lyricTextId: item.item.id,
-    });
-  }, []);
+  const clickedPlayMode = useCallback(
+    (item: any) => {
+      props.navigation.navigate('LyricTextScreen', {
+        lyricTextId: item.item.id,
+        playModeIdList: playModeIdList,
+        currentPlayModeIndex: item.index,
+      });
+    },
+    [playModeIdList],
+  );
 
   const renderViewMoreItem = useCallback(
     (item: any) => {
@@ -131,7 +152,7 @@ function PlayModeViewMoreScreen(props: Props) {
         />
       );
     },
-    [viewMoreData],
+    [viewMoreData, playModeIdList],
   );
 
   return (
@@ -184,7 +205,7 @@ function PlayModeViewMoreScreen(props: Props) {
           data={viewMoreData}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
-          style={{paddingLeft: 12}}
+          style={{paddingLeft: 12, marginTop: 12}}
           renderItem={renderViewMoreItem}
           contentContainerStyle={{paddingBottom: 100}}
           onEndReachedThreshold={0}

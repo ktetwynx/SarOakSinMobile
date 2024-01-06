@@ -13,7 +13,7 @@ import {ThemeContext} from '../utility/ThemeProvider';
 import {GeneralColor} from '../utility/Themes';
 import {TextView} from './TextView';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Slider from '@react-native-community/slider';
+import {Slider} from '@miblanchard/react-native-slider';
 
 export interface AppProps {
   isVisible: boolean;
@@ -129,21 +129,28 @@ export function ChangeKeyDialog(props: AppProps) {
                 color={GeneralColor.app_dark_theme}
               />
             </TouchableOpacity>
-
-            <Slider
-              step={1}
-              style={{width: '100%', height: 40, flex: 1}}
-              minimumValue={-10}
-              maximumValue={10}
-              value={transposeNumber}
-              onValueChange={(value: number) => {
-                setTransposeNumber(value);
-                props.sliderOnValueChange(value);
-              }}
-              thumbTintColor={GeneralColor.app_dark_theme}
-              minimumTrackTintColor={GeneralColor.app_dark_theme}
-              maximumTrackTintColor="#000000"
-            />
+            <View
+              style={{
+                flex: 1,
+                marginLeft: 10,
+                marginRight: 10,
+                alignItems: 'stretch',
+                justifyContent: 'center',
+              }}>
+              <Slider
+                step={1}
+                minimumValue={-10}
+                maximumValue={10}
+                value={transposeNumber}
+                onValueChange={(value: any) => {
+                  setTransposeNumber(value[0]);
+                  props.sliderOnValueChange(value[0]);
+                }}
+                thumbTintColor={GeneralColor.app_dark_theme}
+                minimumTrackTintColor={GeneralColor.app_dark_theme}
+                maximumTrackTintColor="#000000"
+              />
+            </View>
 
             <TouchableOpacity
               onPress={() => {
@@ -206,23 +213,28 @@ export function ChangeKeyDialog(props: AppProps) {
                 />
               </TouchableOpacity>
 
-              <Slider
+              <View
                 style={{
-                  width: '100%',
-                  height: 40,
                   flex: 1,
-                }}
-                minimumValue={0.05}
-                maximumValue={2}
-                value={scrollSpeedValue}
-                onValueChange={(value: number) => {
-                  setScrollSpeedValue(parseFloat(value.toFixed(2)));
-                  props.sliderScrollSpeedOnValueChange(value);
-                }}
-                thumbTintColor={GeneralColor.app_dark_theme}
-                minimumTrackTintColor={GeneralColor.app_dark_theme}
-                maximumTrackTintColor="#000000"
-              />
+                  marginLeft: 10,
+                  marginRight: 10,
+                  alignItems: 'stretch',
+                  justifyContent: 'center',
+                }}>
+                <Slider
+                  minimumValue={0.05}
+                  maximumValue={2}
+                  value={scrollSpeedValue}
+                  onValueChange={(value: any) => {
+                    console.log(value);
+                    setScrollSpeedValue(parseFloat(value[0].toFixed(2)));
+                    props.sliderScrollSpeedOnValueChange(value[0]);
+                  }}
+                  thumbTintColor={GeneralColor.app_dark_theme}
+                  minimumTrackTintColor={GeneralColor.app_dark_theme}
+                  maximumTrackTintColor="#000000"
+                />
+              </View>
               <TouchableOpacity
                 onPress={() => {
                   if (scrollSpeedValue < 2) {

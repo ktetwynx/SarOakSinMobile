@@ -22,6 +22,7 @@ export const GeneralColor = {
   black: '#000000',
   red: '#ff0000',
   grey: 'grey',
+  green: '#2fb541',
   light_grey: '#cccccc',
   app_theme: '#51a9df',
   app_dark_theme: '#2183b5',

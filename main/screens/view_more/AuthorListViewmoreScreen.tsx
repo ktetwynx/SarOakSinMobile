@@ -15,6 +15,7 @@ import {
   BOOKS_AUTHOR_TITLE,
   ROW_COUNT,
   SINGER_TITLE,
+  generateRandomNumber,
 } from '../../config/Constant';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {ThemeContext} from '../../utility/ThemeProvider';
@@ -34,6 +35,7 @@ export function AuthorListViewmoreScreen(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pageAt, setPageAt] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const [randomValue, setRandomValue] = useState<number>(0);
   const animationForScreen = 'fadeInUp';
   const [label, setLabel] = React.useState({
     authors: i18n.t('authors'),
@@ -51,15 +53,21 @@ export function AuthorListViewmoreScreen(
   }, []);
 
   useEffect(() => {
+    if (randomValue != 0) {
+      fetchViewmoreSingerList(0);
+    }
+  }, [randomValue]);
+
+  useEffect(() => {
     if (screenRefresh) {
       setPageAt(0);
-      fetchViewmoreSingerList(0);
+      setRandomValue(generateRandomNumber());
     }
   }, [screenRefresh]);
 
   useEffect(() => {
     if (props.route?.params?.authorType != null) {
-      fetchViewmoreSingerList(0);
+      setRandomValue(generateRandomNumber());
     }
   }, [props.route.params.authorType]);
 
@@ -76,7 +84,8 @@ export function AuthorListViewmoreScreen(
         formData.append('name', 'author');
       }
       formData.append('page', pageAt);
-      formData.append('size', 20);
+      formData.append('size', 18);
+      formData.append('randomValues', randomValue);
       await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
         'Content-Type': 'multipart/form-data',
         Authorization: API_KEY_PRODUCION,
@@ -96,7 +105,7 @@ export function AuthorListViewmoreScreen(
         }
       });
     },
-    [props.route.params.authorType, viewMoreAuthorData],
+    [randomValue],
   );
 
   const clickedSinger = useCallback((item: any) => {
@@ -199,6 +208,7 @@ export function AuthorListViewmoreScreen(
           data={viewMoreAuthorData}
           numColumns={3}
           renderItem={renderAuthorItem}
+          style={{paddingHorizontal: 6, marginTop: 12}}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{paddingBottom: 100}}
@@ -211,7 +221,7 @@ export function AuthorListViewmoreScreen(
               // title="Pull to refresh"
             />
           }
-          onEndReachedThreshold={20}
+          onEndReachedThreshold={0}
           onEndReached={onEndListReached}
           keyExtractor={(item: any, index: number) => index.toString()}
         />

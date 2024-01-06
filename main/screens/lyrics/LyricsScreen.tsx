@@ -291,7 +291,7 @@ function LyricsScreen(props: Props) {
         </View>
       );
     },
-    [lyricHomeData, label],
+    [lyricHomeData, label, playModeIdList],
   );
 
   const renderLyricsHomeDetailItem = useCallback(
