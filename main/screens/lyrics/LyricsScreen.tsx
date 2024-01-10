@@ -451,8 +451,11 @@ function LyricsScreen(props: Props) {
   });
 
   return (
-    <>
-      <Image
+    <View style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
+      <Animatable.Image
+        useNativeDriver={true}
+        animation={'fadeIn'}
+        delay={1000}
         style={{
           width: '100%',
           top: -80,
@@ -487,6 +490,7 @@ function LyricsScreen(props: Props) {
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             data={lyricHomeData}
+            bounces={false}
             refreshControl={
               <RefreshControl
                 refreshing={screenRefresh}
@@ -510,7 +514,7 @@ function LyricsScreen(props: Props) {
           />
         </Animated.View>
       </SafeAreaView>
-    </>
+    </View>
   );
 }
 

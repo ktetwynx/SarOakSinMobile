@@ -273,8 +273,11 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   });
 
   return (
-    <>
-      <Image
+    <View style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
+      <Animatable.Image
+        useNativeDriver={true}
+        animation={'fadeIn'}
+        delay={1000}
         style={{
           width: '100%',
           top: -20,
@@ -306,6 +309,7 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
               {useNativeDriver: true},
             )}
             showsVerticalScrollIndicator={false}
+            bounces={false}
             data={bookListData}
             refreshControl={
               <RefreshControl
@@ -331,6 +335,6 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
           />
         </Animated.View>
       </SafeAreaView>
-    </>
+    </View>
   );
 }
