@@ -14,20 +14,28 @@ import {BackButton} from '../../components/BackButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ConnectedProps, connect} from 'react-redux';
-import {setFavBookCount, setFavLyricCount} from '../../redux/actions';
+import {
+  setAdsShowTime,
+  setFavBookCount,
+  setFavLyricCount,
+} from '../../redux/actions';
 import {ApiFetchService} from '../../service/ApiFetchService';
 import {GeneralColor} from '../../utility/Themes';
 import {Platform, TouchableOpacity, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
 import {LoginDialog} from '../../components/LoginDialog';
 import KeepAwake from 'react-native-keep-awake';
 import {PlayModeButton} from '../components/PlayModeButton';
 
-const mapstateToProps = (state: {profile: any; token: any}) => {
+const mapstateToProps = (state: {
+  profile: any;
+  token: any;
+  ads_show_time: number;
+}) => {
   return {
     profile: state.profile,
     token: state.token,
+    ads_show_time: state.ads_show_time,
   };
 };
 
@@ -35,6 +43,9 @@ const mapDispatchToProps = (dispatch: (arg0: any) => void) => {
   return {
     setFavLyricCount: (fav_lyric_count: number) => {
       dispatch(setFavLyricCount(fav_lyric_count));
+    },
+    setAdsShowTime: (ads_show_time: number) => {
+      dispatch(setAdsShowTime(ads_show_time));
     },
   };
 };
@@ -54,7 +65,6 @@ function ImageView(props: Props) {
   const [lyricsImages, setLyricsImages] = useState<any>([]);
   const [lyricAuthor, setLyricAuthor] = useState<any>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-  const [isShowAds, setIsShowAds] = useState<boolean>(false);
   const [isShowLoginDialog, setIsShowLoginDialog] = useState<boolean>(false);
   // const rotation = useSharedValue(0);
   // const scale = useSharedValue(0.8);
@@ -63,60 +73,24 @@ function ImageView(props: Props) {
     setLyricsImages(props.route.params.lyricsImages);
     setCurrentImageIndex(props.route.params.currentImageIndex);
     initialCheckFav();
-    setIsShowAds(true);
     // startShake();
     KeepAwake.activate();
     // startBigSmall();
   }, [props.route.params]);
 
   useEffect(() => {
-    if (isShowAds) {
-      const adsThread = setTimeout(() => {
-        try {
-          console.log(isShowAds, 'isShowingAdsFromImageView');
-          showAd();
-        } catch (error) {
-          console.log('Ads Error', error);
-        }
-      }, 6000);
+    const adsThread = setTimeout(() => {
+      try {
+        props.setAdsShowTime(props.ads_show_time + 1);
+      } catch (error) {
+        console.log('Ads Error', error);
+      }
+    }, 15000);
 
-      const adsShowEvery20minThread = setInterval(() => {
-        try {
-          showAd();
-        } catch (error) {
-          console.log('Ads Error', error);
-        }
-      }, 900000);
-      return () => {
-        clearInterval(adsShowEvery20minThread);
-        clearTimeout(adsThread);
-        setIsShowAds(false);
-      };
-    }
-  }, [isShowAds]);
-
-  const showAd = () => {
-    if (isShowAds) {
-      const interstitial = InterstitialAd.createForAdRequest(
-        ADS_INTERSTITIAL_UNIT_ID,
-        {
-          requestNonPersonalizedAdsOnly: true,
-          keywords: ['fashion', 'clothing'],
-        },
-      );
-      interstitial.load();
-      const unsubscribeLoaded = interstitial.addAdEventListener(
-        AdEventType.LOADED,
-        () => {
-          interstitial.show();
-        },
-      );
-
-      return () => {
-        unsubscribeLoaded();
-      };
-    }
-  };
+    return () => {
+      clearTimeout(adsThread);
+    };
+  }, [currentImageIndex]);
 
   const initialCheckFav = useCallback(() => {
     let data: any =

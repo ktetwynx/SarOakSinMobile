@@ -189,8 +189,14 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
             />
             <TextView
               text={item.item.name}
-              numberOfLines={1}
-              textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
+              numberOfLines={2}
+              textStyle={{
+                alignSelf: 'center',
+                marginTop: 6,
+                fontSize: 16,
+                textAlign: 'center',
+                maxWidth: 100,
+              }}
             />
           </TouchableOpacity>
         </Animatable.View>
@@ -267,55 +273,64 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
   });
 
   return (
-    <SafeAreaView
-      edges={['top']}
-      style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
-      <SearchBar
-        paddingTop={height * 0.02}
-        text={label.search_book_text}
-        clickedSearch={clickedSearch}
+    <>
+      <Image
+        style={{
+          width: '100%',
+          top: -20,
+          resizeMode: 'contain',
+          position: 'absolute',
+        }}
+        source={require('../../assets/images/forBookScreen.jpg')}
       />
-      <Animated.View
-        style={[
-          {
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            backgroundColor: theme.backgroundColor,
-            overflow: 'hidden',
-          },
-          {transform: [{translateY: transfromHeight}]},
-        ]}>
-        <Animated.FlatList
-          scrollEnabled={true}
-          onScroll={Animated.event(
-            [{nativeEvent: {contentOffset: {y: searchBarHeight}}}],
-            {useNativeDriver: true},
-          )}
-          showsVerticalScrollIndicator={false}
-          data={bookListData}
-          refreshControl={
-            <RefreshControl
-              refreshing={screenRefresh}
-              onRefresh={onRefreshScreen}
-              tintColor={theme.backgroundColor2}
-              // titleColor={theme.backgroundColor2}
-              // title="Pull to refresh"
-            />
-          }
-          contentContainerStyle={{
-            paddingBottom: 100,
-            paddingTop: 4,
-          }}
+      <SafeAreaView edges={['top']} style={{flex: 1}}>
+        <SearchBar
+          paddingTop={height * 0.02}
+          text={label.search_book_text}
+          clickedSearch={clickedSearch}
+        />
+        <Animated.View
           style={[
             {
-              paddingTop: 8,
+              borderTopLeftRadius: 30,
+              borderTopRightRadius: 30,
+              backgroundColor: theme.backgroundColor,
+              overflow: 'hidden',
             },
-          ]}
-          renderItem={renderBookCategoryItem}
-          ListHeaderComponent={renderBookAuthorItem}
-          keyExtractor={(item: any, index: number) => index.toString()}
-        />
-      </Animated.View>
-    </SafeAreaView>
+            {transform: [{translateY: transfromHeight}]},
+          ]}>
+          <Animated.FlatList
+            scrollEnabled={true}
+            onScroll={Animated.event(
+              [{nativeEvent: {contentOffset: {y: searchBarHeight}}}],
+              {useNativeDriver: true},
+            )}
+            showsVerticalScrollIndicator={false}
+            data={bookListData}
+            refreshControl={
+              <RefreshControl
+                refreshing={screenRefresh}
+                onRefresh={onRefreshScreen}
+                tintColor={theme.backgroundColor2}
+                // titleColor={theme.backgroundColor2}
+                // title="Pull to refresh"
+              />
+            }
+            contentContainerStyle={{
+              paddingBottom: 100,
+              paddingTop: 4,
+            }}
+            style={[
+              {
+                paddingTop: 8,
+              },
+            ]}
+            renderItem={renderBookCategoryItem}
+            ListHeaderComponent={renderBookAuthorItem}
+            keyExtractor={(item: any, index: number) => index.toString()}
+          />
+        </Animated.View>
+      </SafeAreaView>
+    </>
   );
 }

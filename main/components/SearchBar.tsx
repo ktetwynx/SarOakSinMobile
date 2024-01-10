@@ -27,7 +27,7 @@ export function SearchBar(props: AppProps) {
           height: 50,
           alignSelf: 'center',
           alignItems: 'center',
-          backgroundColor: GeneralColor.app_theme,
+          // backgroundColor: GeneralColor.app_theme,
           flexDirection: 'row',
           borderRadius: 40,
           justifyContent: 'space-between',

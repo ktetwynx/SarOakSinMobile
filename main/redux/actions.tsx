@@ -6,6 +6,7 @@ export const APP_LANG = 'APP_LANGUAGE';
 export const APP_THEME = 'APP_THEME';
 export const PLAYMODE_FONTSIZE = 'PLAYMODE_FONTSIZE';
 export const PLAYMODE_SCROLLSPEED = 'PLAYMODE_SCROLLSPEED';
+export const ADS_SHOW_TIME = 'ADS_SHOW_TIME';
 export interface Profile {
   id: 0;
   username: '';
@@ -43,4 +44,8 @@ export function setPlayModeFontSize(playmode_fontsize: string) {
 
 export function setPlayModeScrolSpeed(playmode_scrollSpeed: number) {
   return {type: PLAYMODE_SCROLLSPEED, playmode_scrollSpeed};
+}
+
+export function setAdsShowTime(ads_show_time: number) {
+  return {type: ADS_SHOW_TIME, ads_show_time};
 }

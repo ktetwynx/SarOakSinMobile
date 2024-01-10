@@ -1,4 +1,5 @@
 import {
+  ADS_SHOW_TIME,
   APP_LANG,
   APP_THEME,
   BEARER_TOKEN,
@@ -15,6 +16,7 @@ const initialState = {
   app_theme: 'light',
   playmode_fontsize: '14',
   playmode_scrollSpeed: 0.6,
+  ads_show_time: 0,
 };
 
 export function App(state = initialState, action: any) {
@@ -39,6 +41,8 @@ export function App(state = initialState, action: any) {
       return Object.assign({}, state, {
         playmode_scrollSpeed: action.playmode_scrollSpeed,
       });
+    case ADS_SHOW_TIME:
+      return Object.assign({}, state, {ads_show_time: action.ads_show_time});
     default:
       return state;
   }

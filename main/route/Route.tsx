@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {LandingScreen} from '../screens/landing/LandingScreen';
 import {BookListViewmoreScreen} from '../screens/view_more/BookListViewmoreScreen';
@@ -23,15 +23,26 @@ import SearchScreen from '../screens/search/SearchScreen';
 import ResetPassword from '../screens/profile/ResetPassword';
 import LyricTextScreen from '../screens/lyric_txt_screen/LyricTextScreen';
 import PlayModeViewmoreScreen from '../screens/view_more/PlayModeViewmoreScreen';
+import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
+import {ADS_INTERSTITIAL_UNIT_ID} from '../config/Constant';
+import {setAdsShowTime} from '../redux/actions';
 
-const mapstateToProps = (state: {app_language: string}) => {
+const mapstateToProps = (state: {
+  app_language: string;
+  ads_show_time: number;
+}) => {
   return {
     app_language: state.app_language,
+    ads_show_time: state.ads_show_time,
   };
 };
 
 const mapDispatchToProps = (dispatch: (arg0: any) => void) => {
-  return {};
+  return {
+    setAdsShowTime: (ads_show_time: number) => {
+      dispatch(setAdsShowTime(ads_show_time));
+    },
+  };
 };
 
 const connector = connect(mapstateToProps, mapDispatchToProps);
@@ -40,18 +51,65 @@ type Props = ConnectedProps<typeof connector>;
 
 const Route = (props: Props) => {
   const RootStack = createNativeStackNavigator<RootStackParamList>();
-
+  // const [isShowAds, setIsShowAds] = useState<boolean>(false);
   const option = {
     headerShown: false,
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (props.ads_show_time > 5) {
+      showAd();
+      props.setAdsShowTime(0);
+    } else {
+      console.log(props.ads_show_time);
+    }
+  }, [props.ads_show_time]);
+
+  useEffect(() => {
     if (props.app_language === 'en') {
       i18n.locale = 'en';
     } else {
       i18n.locale = 'mm';
     }
   }, [props.app_language]);
+
+  // useEffect(() => {
+  //   if (isShowAds) {
+  //     const adsThread = setTimeout(() => {
+  //       try {
+  //         console.log(isShowAds, 'isShowingAdsFromImageView');
+  //       } catch (error) {
+  //         console.log('Ads Error', error);
+  //       }
+  //     }, 6000);
+
+  //     return () => {
+  //       clearTimeout(adsThread);
+  //       setIsShowAds(false);
+  //     };
+  //   }
+  // }, [isShowAds]);
+
+  const showAd = () => {
+    const interstitial = InterstitialAd.createForAdRequest(
+      ADS_INTERSTITIAL_UNIT_ID,
+      {
+        requestNonPersonalizedAdsOnly: true,
+        keywords: ['fashion', 'clothing'],
+      },
+    );
+    interstitial.load();
+    const unsubscribeLoaded = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        interstitial.show();
+      },
+    );
+
+    return () => {
+      unsubscribeLoaded();
+    };
+  };
 
   return (
     <RootStack.Navigator initialRouteName="LandingScreen">

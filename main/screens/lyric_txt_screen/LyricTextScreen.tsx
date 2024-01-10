@@ -136,7 +136,6 @@ function LyricTextScreen(props: Props) {
       Authorization: API_KEY_PRODUCION,
     }).then((response: any) => {
       if (response.code == 200) {
-        console.log(response);
         setLyricTextResponse(response.data);
         setLyricFontSize(props.playmode_fontsize);
         setScrollSpeed(props.playmode_scrollSpeed);
