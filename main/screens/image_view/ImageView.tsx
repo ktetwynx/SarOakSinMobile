@@ -7,7 +7,11 @@ import React, {
 } from 'react';
 import {RootStackScreenProps} from '../../route/StackParamsTypes';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import {ADS_INTERSTITIAL_UNIT_ID, API_URL} from '../../config/Constant';
+import {
+  ADS_INTERSTITIAL_UNIT_ID,
+  API_URL,
+  SET_ADS_DURATION,
+} from '../../config/Constant';
 import {TextView} from '../../components/TextView';
 import {ThemeContext} from '../../utility/ThemeProvider';
 import {BackButton} from '../../components/BackButton';
@@ -79,13 +83,16 @@ function ImageView(props: Props) {
   }, [props.route.params]);
 
   useEffect(() => {
-    const adsThread = setTimeout(() => {
-      try {
-        props.setAdsShowTime(props.ads_show_time + 1);
-      } catch (error) {
-        console.log('Ads Error', error);
-      }
-    }, 15000);
+    const adsThread = setTimeout(
+      () => {
+        try {
+          props.setAdsShowTime(props.ads_show_time + 1);
+        } catch (error) {
+          console.log('Ads Error', error);
+        }
+      },
+      props.ads_show_time == 5 ? 200 : SET_ADS_DURATION,
+    );
 
     return () => {
       clearTimeout(adsThread);
@@ -253,7 +260,7 @@ function ImageView(props: Props) {
         }}
         renderHeader={(currentIndex?: number) => {
           let number: any = currentIndex;
-          return (
+          return !props.route.params.isComeFromLyricText ? (
             <View
               style={{
                 alignSelf: 'center',
@@ -284,6 +291,8 @@ function ImageView(props: Props) {
                 text={`${number + 1}/${lyricsImages.length}`}
               />
             </View>
+          ) : (
+            <></>
           );
         }}
         saveToLocalByLongPress={false}
@@ -336,7 +345,7 @@ function ImageView(props: Props) {
         </TouchableOpacity>
       </View>
 
-      {lyricText ? (
+      {lyricText && !props.route.params.isComeFromLyricText ? (
         <PlayModeButton
           borderWidth={3}
           borderRadius={12}

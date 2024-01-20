@@ -116,6 +116,7 @@ export function LoginDialog(props: AppProps) {
                 backgroundColor: GeneralColor.app_theme,
                 fontSize: 12,
                 borderRadius: 5,
+                overflow: 'hidden',
                 marginLeft: 10,
               }}
             />

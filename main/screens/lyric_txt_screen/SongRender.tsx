@@ -128,6 +128,7 @@ const SongRender: ForwardRefRenderFunction<SongRenderRef, Props> = (
     props.scrollSpeed >= 0
       ? styles(theme.textColor)
       : smoothScrollStyle + styles;
+
   return (
     <WebView
       ref={webRef}
@@ -161,7 +162,7 @@ const isReachToScrollEnd = ({
 function renderHtml(body: string, styles: string, theme: any) {
   return `<html>
       <head><meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0"></head>
-      <body style="background-color: ${theme.background};padding-top: 16px;flex: 1;">${body}</body>
+      <body style="background-color: ${theme.backgroundColor};padding-top: 16px;flex: 1;">${body}</body>
       <style>${styles}</style>
     </html>`;
 }

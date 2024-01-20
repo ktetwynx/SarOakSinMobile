@@ -41,7 +41,11 @@ export type RootStackParamList = {
     isFavourite: boolean;
     readPageAt: number;
   };
-  ImageView: {currentImageIndex: number; lyricsImages: []};
+  ImageView: {
+    currentImageIndex: number;
+    lyricsImages: [];
+    isComeFromLyricText: boolean;
+  };
   AuthorListViewmoreScreen: {authorType: number};
   LyricTextScreen: {
     lyricTextId: number;

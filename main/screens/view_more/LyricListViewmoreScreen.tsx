@@ -148,6 +148,7 @@ function LyricListViewmoreScreen(props: Props) {
       props.navigation.navigate('ImageView', {
         currentImageIndex: item.index,
         lyricsImages: lyricsImages,
+        isComeFromLyricText: false,
       });
     },
     [lyricsImages],

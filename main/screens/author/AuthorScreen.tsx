@@ -182,6 +182,7 @@ function AuthorScreen(props: Props) {
         props.navigation.navigate('ImageView', {
           currentImageIndex: index,
           lyricsImages: lyricsImages,
+          isComeFromLyricText: false,
         });
       }
     },

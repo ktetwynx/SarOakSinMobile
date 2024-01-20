@@ -204,6 +204,7 @@ function AlbumScreen(props: Props) {
       props.navigation.navigate('ImageView', {
         currentImageIndex: index,
         lyricsImages: lyricsImages,
+        isComeFromLyricText: false,
       });
     },
     [lyricsImages],

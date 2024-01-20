@@ -27,6 +27,8 @@ export const STORAGE_KEYS = {
 import {Platform} from 'react-native';
 import {TestIds} from 'react-native-google-mobile-ads';
 
+export const SET_ADS_DURATION = 120000; //2minutes;
+
 export const ADS_BANNER_UNIT_ID =
   Platform.OS == 'ios'
     ? 'ca-app-pub-5673291811584669/8492635513'
