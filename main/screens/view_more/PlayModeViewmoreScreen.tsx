@@ -52,7 +52,7 @@ function PlayModeViewMoreScreen(props: Props) {
   const [pageAt, setPageAt] = useState<number>(0);
   const [playModeIdList, setPlayModeIdList] = useState<any>([]);
   const [randomValue, setRandomValue] = useState<number>(0);
-
+  let IdArrayPlayModeList: number[] = [];
   useEffect(() => {
     setRandomValue(generateRandomNumber());
   }, []);
@@ -81,7 +81,7 @@ function PlayModeViewMoreScreen(props: Props) {
     formData.append('page', pageAt);
     formData.append('size', ROW_COUNT);
     formData.append('randomValues', randomValue);
-    console.log(formData);
+
     await ApiFetchService(API_URL + `user/lyric/home-navigate`, formData, {
       'Content-Type': 'multipart/form-data',
       Authorization: API_KEY_PRODUCION,
@@ -97,7 +97,6 @@ function PlayModeViewMoreScreen(props: Props) {
             : [...prev, ...response.data.content],
         );
 
-        let IdArrayPlayModeList = [];
         for (let idArray of response.data.content) {
           IdArrayPlayModeList.push(idArray.id);
         }
@@ -122,10 +121,11 @@ function PlayModeViewMoreScreen(props: Props) {
 
   const clickedPlayMode = useCallback(
     (item: any) => {
-      props.navigation.navigate('LyricTextScreen', {
+      props.navigation.push('LyricTextScreen', {
         lyricTextId: item.item.id,
         playModeIdList: playModeIdList,
         currentPlayModeIndex: item.index,
+        isComeFromLyricScreen: false,
       });
     },
     [playModeIdList],

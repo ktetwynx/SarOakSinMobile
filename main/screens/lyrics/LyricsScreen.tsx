@@ -199,10 +199,11 @@ function LyricsScreen(props: Props) {
 
   const clickedPlayMode = useCallback(
     (item: any) => {
-      props.navigation.navigate('LyricTextScreen', {
+      props.navigation.push('LyricTextScreen', {
         lyricTextId: item.item.id,
         playModeIdList: playModeIdList,
         currentPlayModeIndex: item.index,
+        isComeFromLyricScreen: true,
       });
     },
     [playModeIdList],

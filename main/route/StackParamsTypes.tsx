@@ -51,6 +51,7 @@ export type RootStackParamList = {
     lyricTextId: number;
     playModeIdList: [];
     currentPlayModeIndex: number;
+    isComeFromLyricScreen: boolean;
   };
   PlayModeViewMoreScreen: undefined;
 };

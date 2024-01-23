@@ -190,6 +190,7 @@ function ImageView(props: Props) {
       lyricTextId: lyricTextId,
       currentPlayModeIndex: -1,
       playModeIdList: [],
+      isComeFromLyricScreen: false,
     });
   }, [lyricTextId]);
 

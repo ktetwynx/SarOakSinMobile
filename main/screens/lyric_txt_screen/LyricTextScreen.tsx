@@ -58,6 +58,7 @@ import {LoadingScreen} from '../../components/LoadingScreen';
 import * as Animatable from 'react-native-animatable';
 import {PlayModeButton} from '../components/PlayModeButton';
 import {LoginDialog} from '../../components/LoginDialog';
+import {ViewMoreButton1} from '../../components/ViewMoreButton1';
 
 const mapstateToProps = (state: {
   profile: any;
@@ -123,6 +124,7 @@ function LyricTextScreen(props: Props) {
 
   useEffect(() => {
     setCurrentPlayModeIndex(props.route.params.currentPlayModeIndex);
+    console.log(props.route.params.currentPlayModeIndex);
   }, [props.route.params.currentPlayModeIndex]);
 
   useEffect(() => {
@@ -479,7 +481,11 @@ function LyricTextScreen(props: Props) {
         ) : (
           <>
             <IconButton
-              animation={isPlaying ? 'fadeOutLeft' : 'fadeInLeft'}
+              animation={
+                isPlaying || currentPlayModeIndex == 0
+                  ? 'fadeOutLeft'
+                  : 'fadeInLeft'
+              }
               iconMarginLeft={0}
               iconMarginRight={4}
               iconName="chevron-left"
@@ -497,24 +503,49 @@ function LyricTextScreen(props: Props) {
               }}
             />
 
-            <IconButton
-              animation={isPlaying ? 'fadeOutRight' : 'fadeInRight'}
-              iconMarginLeft={4}
-              iconMarginRight={0}
-              iconName="chevron-right"
-              borderRadius={50}
-              style={{
-                position: 'absolute',
-                bottom: height / 2.2,
-                right: 10,
-                width: 50,
-                height: 50,
-              }}
-              iconSize={22}
-              clickedIcon={() => {
-                clickedNextSong();
-              }}
-            />
+            {props.route.params.isComeFromLyricScreen &&
+            props.route.params.playModeIdList.length ==
+              currentPlayModeIndex + 1 ? (
+              <ViewMoreButton1
+                animation={isPlaying ? 'fadeOutRight' : 'fadeInRight'}
+                borderRadius={10}
+                style={{
+                  position: 'absolute',
+                  bottom: height / 2.25,
+                  right: 10,
+                  width: 80,
+                  height: 65,
+                }}
+                clickedViewMore={() => {
+                  props.navigation.navigate('PlayModeViewMoreScreen');
+                }}
+              />
+            ) : (
+              <IconButton
+                animation={
+                  isPlaying ||
+                  currentPlayModeIndex + 1 ==
+                    props.route.params.playModeIdList.length
+                    ? 'fadeOutRight'
+                    : 'fadeInRight'
+                }
+                iconMarginLeft={4}
+                iconMarginRight={0}
+                iconName="chevron-right"
+                borderRadius={50}
+                style={{
+                  position: 'absolute',
+                  bottom: height / 2.2,
+                  right: 10,
+                  width: 50,
+                  height: 50,
+                }}
+                iconSize={22}
+                clickedIcon={() => {
+                  clickedNextSong();
+                }}
+              />
+            )}
 
             <ImageModeButton
               animationObject={{
