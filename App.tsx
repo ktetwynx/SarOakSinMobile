@@ -28,6 +28,9 @@ const linking: any = {
       AuthorScreen: {
         path: 'authorScreen/:authorType/:authorId',
       },
+      LyricTextScreen: {
+        path: 'lyricTextScreen/:currentPlayModeIndex/:isComeFromLyricScreen/:lyricTextId',
+      },
     },
   },
 };

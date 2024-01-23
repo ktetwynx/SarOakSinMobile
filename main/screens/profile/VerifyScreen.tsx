@@ -118,9 +118,7 @@ const VerifyScreen = (props: Props) => {
         'Content-Type': 'multipart/form-data',
         Authorization: API_KEY_PRODUCION,
       },
-    ).then((response: any) => {
-      console.log(response);
-    });
+    ).then((response: any) => {});
   }, [userEmail]);
 
   const otpTextInputRef: any = useRef(null);

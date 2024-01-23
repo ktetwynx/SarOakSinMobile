@@ -133,7 +133,6 @@ function BookDetailScreen(props: Props) {
       }, 1000);
       if (response.code == 200) {
         setIsFavourite(response.data.saved);
-        console.log(response.data);
         setBookDetailData({
           bookName: response.data.name,
           bookImage: response.data.imgPath,

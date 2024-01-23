@@ -70,7 +70,6 @@ export function ForgotPassword(props: RootStackScreenProps<'ForgotPassword'>) {
     setIsLoading(true);
     let formData = new FormData();
     formData.append('email', email);
-    console.log(formData);
     await ApiFetchService(
       API_URL + `user/register-user/send-otp-by-email`,
       formData,

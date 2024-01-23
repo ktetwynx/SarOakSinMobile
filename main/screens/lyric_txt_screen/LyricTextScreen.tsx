@@ -121,24 +121,25 @@ function LyricTextScreen(props: Props) {
   const [playModeListId, setPlayModeListId] = useState<number>(0);
   const [currentPlayModeIndex, setCurrentPlayModeIndex] = useState<number>(-1);
   const [isShowLoginDialog, setIsShowLoginDialog] = useState<boolean>(false);
+  const [playModeIdList, setPlayModeIdList] = useState([]);
 
   useEffect(() => {
     setCurrentPlayModeIndex(props.route.params.currentPlayModeIndex);
-    console.log(props.route.params.currentPlayModeIndex);
-  }, [props.route.params.currentPlayModeIndex]);
+    if (props.route.params.playModeIdList) {
+      setPlayModeIdList(props.route.params.playModeIdList);
+    }
+  }, [
+    props.route.params.currentPlayModeIndex,
+    props.route.params.playModeIdList,
+  ]);
 
   useEffect(() => {
-    if (
-      props.route.params.playModeIdList.length == 0 &&
-      currentPlayModeIndex == -1
-    ) {
+    if (playModeIdList.length == 0 && currentPlayModeIndex == -1) {
       setPlayModeListId(props.route.params.lyricTextId);
     } else {
-      setPlayModeListId(
-        props.route.params.playModeIdList[currentPlayModeIndex],
-      );
+      setPlayModeListId(playModeIdList[currentPlayModeIndex]);
     }
-  }, [currentPlayModeIndex]);
+  }, [currentPlayModeIndex, playModeIdList]);
 
   useEffect(() => {
     if (playModeListId && playModeListId != 0) {
@@ -504,7 +505,7 @@ function LyricTextScreen(props: Props) {
             />
 
             {props.route.params.isComeFromLyricScreen &&
-            props.route.params.playModeIdList.length ==
+            props.route.params.playModeIdList?.length ==
               currentPlayModeIndex + 1 ? (
               <ViewMoreButton1
                 animation={isPlaying ? 'fadeOutRight' : 'fadeInRight'}
@@ -525,7 +526,7 @@ function LyricTextScreen(props: Props) {
                 animation={
                   isPlaying ||
                   currentPlayModeIndex + 1 ==
-                    props.route.params.playModeIdList.length
+                    props.route.params.playModeIdList?.length
                     ? 'fadeOutRight'
                     : 'fadeInRight'
                 }

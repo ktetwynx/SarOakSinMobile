@@ -61,7 +61,7 @@ const Route = (props: Props) => {
       showAd();
       props.setAdsShowTime(0);
     } else {
-      console.log(props.ads_show_time);
+      console.log(props.ads_show_time, 'ADS_SHOW_TIME');
     }
   }, [props.ads_show_time]);
 

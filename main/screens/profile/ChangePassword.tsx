@@ -187,7 +187,6 @@ const ChangePassword = (props: Props) => {
     formData.append('email', props.profile.email);
     formData.append('oldPassword', changePasswordData.oldPassword);
     formData.append('password', changePasswordData.password1);
-    console.log(formData);
     await ApiFetchService(
       API_URL + `user/register-user/change-password`,
       formData,
@@ -196,7 +195,6 @@ const ChangePassword = (props: Props) => {
         Authorization: 'Bearer ' + props.token,
       },
     ).then((response: any) => {
-      console.log(response);
       setIsLoading(false);
       if (response.code == 200) {
         setShowSuccessDialog(true);

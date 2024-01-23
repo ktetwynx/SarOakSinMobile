@@ -117,7 +117,6 @@ export function SignUpScreen(props: RootStackScreenProps<'SignUpScreen'>) {
     formData.append('username', signUpData.username);
     formData.append('email', signUpData.email);
     formData.append('password', signUpData.password1);
-    console.log(formData);
     await ApiFetchService(API_URL + `user/register-user/register`, formData, {
       'Content-Type': 'multipart/form-data',
       Authorization: API_KEY_PRODUCION,

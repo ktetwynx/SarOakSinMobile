@@ -266,13 +266,13 @@ function LyricsScreen(props: Props) {
               <ViewMoreButton
                 clickedViewMore={() => {
                   if (item.index == 0) {
-                    clickedPlayModeViewmore();
+                    item.item.data && clickedPlayModeViewmore();
                   } else if (item.index == 1) {
-                    clickedSingerViewmore();
+                    item.item.data && clickedSingerViewmore();
                   } else if (item.index == 2) {
-                    clickedAlbumViewmore();
+                    item.item.data && clickedAlbumViewmore();
                   } else if (item.index == 3) {
-                    clickedLyricsViewmore();
+                    item.item.data && clickedLyricsViewmore();
                   }
                 }}
               />

@@ -90,16 +90,14 @@ function AuthorScreen(props: Props) {
 
   useEffect(() => {
     setAuthorId(props.route.params.authorId);
-    setAuthorName(props.route.params.authorName);
     setAuthorType(props.route.params.authorType);
-    setAuthorImage(props.route.params.authorImage);
   }, [props.route.params]);
 
   useEffect(() => {
-    if (authorId != 0) {
+    if (authorType != 0 && authorId != 0) {
       fetchAuthorApi(0);
     }
-  }, [authorId]);
+  }, [authorType, authorId]);
 
   useEffect(() => {
     if (screenRefresh) {
@@ -149,14 +147,18 @@ function AuthorScreen(props: Props) {
           setScreenRefresh(false);
         }, 1000);
         if (response.code == 200) {
-          if (authorType == 1) {
+          setAuthorId(response.data.author.id);
+          setAuthorName(response.data.author.name);
+          setAuthorType(response.data.author.authorType);
+          setAuthorImage(response.data.author.profile);
+          if (response.data.author.authorType == 1) {
             setAuthorData((prev: any) =>
               pageAt === 0
                 ? response.data.bookDetail.content
                 : [...prev, ...response.data.bookDetail.content],
             );
             setTotalPage(response.data.bookDetail.totalPages);
-          } else if (authorType == 2) {
+          } else if (response.data.author.authorType == 2) {
             setAuthorData((prev: any) =>
               pageAt === 0
                 ? response.data.lyricDetail.content

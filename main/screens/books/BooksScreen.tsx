@@ -116,7 +116,11 @@ export function BooksScreen(props: RootTabScreenProps<'BooksScreen'>) {
             <Animatable.View
               useNativeDriver={true}
               animation={animationForScreen}>
-              <ViewMoreButton clickedViewMore={() => clickedViewmore(item)} />
+              <ViewMoreButton
+                clickedViewMore={() =>
+                  item.item.bookList && clickedViewmore(item)
+                }
+              />
             </Animatable.View>
           </View>
 

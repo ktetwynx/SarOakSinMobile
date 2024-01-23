@@ -194,7 +194,6 @@ const ResetPassword = (props: Props) => {
     let formData = new FormData();
     formData.append('email', props.route.params.email);
     formData.append('password', resetPasswordData.password1);
-    console.log(formData, props.route.params.token);
     await ApiFetchService(
       API_URL + `user/register-user/reset-password`,
       formData,
@@ -203,7 +202,6 @@ const ResetPassword = (props: Props) => {
         Authorization: 'Bearer ' + props.route.params.token,
       },
     ).then((response: any) => {
-      console.log(response);
       setIsLoading(false);
       if (response.code == 200) {
         setShowSuccessDialog(true);

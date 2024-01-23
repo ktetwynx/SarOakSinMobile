@@ -68,7 +68,6 @@ export function BookListViewmoreScreen(
       formData.append('id', categoryId);
       formData.append('page', currentPage);
       formData.append('size', ROW_COUNT);
-      console.log(formData);
       await ApiFetchService(
         API_URL + `user/book/category/get-by-id`,
         formData,
@@ -108,7 +107,6 @@ export function BookListViewmoreScreen(
   }, []);
 
   const onEndListReached = () => {
-    console.log(totalPage);
     if (totalPage != pageAt) {
       const currentPage = pageAt + 1;
       setPageAt(currentPage);

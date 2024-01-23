@@ -58,9 +58,10 @@ export function ViewMoreButton1(props: Props) {
             text={label.viewMore}
             textStyle={{
               marginRight: 4,
+              color: GeneralColor.white,
+              fontWeight: 'bold',
               fontSize: 14,
               maxWidth: 55,
-              textAlign: 'center',
             }}
           />
           <AntDesign

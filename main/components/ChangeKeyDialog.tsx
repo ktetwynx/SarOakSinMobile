@@ -226,7 +226,6 @@ export function ChangeKeyDialog(props: AppProps) {
                   maximumValue={2}
                   value={scrollSpeedValue}
                   onValueChange={(value: any) => {
-                    console.log(value);
                     setScrollSpeedValue(parseFloat(value[0].toFixed(2)));
                     props.sliderScrollSpeedOnValueChange(value[0]);
                   }}
