@@ -78,8 +78,6 @@ function AlbumScreen(props: Props) {
 
   useEffect(() => {
     setAlbumId(props.route.params.albumId);
-    setAlbumName(props.route.params.albumName);
-    setAlbumImg(props.route.params.albumImage);
   }, [props.route.params]);
 
   useEffect(() => {
@@ -125,10 +123,8 @@ function AlbumScreen(props: Props) {
           setScreenRefresh(false);
         }, 1000);
         if (response.code == 200) {
-          console.log(response.data.lyricDetails);
-          // setAlbumId(props.route.params.albumId);
-          // setAlbumName(props.route.params.albumName);
-          // setAlbumImg(props.route.params.albumImage);
+          setAlbumName(response.data.album.name);
+          setAlbumImg(response.data.album.imgPath);
           setLyricsList((prev: any) =>
             pageAt === 0
               ? response.data.lyricDetails.content

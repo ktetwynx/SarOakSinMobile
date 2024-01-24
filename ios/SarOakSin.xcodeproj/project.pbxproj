@@ -549,7 +549,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = J5KGPQHK55;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SarOakSin/Info.plist;
@@ -582,7 +582,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = J5KGPQHK55;
 				INFOPLIST_FILE = SarOakSin/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";

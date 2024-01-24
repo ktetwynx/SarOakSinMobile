@@ -57,25 +57,7 @@ export function LandingScreen() {
             overflow: 'hidden',
           },
         }}
-        initialRouteName="BooksScreen">
-        <Tab.Screen
-          options={{
-            headerShown: false,
-            tabBarShowLabel: false,
-            tabBarIcon: ({color, focused}) => (
-              <FontAwesome
-                name="book"
-                size={30}
-                color={
-                  focused ? GeneralColor.app_theme : theme.backgroundColor3
-                }
-                style={{alignSelf: 'center'}}
-              />
-            ),
-          }}
-          name="BooksScreen"
-          component={BooksScreen}
-        />
+        initialRouteName="LyricsScreen">
         <Tab.Screen
           options={{
             headerShown: false,
@@ -93,6 +75,24 @@ export function LandingScreen() {
           }}
           name="LyricsScreen"
           component={LyricsScreen}
+        />
+        <Tab.Screen
+          options={{
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarIcon: ({color, focused}) => (
+              <FontAwesome
+                name="book"
+                size={30}
+                color={
+                  focused ? GeneralColor.app_theme : theme.backgroundColor3
+                }
+                style={{alignSelf: 'center'}}
+              />
+            ),
+          }}
+          name="BooksScreen"
+          component={BooksScreen}
         />
         <Tab.Screen
           options={{
