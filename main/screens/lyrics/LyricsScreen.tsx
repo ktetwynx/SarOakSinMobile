@@ -40,11 +40,13 @@ const mapstateToProps = (state: {
   profile: any;
   token: any;
   fav_lyric_count: number;
+  app_language: string;
 }) => {
   return {
     profile: state.profile,
     token: state.token,
     fav_lyric_count: state.fav_lyric_count,
+    app_language: state.app_language,
   };
 };
 
@@ -71,14 +73,14 @@ function LyricsScreen(props: Props) {
   const {width, height} = Dimensions.get('screen');
   const searchBarHeight = useRef(new Animated.Value(0)).current;
   const animationForScreen = 'fadeInUp';
-  const dummyData1 = [{id: 1}, {id: 2}, {id: 3}, {id: 4}];
+  const dummyData1 = [
+    {id: 1, title: PLAY_MODE_TITLE},
+    {id: 2, title: label.singers},
+    {id: 3, title: label.albums},
+    {id: 4, title: label.lyrics},
+  ];
   const [playModeIdList, setPlayModeIdList] = useState<any>([]);
-  const [lyricHomeData, setLyricHomeData] = useState([
-    {id: 1, title: PLAY_MODE_TITLE, data: []},
-    {id: 2, title: label.singers, data: []},
-    {id: 3, title: label.albums, data: []},
-    {id: 4, title: label.lyrics, data: []},
-  ]);
+  const [lyricHomeData, setLyricHomeData] = useState<any>([]);
 
   useEffect(() => {
     const unsubscribe = i18n.onChange(() => {
@@ -93,9 +95,15 @@ function LyricsScreen(props: Props) {
   }, []);
 
   useEffect(() => {
-    fetchHomeLyricsApi();
+    if (
+      (props.app_language == 'mm' && label.albums !== 'Albums') ||
+      (props.app_language == 'en' && label.albums !== 'အယ်လ်ဘမ်များ')
+    ) {
+      fetchHomeLyricsApi();
+    }
+
     KeepAwake.deactivate();
-  }, [label, props.fav_lyric_count]);
+  }, [label, props.fav_lyric_count, props.app_language]);
 
   useEffect(() => {
     if (screenRefresh) {
@@ -119,24 +127,24 @@ function LyricsScreen(props: Props) {
     }).then((response: any) => {
       if (response.code == 200) {
         let data: any = [];
-        let ablums = Object.assign(
-          {title: label.albums},
-          {data: response.data.albumList},
-        );
-        let lyrics = Object.assign(
-          {title: label.lyrics},
-          {data: response.data.lyricList},
-        );
+        let ablums = {
+          title: label.albums,
+          data: response.data.albumList,
+        };
+        let lyrics = {
+          title: label.lyrics,
+          data: response.data.lyricList,
+        };
 
-        let authors = Object.assign(
-          {title: label.singers},
-          {data: response.data.authorList},
-        );
+        let authors = {
+          title: label.singers,
+          data: response.data.authorList,
+        };
 
-        let lyricsPlayMode = Object.assign(
-          {title: PLAY_MODE_TITLE},
-          {data: response.data.lyricListTXT},
-        );
+        let lyricsPlayMode = {
+          title: PLAY_MODE_TITLE,
+          data: response.data.lyricListTXT,
+        };
 
         let IdArrayPlayModeList = [];
         for (let idArray of response.data.lyricListTXT) {
@@ -283,7 +291,7 @@ function LyricsScreen(props: Props) {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={item.index == 2 ? {} : {paddingLeft: 12}}
             horizontal={item.index == 2 ? false : true}
-            data={item.item.data.length != 0 ? item.item.data : dummyData1}
+            data={item.item.data ? item.item.data : dummyData1}
             numColumns={item.index == 2 ? 2 : undefined}
             renderItem={(data: any) =>
               renderLyricsHomeDetailItem(data, item.item.title)
@@ -298,6 +306,7 @@ function LyricsScreen(props: Props) {
 
   const renderLyricsHomeDetailItem = useCallback(
     (item: any, title: string) => {
+      console.log(item.item);
       if (title == PLAY_MODE_TITLE) {
         return (
           <PlayModeView
@@ -312,39 +321,40 @@ function LyricsScreen(props: Props) {
             clickedPlayMode={() => clickedPlayMode(item)}
           />
         );
-      } else if (title == label.singers) {
-        return (
-          <Animatable.View
-            style={{
-              flexDirection: 'column',
-            }}
-            useNativeDriver={true}
-            animation={animationForScreen}>
-            <TouchableOpacity
-              disabled={item?.item?.name ? false : true}
-              onPress={() => clickedSinger(item)}
-              style={{flexDirection: 'column', marginRight: 12}}>
-              <Image
-                style={{
-                  width: 80,
-                  height: 80,
-                  alignSelf: 'center',
-                  backgroundColor: GeneralColor.light_grey,
-                  borderRadius: 50,
-                }}
-                source={{
-                  uri: API_URL + item.item.profile,
-                }}
-              />
-              <TextView
-                text={item.item.name}
-                textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
-              />
-            </TouchableOpacity>
-          </Animatable.View>
-        );
       }
-      if (title == label.singers) {
+      // else if (title == label.singers) {
+      //   return (
+      //     <Animatable.View
+      //       style={{
+      //         flexDirection: 'column',
+      //       }}
+      //       useNativeDriver={true}
+      //       animation={animationForScreen}>
+      //       <TouchableOpacity
+      //         disabled={item?.item?.name ? false : true}
+      //         onPress={() => clickedSinger(item)}
+      //         style={{flexDirection: 'column', marginRight: 12}}>
+      //         <Image
+      //           style={{
+      //             width: 80,
+      //             height: 80,
+      //             alignSelf: 'center',
+      //             backgroundColor: GeneralColor.light_grey,
+      //             borderRadius: 50,
+      //           }}
+      //           source={{
+      //             uri: API_URL + item.item.profile,
+      //           }}
+      //         />
+      //         <TextView
+      //           text={item.item.name}
+      //           textStyle={{alignSelf: 'center', marginTop: 6, fontSize: 16}}
+      //         />
+      //       </TouchableOpacity>
+      //     </Animatable.View>
+      //   );
+      // }
+      else if (title == label.singers) {
         return (
           <Animatable.View
             style={{
@@ -451,7 +461,7 @@ function LyricsScreen(props: Props) {
     outputRange: [0, -height * 0.11],
     extrapolateRight: 'clamp',
   });
-
+  console.log(label);
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
       <Animatable.Image
@@ -491,7 +501,7 @@ function LyricsScreen(props: Props) {
             )}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
-            data={lyricHomeData}
+            data={lyricHomeData.length != 0 ? lyricHomeData : dummyData1}
             bounces={false}
             refreshControl={
               <RefreshControl
