@@ -187,6 +187,7 @@ const SearchScreen = (props: Props) => {
   }, []);
 
   const fetchSearchApi = useCallback(async () => {
+    setSearchData([]);
     let formData = new FormData();
     let endPointPrefix = '';
     if (searchType === 1) {

@@ -306,7 +306,6 @@ function LyricsScreen(props: Props) {
 
   const renderLyricsHomeDetailItem = useCallback(
     (item: any, title: string) => {
-      console.log(item.item);
       if (title == PLAY_MODE_TITLE) {
         return (
           <PlayModeView
@@ -461,7 +460,7 @@ function LyricsScreen(props: Props) {
     outputRange: [0, -height * 0.11],
     extrapolateRight: 'clamp',
   });
-  console.log(label);
+
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.app_theme}}>
       <Animatable.Image
