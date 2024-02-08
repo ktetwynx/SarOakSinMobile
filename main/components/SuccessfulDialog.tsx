@@ -23,6 +23,7 @@ export interface AppProps {
 export function SuccessfulDialog(props: AppProps) {
   const context = useContext(ThemeContext);
   const {theme} = context;
+  console.log(props.isVisible);
   return (
     <Modal
       useNativeDriver={true}

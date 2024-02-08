@@ -44,6 +44,11 @@
     "enter_your_email": "Enter yor email below",
     "search_lyric_text": "Search Lyric",
     "search_book_text": "Search Book",
-    "reset_password": "Reset Password"
+    "reset_password": "Reset Password",
+    "delete_account":"Delete Account",
+    "deleting_account":"Deleting Account",
+    "delete_description":"Deleting your account will remove all of your information from our system. This cannot be undone.",
+    "confirm_delete":"To confirm this, type 'DELETE'.",
+    "delete":"Delete account"
 
 }

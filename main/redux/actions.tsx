@@ -7,6 +7,7 @@ export const APP_THEME = 'APP_THEME';
 export const PLAYMODE_FONTSIZE = 'PLAYMODE_FONTSIZE';
 export const PLAYMODE_SCROLLSPEED = 'PLAYMODE_SCROLLSPEED';
 export const ADS_SHOW_TIME = 'ADS_SHOW_TIME';
+export const NOTIFICATION_DATA = 'NOTIFICATION_DATA';
 export interface Profile {
   id: 0;
   username: '';
@@ -48,4 +49,8 @@ export function setPlayModeScrolSpeed(playmode_scrollSpeed: number) {
 
 export function setAdsShowTime(ads_show_time: number) {
   return {type: ADS_SHOW_TIME, ads_show_time};
+}
+
+export function setNotificationData(notification_data: []) {
+  return {type: NOTIFICATION_DATA, notification_data};
 }

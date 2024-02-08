@@ -35,18 +35,25 @@ import {SearchBar} from '../../components/SearchBar';
 import KeepAwake from 'react-native-keep-awake';
 import {PlayModeButton} from '../components/PlayModeButton';
 import {PlayModeView} from '../components/PlayModeView';
+import notifee, {
+  IntervalTrigger,
+  TimeUnit,
+  TriggerType,
+} from '@notifee/react-native';
 
 const mapstateToProps = (state: {
   profile: any;
   token: any;
   fav_lyric_count: number;
   app_language: string;
+  notification_data: [];
 }) => {
   return {
     profile: state.profile,
     token: state.token,
     fav_lyric_count: state.fav_lyric_count,
     app_language: state.app_language,
+    notification_data: state.notification_data,
   };
 };
 
@@ -81,6 +88,18 @@ function LyricsScreen(props: Props) {
   ];
   const [playModeIdList, setPlayModeIdList] = useState<any>([]);
   const [lyricHomeData, setLyricHomeData] = useState<any>([]);
+  const [notiPermission, setNotiPermission] = useState<boolean>(false);
+  let randamNumber = 0;
+
+  useEffect(() => {
+    requestNotiPermission();
+  }, []);
+
+  useEffect(() => {
+    if (notiPermission) {
+      onCreateTriggerNotification();
+    }
+  }, [notiPermission]);
 
   useEffect(() => {
     const unsubscribe = i18n.onChange(() => {
@@ -93,6 +112,45 @@ function LyricsScreen(props: Props) {
     });
     return unsubscribe;
   }, []);
+
+  const requestNotiPermission = async () => {
+    let permission = await notifee.requestPermission();
+    if (permission.authorizationStatus == 1) {
+      setNotiPermission(true);
+    } else {
+      setNotiPermission(false);
+    }
+  };
+
+  const onCreateTriggerNotification = useCallback(async () => {
+    const trigger: IntervalTrigger = {
+      type: TriggerType.INTERVAL,
+      interval: 15,
+      timeUnit: TimeUnit.MINUTES,
+    };
+
+    await notifee.createTriggerNotification(
+      {
+        id: notiId(),
+        title: 'SarOakSin',
+        body: notiText(),
+      },
+      trigger,
+    );
+  }, [props.notification_data]);
+
+  const notiText = () => {
+    const min = 0;
+    const max = props.notification_data.length - 1;
+    const randamNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    let notiText = props.notification_data[randamNumber];
+    return notiText;
+  };
+
+  const notiId = () => {
+    const notiId = Date.now().toString();
+    return notiId;
+  };
 
   useEffect(() => {
     if (

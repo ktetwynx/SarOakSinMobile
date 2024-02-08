@@ -4,12 +4,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider} from 'react-redux';
-import store from './main/redux';
+import store, {persistor} from './main/redux';
 import Route from './main/route/Route';
 import ThemeProvider from './main/utility/ThemeProvider';
 import SplashScreen from 'react-native-splash-screen';
 import mobileAds, {MaxAdContentRating} from 'react-native-google-mobile-ads';
-import {LoadingScreen} from './main/components/LoadingScreen';
+import {PersistGate} from 'redux-persist/integration/react';
 
 const linking: any = {
   prefixes: ['saroaksin://'],
@@ -70,12 +70,14 @@ function App(): JSX.Element {
 
   return (
     <Provider store={store}>
-      <ThemeProvider>
-        {/* fallback={<LoadingScreen />} */}
-        <NavigationContainer linking={linking}>
-          <Route />
-        </NavigationContainer>
-      </ThemeProvider>
+      <PersistGate persistor={persistor}>
+        <ThemeProvider>
+          {/* fallback={<LoadingScreen />} */}
+          <NavigationContainer linking={linking}>
+            <Route />
+          </NavigationContainer>
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   );
 }

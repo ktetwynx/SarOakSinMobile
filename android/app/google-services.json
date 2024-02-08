@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "154444336499",
+    "project_id": "saroaksin-536c8",
+    "storage_bucket": "saroaksin-536c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154444336499:android:d2b986608a2515a2ef4906",
+        "android_client_info": {
+          "package_name": "com.bigCode64.saroaksin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154444336499-113t8k0jebq6qiba0ggmcpnqq0i7kg3r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi9CqHmFMeoJ7EET1_bGC3Qwd_1qVl2I4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154444336499-113t8k0jebq6qiba0ggmcpnqq0i7kg3r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

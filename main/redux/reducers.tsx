@@ -5,6 +5,7 @@ import {
   BEARER_TOKEN,
   FAV_BOOK_COUNT,
   FAV_LYRIC_COUNT,
+  NOTIFICATION_DATA,
   PLAYMODE_FONTSIZE,
   PLAYMODE_SCROLLSPEED,
   PROFILE,
@@ -17,6 +18,7 @@ const initialState = {
   playmode_fontsize: '14',
   playmode_scrollSpeed: 0.6,
   ads_show_time: 0,
+  notification_data: [],
 };
 
 export function App(state = initialState, action: any) {
@@ -43,6 +45,10 @@ export function App(state = initialState, action: any) {
       });
     case ADS_SHOW_TIME:
       return Object.assign({}, state, {ads_show_time: action.ads_show_time});
+    case NOTIFICATION_DATA:
+      return Object.assign({}, state, {
+        notification_data: action.notification_data,
+      });
     default:
       return state;
   }

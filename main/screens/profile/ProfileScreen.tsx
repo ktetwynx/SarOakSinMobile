@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {View, Image, TouchableOpacity, Dimensions, Switch} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  Switch,
+  TextInput,
+} from 'react-native';
 import en from '../../language/en.json';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -39,6 +46,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';
 import {GeneralColor} from '../../utility/Themes';
 import * as Animatable from 'react-native-animatable';
+import {SuccessfulDialog} from '../../components/SuccessfulDialog';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -95,12 +103,18 @@ const ProfileScreen = (props: Props) => {
   const {theme, updateTheme} = context;
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [errorDeletingAccount, setErrorDeletingAccount] =
+    useState<boolean>(false);
+  const [deleteText, setDeleteText] = useState<string>('');
   const [isLightMode, setIsLightMode] = useState<boolean>(true);
+  const [showSuccessDialog, setShowSuccessDialog] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const animationForScreen = 'fadeInUp';
   const [isCheckKeepLoggedIn, setIsCheckKeepLoggedIn] =
     useState<boolean>(false);
   const [isVisibleChangeLanguageModal, setIsVisibleChangeLanguageModal] =
+    useState<boolean>(false);
+  const [isVisibleDeleteAccountModal, setIsVisibleDeleteAccountModal] =
     useState<boolean>(false);
   const [profile, setProfile] = useState<Profile>({
     id: 0,
@@ -128,6 +142,12 @@ const ProfileScreen = (props: Props) => {
     forgot_ur_password: i18n.t('forgot_ur_password'),
     keep_me_logged_in: i18n.t('keep_me_logged_in'),
     not_a_memeber: i18n.t('not_a_memeber'),
+    delete_account: i18n.t('delete_account'),
+    deleting_account: i18n.t('deleting_account'),
+    delete_description: i18n.t('delete_description'),
+    confirm_delete: i18n.t('confirm_delete'),
+    delete: i18n.t('delete'),
+    success: i18n.t('success'),
   });
 
   useEffect(() => {
@@ -146,6 +166,12 @@ const ProfileScreen = (props: Props) => {
         forgot_ur_password: i18n.t('forgot_ur_password'),
         keep_me_logged_in: i18n.t('keep_me_logged_in'),
         not_a_memeber: i18n.t('not_a_memeber'),
+        delete_account: i18n.t('delete_account'),
+        deleting_account: i18n.t('deleting_account'),
+        delete_description: i18n.t('delete_description'),
+        confirm_delete: i18n.t('confirm_delete'),
+        delete: i18n.t('delete'),
+        success: i18n.t('success'),
       });
     });
     return unsubscribe;
@@ -274,6 +300,35 @@ const ProfileScreen = (props: Props) => {
     });
   }, [loginData, isCheckKeepLoggedIn]);
 
+  const fetchDeleteAccount = useCallback(async () => {
+    setIsVisibleDeleteAccountModal(false);
+    setIsLoading(true);
+    let formData = new FormData();
+    formData.append('userId', profile.id.toString());
+    await ApiFetchService(API_URL + `user/register-user/delete`, formData, {
+      'Content-Type': 'multipart/form-data',
+      Authorization: 'Bearer ' + props.token,
+    }).then((response: any) => {
+      console.log(response);
+      if (response.code == 200) {
+        setTimeout(() => {
+          setShowSuccessDialog(true);
+          setIsLoading(false);
+        }, 500);
+        setTimeout(() => {
+          setIsLoading(false);
+          setShowSuccessDialog(false);
+          props.setToken(null);
+          props.setProfile(undefined);
+        }, 3000);
+      } else {
+        setErrorMessage(response.message);
+        setIsVisibleDeleteAccountModal(true);
+        setIsLoading(false);
+      }
+    });
+  }, [profile.id, props.token]);
+
   const saveLoginInfo = useCallback(async () => {
     if (isCheckKeepLoggedIn) {
       await AsyncStorage.setItem(STORAGE_KEYS.USER_EMAIL, loginData.email);
@@ -301,6 +356,18 @@ const ProfileScreen = (props: Props) => {
   const clickedChangePassword = useCallback(() => {
     props.navigation.navigate('ChangePassword');
   }, []);
+
+  const clickedShowDeleteAccountModal = useCallback(() => {
+    setIsVisibleDeleteAccountModal(true);
+  }, []);
+
+  const clickedDeleteAccount = useCallback(() => {
+    if (!onValidateDelete()) {
+      return;
+    } else {
+      fetchDeleteAccount();
+    }
+  }, [profile, deleteText, props.token]);
 
   const clickedChangeLanguage = useCallback(() => {
     if (!isVisibleChangeLanguageModal) {
@@ -340,6 +407,21 @@ const ProfileScreen = (props: Props) => {
     }
   }, [isCheckKeepLoggedIn]);
 
+  const onValidateDelete = (): boolean => {
+    let isDelete = true;
+    switch (true) {
+      case deleteText !== 'DELETE':
+        isDelete = false;
+        setErrorDeletingAccount(true);
+        break;
+
+      default:
+        setErrorDeletingAccount(false);
+        break;
+    }
+    return isDelete;
+  };
+  console.log(showSuccessDialog);
   return (
     <View style={{flex: 1}}>
       <SafeAreaView
@@ -612,6 +694,22 @@ const ProfileScreen = (props: Props) => {
 
               <TouchableOpacity
                 style={{alignSelf: 'center'}}
+                onPress={clickedShowDeleteAccountModal}>
+                <TextView
+                  text={label.delete_account}
+                  textStyle={{
+                    fontSize: 14,
+                    alignSelf: 'center',
+                    fontWeight: 'bold',
+                    textDecorationLine: 'underline',
+                    marginTop: 20,
+                    color: 'red',
+                  }}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{alignSelf: 'center'}}
                 onPress={clickedLogout}>
                 <TextView
                   text={label.logout}
@@ -704,6 +802,102 @@ const ProfileScreen = (props: Props) => {
                         />
                       )}
                     </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+
+              <Modal
+                style={{zIndex: 1}}
+                useNativeDriver={true}
+                hideModalContentWhileAnimating={true}
+                animationIn={'fadeIn'}
+                animationOut={'fadeOut'}
+                hasBackdrop={true}
+                onBackdropPress={() => {
+                  setIsVisibleDeleteAccountModal(false);
+                }}
+                isVisible={isVisibleDeleteAccountModal}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 1,
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: theme.backgroundColor,
+                      width: '95%',
+                      paddingHorizontal: 12,
+                      paddingVertical: 24,
+                      borderRadius: 15,
+                    }}>
+                    <TextView
+                      text={label.deleting_account}
+                      textStyle={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginBottom: 6,
+                      }}
+                    />
+                    <TextView
+                      text={label.delete_description}
+                      textStyle={{fontSize: 13}}
+                    />
+
+                    <TextView
+                      text={label.confirm_delete}
+                      textStyle={{
+                        fontSize: 13,
+                        color: errorDeletingAccount ? 'red' : GeneralColor.grey,
+                        marginBottom: 6,
+                        marginTop: 12,
+                        fontWeight: 'bold',
+                      }}
+                    />
+                    <View style={{flexDirection: 'row'}}>
+                      <TextInput
+                        onChangeText={(text: string) => {
+                          setDeleteText(text);
+                        }}
+                        style={{
+                          width: '55%',
+                          height: 35,
+                          color: theme.backgroundColor2,
+                          borderWidth: 1,
+                          paddingLeft: 6,
+                          borderRadius: 6,
+                          marginRight: 12,
+                          borderColor: theme.backgroundColor2,
+                        }}
+                      />
+                      <TouchableOpacity
+                        onPress={clickedDeleteAccount}
+                        style={{
+                          backgroundColor: 'red',
+                          justifyContent: 'center',
+                          paddingHorizontal: 12,
+                          borderRadius: 10,
+                          borderWidth: 2.5,
+                          borderColor: GeneralColor.white,
+                          shadowColor: '#000',
+                          shadowOffset: {
+                            width: 0,
+                            height: 3,
+                          },
+                          shadowOpacity: 0.29,
+                          shadowRadius: 4.65,
+                          elevation: 7,
+                        }}>
+                        <TextView
+                          text={label.delete}
+                          textStyle={{
+                            fontSize: 13,
+                            color: GeneralColor.white,
+                            fontWeight: 'bold',
+                          }}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               </Modal>
@@ -856,6 +1050,9 @@ const ProfileScreen = (props: Props) => {
           )}
         </KeyboardAwareScrollView>
       </SafeAreaView>
+
+      <SuccessfulDialog text={label.success} isVisible={showSuccessDialog} />
+
       {isLoading ? <LoadingScreen /> : <></>}
     </View>
   );

@@ -25,15 +25,19 @@ import LyricTextScreen from '../screens/lyric_txt_screen/LyricTextScreen';
 import PlayModeViewmoreScreen from '../screens/view_more/PlayModeViewmoreScreen';
 import {InterstitialAd, AdEventType} from 'react-native-google-mobile-ads';
 import {ADS_INTERSTITIAL_UNIT_ID} from '../config/Constant';
-import {setAdsShowTime} from '../redux/actions';
+import {setAdsShowTime, setNotificationData} from '../redux/actions';
+import remoteConfig, {firebase} from '@react-native-firebase/remote-config';
+import notifee from '@notifee/react-native';
 
 const mapstateToProps = (state: {
   app_language: string;
   ads_show_time: number;
+  notification_data: [];
 }) => {
   return {
     app_language: state.app_language,
     ads_show_time: state.ads_show_time,
+    notification_data: state.notification_data,
   };
 };
 
@@ -41,6 +45,9 @@ const mapDispatchToProps = (dispatch: (arg0: any) => void) => {
   return {
     setAdsShowTime: (ads_show_time: number) => {
       dispatch(setAdsShowTime(ads_show_time));
+    },
+    setNotificationData: (notification_data: []) => {
+      dispatch(setNotificationData(notification_data));
     },
   };
 };
@@ -52,10 +59,18 @@ type Props = ConnectedProps<typeof connector>;
 const Route = (props: Props) => {
   const RootStack = createNativeStackNavigator<RootStackParamList>();
   // const [isShowAds, setIsShowAds] = useState<boolean>(false);
+
   const option = {
     headerShown: false,
   };
 
+  const initialState = ['ဂစ်တာတီီးကျရအောင်သူငယ်ချင်း'];
+
+  const initial: any = {initialState};
+
+  useEffect(() => {
+    setUpRemoteConfig();
+  }, []);
   useEffect(() => {
     if (props.ads_show_time > 5) {
       showAd();
@@ -72,6 +87,20 @@ const Route = (props: Props) => {
       i18n.locale = 'mm';
     }
   }, [props.app_language]);
+
+  const setUpRemoteConfig = async () => {
+    await remoteConfig().fetch(300);
+    remoteConfig()
+      .setDefaults(initial)
+      .then(() => remoteConfig().fetchAndActivate())
+      .then(fetchedRemotely => {
+        if (fetchedRemotely) {
+          const data: any = remoteConfig().getAll();
+          const convertedJson = JSON.parse(data.notification._value);
+          props.setNotificationData(convertedJson);
+        }
+      });
+  };
 
   // useEffect(() => {
   //   if (isShowAds) {
