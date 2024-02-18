@@ -89,7 +89,6 @@ function LyricsScreen(props: Props) {
   const [playModeIdList, setPlayModeIdList] = useState<any>([]);
   const [lyricHomeData, setLyricHomeData] = useState<any>([]);
   const [notiPermission, setNotiPermission] = useState<boolean>(false);
-  let randamNumber = 0;
 
   useEffect(() => {
     requestNotiPermission();
@@ -125,27 +124,27 @@ function LyricsScreen(props: Props) {
   const onCreateTriggerNotification = useCallback(async () => {
     const trigger: IntervalTrigger = {
       type: TriggerType.INTERVAL,
-      interval: 15,
-      timeUnit: TimeUnit.MINUTES,
+      interval: 12,
+      timeUnit: TimeUnit.HOURS,
     };
 
     await notifee.createTriggerNotification(
       {
-        id: notiId(),
+        id: '1',
         title: 'SarOakSin',
-        body: notiText(),
+        body: 'ဂီီတာတီးမယ်၊စာဖတ်မယ်သူငယ်ချင်း',
       },
       trigger,
     );
   }, [props.notification_data]);
 
-  const notiText = () => {
-    const min = 0;
-    const max = props.notification_data.length - 1;
-    const randamNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    let notiText = props.notification_data[randamNumber];
-    return notiText;
-  };
+  // const notiText = () => {
+  //   const min = 0;
+  //   const max = props.notification_data.length - 1;
+  //   const randamNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+  //   let notiText = props.notification_data[randamNumber];
+  //   return notiText;
+  // };
 
   const notiId = () => {
     const notiId = Date.now().toString();
